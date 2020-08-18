@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 3036207836490225419}
   - component: {fileID: 3036207836490225420}
   - component: {fileID: 3036207836490225421}
-  - component: {fileID: 3036207836490225422}
   - component: {fileID: -6881295689702754526}
   m_Layer: 0
   m_Name: Wand
@@ -112,22 +111,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
---- !u!208 &3036207836490225422
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3036207836490225423}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 0.515, y: 0.5, z: 0.5}
-  m_MoveThreshold: 0.1
-  m_Carve: 0
-  m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 0, z: 0}
-  m_TimeToStationary: 0.5
 --- !u!114 &-6881295689702754526
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,3 +125,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damagePrefab: {fileID: 5533898723352482092, guid: 09a6080d7b22f444bb83ce4c7741478e,
     type: 3}
+  canTakeDamage: 1
