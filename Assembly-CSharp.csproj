@@ -55,7 +55,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\DesklampScript.cs" />
      <Compile Include="Assets\Scripts\Builder.cs" />
      <Compile Include="Assets\Scripts\ClientApi.cs" />
      <Compile Include="Assets\Scripts\Clientscript.cs" />
@@ -65,6 +64,7 @@
      <Compile Include="Assets\Scripts\Helper\TastenKombination.cs" />
      <Compile Include="Assets\Scripts\Helper\WegPunkt.cs" />
      <Compile Include="Assets\Scripts\Helper\helperMethods.cs" />
+     <Compile Include="Assets\Scripts\Playable\DesklampScript.cs" />
      <Compile Include="Assets\Scripts\Playable\Interactable.cs" />
      <Compile Include="Assets\Scripts\Playable\PathFinder.cs" />
      <Compile Include="Assets\Scripts\Playable\Popup.cs" />
