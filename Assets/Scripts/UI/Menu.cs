@@ -13,6 +13,8 @@ public class Menu : MonoBehaviour
     public event PauseResumeEventHandler PauseEvent;
     public event PauseResumeEventHandler ResumeEvent;
 
+    public PathFinder pathFinder;
+
     public Canvas canvas;
 
     bool _paused;
@@ -84,8 +86,9 @@ public class Menu : MonoBehaviour
         inpStartZielObjects = GameObject.FindGameObjectsWithTag("inpStartZiel");
         GameObject.Find("btnAbbrechen").GetComponent<Button>().onClick.AddListener(Resume);
         GameObject.Find("btnSuchen").GetComponent<Button>().onClick.AddListener(Suchen);
-         
-        GameObject.Find("AI").GetComponent<AI_Steuerung>().EndPointReachedEvent += () => setWaitObjectsActive(false);
+
+        pathFinder.EndPointReachedEvent += () => setWaitObjectsActive(false);
+        setWaitObjectsActive(false);
 
         PauseEvent += setMitarbeiterListe;
 
@@ -165,20 +168,20 @@ public class Menu : MonoBehaviour
         InputField ziel = GameObject.Find("inpZiel").GetComponentInChildren<InputField>();
         Vector3 zielpos = helperMethods.lookupCoordsFuerRaum(startpos, ziel.text);
 
-        AI_Steuerung ai_steuerung = GameObject.Find("AI").GetComponent<AI_Steuerung>();
         if (zielpos == Constants.RAUM_NOT_FOUNT_COORDS || startpos == Constants.RAUM_NOT_FOUNT_COORDS)
         {
             ShowErrorMessage("kein weg gefunden");
             return;
         }
-        if (ai_steuerung.setPosition(startpos))
+        if (pathFinder.setPosition(startpos))
         {
             warpPos = startpos;
-            ai_steuerung.EndPointReachedEvent += warpTo;
-            
-            if (ai_steuerung.AddPoint(zielpos)) // punkt gefunden
+            pathFinder.EndPointReachedEvent += warpTo;
+
+            if (zielpos != Constants.RAUM_NOT_FOUNT_COORDS)
             {
                 waitUntilPathFound();
+                pathFinder.AddPoint(zielpos); // punkt gefunden
             }
         }
     }
@@ -189,7 +192,7 @@ public class Menu : MonoBehaviour
         {
             GameObject.Find("Player").GetComponent<Steuerung>().WarpToPosition(warpPos);
         }
-        GameObject.Find("AI").GetComponent<AI_Steuerung>().EndPointReachedEvent -= warpTo;
+        pathFinder.EndPointReachedEvent -= warpTo;
     }
 
     void setWaitObjectsActive(bool active)

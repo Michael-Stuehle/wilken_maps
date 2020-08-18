@@ -5,17 +5,15 @@ using UnityEngine.AI;
 using Assets.Scripts.Helper;
 using System;
 
-public class AI_Steuerung : MonoBehaviour
+public class PathFinder : MonoBehaviour
 {
     public delegate void EndPointReachedEventHandler();
     public event EndPointReachedEventHandler EndPointReachedEvent;
 
     private List<Vector3> _points;
-    private NavMeshAgent nav;
 
-    private List<Vector3> path;
+    private NavMeshPath path;
     private bool onEndPointRechedExecuted = false;
-    public bool isSearching = false;
 
     private List<Vector3> Points
     {
@@ -27,10 +25,7 @@ public class AI_Steuerung : MonoBehaviour
             }
             return _points;
         }
-        set
-        {
-            _points = value;
-        }
+        set => _points = value;
     }
 
     public void OnEndPointReached()
@@ -41,22 +36,12 @@ public class AI_Steuerung : MonoBehaviour
         }
     }
 
-    public bool hasReachedEndPoint
-    {
-        get
-        {
-            return Points.Count == 0 && nav.remainingDistance <= nav.stoppingDistance && !nav.pathPending;
-        }
-    }
-
     public bool AddPoint(Vector3 point)
     {
         if (point == Constants.RAUM_NOT_FOUNT_COORDS)
         {
             return false;
         }
-        isSearching = true;
-        _points.Clear();
         Points.Add(point);
         onEndPointRechedExecuted = false;
         return true;
@@ -68,7 +53,6 @@ public class AI_Steuerung : MonoBehaviour
         {
             return false;
         }
-        //gameObject.transform.position = position;
         gameObject.transform.position = position;
         return true;
     }
@@ -77,54 +61,36 @@ public class AI_Steuerung : MonoBehaviour
     void Start()
     {
         Time.timeScale = Constants.GAMESPEED;
-        nav = GetComponent<NavMeshAgent>();
-        nav.updatePosition = true;
-        path = new List<Vector3>();
+        Points.Clear();
         EndPointReachedEvent += () =>
-        {
-            onEndPointRechedExecuted = true;
-            DrawLine();
-            path.Clear();
-            Points.Clear();
-            nav.ResetPath();
-        };
+         {
+             _points.Clear();
+             onEndPointRechedExecuted = true;
+             DrawLine();
+             path.ClearCorners();
+             Points.Clear();
+         };
     }
 
 
     // Update is called once per frame
     void Update()
     {
-        if (!nav.pathPending && nav.remainingDistance <= nav.stoppingDistance)
-        {
-            GoToNextPoint();
+        if (Points.Count > 0 && !onEndPointRechedExecuted) {
+            path = new NavMeshPath();
+            NavMesh.CalculatePath(transform.position, Points[0], 0 | 2 | 3, path);
+            OnEndPointReached();            
         }
-        else if (nav.remainingDistance > 0.5f)
-        {
-            path.Add( helperMethods.CopyVector(nav.transform.position) );
-        }
-    }
-
-    void GoToNextPoint()
-    {
-        if (Points.Count == 0)
-        {
-            if (hasReachedEndPoint && !onEndPointRechedExecuted)
-            {
-                OnEndPointReached();
-            } 
-            return;
-        }
-        nav.SetDestination(Points[0]);
-        Points.RemoveAt(0); // punkt wird ab jetzt angelaufen -> wird nicht mehr benötigt
     }
 
     void DrawLine()
     {
         LineRenderer lr = GetComponent<LineRenderer>();
-        lr.positionCount = path.Count;
+        lr.positionCount = path.corners.Length;
         for (int i = 0; i < lr.positionCount; i++)
         {
-            lr.SetPosition(i, path[i]);
+            Vector3 pos = path.corners[i];
+            lr.SetPosition(i,  new Vector3(pos.x, pos.y + 0.5f, pos.z));
         }
     }
 }
