@@ -40,7 +40,7 @@ namespace Assets.Scripts.Helper
             set => sprintKey = value;
         }
 
-        private static KeyCode sneakKey = KeyCode.LeftControl;
+        private static KeyCode sneakKey = KeyCode.CapsLock;
         public static KeyCode SneakKey
         {
             get => sneakKey;
