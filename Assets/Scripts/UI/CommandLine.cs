@@ -142,9 +142,9 @@ public class CommandLine : MonoBehaviour
             sendChatMessage("keine ausreichende Berechtigung");
             return;
         }
-        GameObject gun = player.GetComponent<Steuerung>().gun;
+        gunScript gun = player.GetComponent<Steuerung>().gun.GetComponent<gunScript>();
 
-        gun.SetActive(true);
+        gun.IsEnabled = true;
         sendChatMessage("gun activated!");
     }
 
