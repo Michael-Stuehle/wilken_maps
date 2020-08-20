@@ -55,6 +55,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\F3Script.cs" />
      <Compile Include="Assets\Scripts\Builder.cs" />
      <Compile Include="Assets\Scripts\ClientApi.cs" />
      <Compile Include="Assets\Scripts\Clientscript.cs" />

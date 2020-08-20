@@ -37,7 +37,6 @@ public class DesklampScript : Interactable
         {
             isOn = true;
             GetComponentInChildren<Light>().intensity = defaultIntensity;
-            Debug.Log(defaultIntensity);
         }
     }
 

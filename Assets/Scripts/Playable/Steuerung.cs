@@ -15,6 +15,7 @@ public class Steuerung : Shootable
     public float sprintMultiplier;
     public Vector3 moveDirection = Vector3.zero;
     public GameObject gun;
+    public Camera cam;
     private CharacterController characterController;
 
     private float mouseX = 0.0f;
@@ -42,6 +43,10 @@ public class Steuerung : Shootable
     float doubleClickButtonCooler = 1.0f; // Half a second before reset
     int doubleClickButtonCount = 0;
 
+    private Vector3 defaultCameraPosition;
+    public Vector3 F5CameraPosition;
+    private bool cameraIsInF5Mode = false;
+
     void OnGUI()
     {
         GUI.Box(new Rect(Screen.width / 2, Screen.height / 2, 10, 10), "");
@@ -49,8 +54,9 @@ public class Steuerung : Shootable
 
     public override void Start()
     {
+        defaultCameraPosition = cam.transform.localPosition;
         characterController = GetComponent<CharacterController>();
-        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>().enabled = true;
+        cam.enabled = true;
         DeathEvent += () =>
         {
             SceneManager.UnloadSceneAsync(Constants.GAME_SCENE);
@@ -210,6 +216,22 @@ public class Steuerung : Shootable
         head.eulerAngles = cameraRotationBody;
     }
 
+    void SwitchCameraMode()
+    {
+        if (cameraIsInF5Mode)
+        {
+            cameraIsInF5Mode = false;
+            cam.transform.localEulerAngles = Vector3.zero;
+            cam.transform.localPosition = defaultCameraPosition;
+        }
+        else
+        {
+            cameraIsInF5Mode = true;
+            cam.transform.localEulerAngles = new Vector3(18.0f, 0, 0);
+            cam.transform.localPosition = F5CameraPosition;
+        }
+    }
+
     void Update()
     {
         if (!GameObject.Find("Menu").GetComponent<Menu>().Paused) // kein pause menu
@@ -233,15 +255,22 @@ public class Steuerung : Shootable
             {
                 HP -= 99999;
             }
-        }
-        checkForActions();
-    }
 
+            if (Input.GetKeyDown(KeyCode.F5))
+            {
+                SwitchCameraMode();
+            }
+
+            checkForActions();
+        }
+       
+    }
     void checkForActions()
     {
         RaycastHit hit;
-        Ray ray = GetComponentInChildren<Camera>().ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
-        if (Physics.Raycast(ray , out hit, 3))
+        int layerMask = ~LayerMask.GetMask("player");
+        Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
+        if (Physics.Raycast(ray , out hit, Mathf.Abs(cam.transform.localPosition.z) + 3.0f, layerMask))
         {
             Interactable interactable = hit.collider.gameObject.GetComponent<Interactable>();
             if (interactable != null)
