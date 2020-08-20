@@ -102,7 +102,7 @@ public class Steuerung : Shootable
         {
             moveDirection = new Vector3(Input.GetAxis("Horizontal") * crouchMultiplier, 0, Input.GetAxis("Vertical") * crouchMultiplier);
         }
-        else if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+        else if (Input.GetKey(CustomKeyCode.SprintKey))
         {
             moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical") * sprintMultiplier);
         }
@@ -124,7 +124,7 @@ public class Steuerung : Shootable
         {
             setMoveDirection();
 
-            if (Input.GetKey(KeyCode.LeftControl))
+            if (Input.GetKey(CustomKeyCode.SneakKey))
             {
                 IsCrouching = true;
             }
@@ -189,7 +189,7 @@ public class Steuerung : Shootable
         {
             characterController.Move(new Vector3(moveDirection.x*2, speed , moveDirection.z*2) * Time.deltaTime);
         }
-        else if (Input.GetKey(KeyCode.LeftControl))
+        else if (Input.GetKey(CustomKeyCode.SprintKey))
         {
             characterController.Move(new Vector3(moveDirection.x*2 * (1.0f / crouchMultiplier), -speed, moveDirection.z*2 * (1.0f/crouchMultiplier)) * Time.deltaTime);
         }

@@ -93,11 +93,11 @@ public class Tür : Interactable
         {
             if (open)
             {
-                ShowInfoLabel("Press 'F' to close the door");
+                ShowInfoLabel("Press '"+AktivierungsTaste.ToString().ToUpper()+"' to close the door");
             }
             else
             {
-                ShowInfoLabel( "Press 'F' to open the door");
+                ShowInfoLabel("Press '" + AktivierungsTaste.ToString().ToUpper() + "' to open the door");
             }
         };
 

@@ -16,11 +16,11 @@ public class DesklampScript : Interactable
         {
             if (isOn)
             {
-                ShowInfoLabel("drücke 'F' um die  Lampe auszuschalten");
+                ShowInfoLabel("drücke '" + AktivierungsTaste.ToString().ToUpper() + "' um die  Lampe auszuschalten");
             }
             else
             {
-                ShowInfoLabel("drücke 'F' um die  Lampe anzuschlaten");
+                ShowInfoLabel("drücke '" + AktivierungsTaste.ToString().ToUpper() + "' um die  Lampe anzuschlaten");
             }
         };
         InteractionEvent += SwitchOnOff;

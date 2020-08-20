@@ -60,6 +60,7 @@
      <Compile Include="Assets\Scripts\ClientApi.cs" />
      <Compile Include="Assets\Scripts\Clientscript.cs" />
      <Compile Include="Assets\Scripts\Helper\Constants.cs" />
+     <Compile Include="Assets\Scripts\Helper\CustomKeyCode.cs" />
      <Compile Include="Assets\Scripts\Helper\Map.cs" />
      <Compile Include="Assets\Scripts\Helper\MapEnum.cs" />
      <Compile Include="Assets\Scripts\Helper\TastenKombination.cs" />

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Scripts.Helper;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,7 +11,7 @@ public class Interactable : MonoBehaviour
     public delegate void LookingAtObjectEventHandler();
     public event LookingAtObjectEventHandler LookingAtObjectEvent;
 
-    public KeyCode AktivierungsTaste = KeyCode.F;
+    public KeyCode AktivierungsTaste = CustomKeyCode.InteractionKey;
 
     private bool lookingAt;
     protected bool LookingAt

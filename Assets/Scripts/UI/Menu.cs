@@ -97,9 +97,9 @@ public class Menu : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown("escape") || Input.GetKeyDown("t"))
+        if (Input.GetKeyDown("escape") || Input.GetKeyDown(CustomKeyCode.MenuOpenCloseKey))
         {
-            Paused = true;
+            Paused = !Paused;
         }
     }
 

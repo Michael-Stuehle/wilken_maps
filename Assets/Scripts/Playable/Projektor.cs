@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Scripts.Helper;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Video;
@@ -53,18 +54,18 @@ public class Projektor : MonoBehaviour
         {
             if (isPlaying)
             {
-                GUI.Label(new Rect(Screen.width / 2 - 110, Screen.height - 100, 220, 30), "Press 'F' to pause the Presentation");
+                GUI.Label(new Rect(Screen.width / 2 - 110, Screen.height - 100, 220, 30), "Press '" + CustomKeyCode.InteractionKey.ToString().ToUpper() + "' to pause the Presentation");
             }
             else
             {
-                GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height - 100, 200, 30), "Press 'F' to start the Presentation");
+                GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height - 100, 200, 30), "Press '" + CustomKeyCode.InteractionKey.ToString().ToUpper() + "' to start the Presentation");
             }
         }
     }
 
     void Update()
     {
-        if (enter && Input.GetKeyDown(KeyCode.F))
+        if (enter && Input.GetKeyDown(CustomKeyCode.InteractionKey))
         {
             if (isPlaying)
             {
