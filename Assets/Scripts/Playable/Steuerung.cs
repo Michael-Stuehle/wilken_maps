@@ -13,6 +13,7 @@ public class Steuerung : Shootable
     public float gravityMultiplier;
     public float turnSpeed;
     public float sprintMultiplier;
+    public float crouchMultiplier;
     public Vector3 moveDirection = Vector3.zero;
     public GameObject gun;
     public Camera cam;
@@ -46,6 +47,15 @@ public class Steuerung : Shootable
     private Vector3 defaultCameraPosition;
     public Vector3 F5CameraPosition;
     private bool cameraIsInF5Mode = false;
+    private bool isCrouching = false;
+    private bool IsCrouching
+    {
+        get => isCrouching;
+        set
+        {
+            isCrouching = value;
+        }
+    }
 
     void OnGUI()
     {
@@ -88,7 +98,11 @@ public class Steuerung : Shootable
 
     void setMoveDirection()
     {
-        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+        if (IsCrouching)
+        {
+            moveDirection = new Vector3(Input.GetAxis("Horizontal") * crouchMultiplier, 0, Input.GetAxis("Vertical") * crouchMultiplier);
+        }
+        else if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
         {
             moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical") * sprintMultiplier);
         }
@@ -109,6 +123,15 @@ public class Steuerung : Shootable
         if (characterController.isGrounded)
         {
             setMoveDirection();
+
+            if (Input.GetKey(KeyCode.LeftControl))
+            {
+                IsCrouching = true;
+            }
+            else
+            {
+                IsCrouching = false;
+            }
 
             //Jumping
             if (Input.GetButton("Jump"))
@@ -145,7 +168,6 @@ public class Steuerung : Shootable
     void noClipMovement()
     {
         setMoveDirection();
-        setMoveDirection();
         if (Input.GetButton("Jump"))
         {
             transform.position += new Vector3(moveDirection.x * 2, speed, moveDirection.z * 2) * Time.deltaTime;
@@ -169,7 +191,7 @@ public class Steuerung : Shootable
         }
         else if (Input.GetKey(KeyCode.LeftControl))
         {
-            characterController.Move(new Vector3(moveDirection.x*2, -speed, moveDirection.z*2) * Time.deltaTime);
+            characterController.Move(new Vector3(moveDirection.x*2 * (1.0f / crouchMultiplier), -speed, moveDirection.z*2 * (1.0f/crouchMultiplier)) * Time.deltaTime);
         }
         else
         {
@@ -210,7 +232,7 @@ public class Steuerung : Shootable
         mouseY = Mathf.Min(90, mouseY); // muss zwischen -90 und +90
         mouseY = Mathf.Max(-45, mouseY);
 
-        Vector3 cameraRotationTransform = new Vector3(0.0f, mouseX, 0.0f) * turnSpeed;
+        Vector3 cameraRotationTransform = new Vector3(0.0f + Convert.ToInt32(IsCrouching) * 30, mouseX, 0.0f) * turnSpeed;
         transform.eulerAngles = cameraRotationTransform;
         Vector3 cameraRotationBody = new Vector3(mouseY * -1, mouseX, 0.0f) * turnSpeed;
         head.eulerAngles = cameraRotationBody;
