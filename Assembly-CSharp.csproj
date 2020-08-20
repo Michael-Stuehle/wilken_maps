@@ -80,6 +80,7 @@
      <Compile Include="Assets\Scripts\UI\ListBoxScript.cs" />
      <Compile Include="Assets\Scripts\UI\Login.cs" />
      <Compile Include="Assets\Scripts\UI\Menu.cs" />
+     <Compile Include="Assets\Scripts\dog.cs" />
      <Compile Include="Assets\Scripts\portal\PortalCamera.cs" />
      <Compile Include="Assets\Scripts\portal\PortalTeleporter.cs" />
      <Compile Include="Assets\Scripts\portal\PortalTextureSetup.cs" />

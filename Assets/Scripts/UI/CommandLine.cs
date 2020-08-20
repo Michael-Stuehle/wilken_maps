@@ -13,6 +13,7 @@ public class CommandLine : MonoBehaviour
     public GameObject commandLine;
     public GameObject chat;
     public delegate void ActionEventHandler(string parameters);
+    public GameObject player;
 
     string inputText;
 
@@ -141,7 +142,7 @@ public class CommandLine : MonoBehaviour
             sendChatMessage("keine ausreichende Berechtigung");
             return;
         }
-        GameObject gun = GameObject.Find("Player").GetComponent<Steuerung>().gun;
+        GameObject gun = player.GetComponent<Steuerung>().gun;
 
         gun.SetActive(true);
         sendChatMessage("gun activated!");
@@ -154,8 +155,8 @@ public class CommandLine : MonoBehaviour
             sendChatMessage("keine ausreichende Berechtigung");
             return;
         }
-        bool current = GameObject.Find(Constants.SPIELER_OBJEKT_NAME).GetComponent<Steuerung>().allowFly;
-        GameObject.Find(Constants.SPIELER_OBJEKT_NAME).GetComponent<Steuerung>().allowFly = !current;
+        bool current = player.GetComponent<Steuerung>().allowFly;
+        player.GetComponent<Steuerung>().allowFly = !current;
         sendChatMessage("fly " + (!current ? "aktiviert" : "deaktiviert"));
     }
 
@@ -166,8 +167,8 @@ public class CommandLine : MonoBehaviour
             sendChatMessage("keine ausreichende Berechtigung");
             return;
         }
-        bool current = GameObject.Find(Constants.SPIELER_OBJEKT_NAME).GetComponent<Steuerung>().canTakeDamage;
-        GameObject.Find("Player").GetComponent<Steuerung>().canTakeDamage = !current;
+        bool current = player.GetComponent<Steuerung>().canTakeDamage;
+        player.GetComponent<Steuerung>().canTakeDamage = !current;
         sendChatMessage("godmode " + (current ? "aktiviert" : "deaktiviert"));
     }
 
@@ -178,8 +179,8 @@ public class CommandLine : MonoBehaviour
             sendChatMessage("keine ausreichende Berechtigung");
             return;
         }
-        GameObject.Find(Constants.SPIELER_OBJEKT_NAME).GetComponent<Steuerung>().allowFly = true;
-        GameObject.Find(Constants.SPIELER_OBJEKT_NAME).GetComponent<Steuerung>().canTakeDamage = false;
+        player.GetComponent<Steuerung>().allowFly = true;
+        player.GetComponent<Steuerung>().canTakeDamage = false;
         sendChatMessage("gamemode updated");
     }
 
@@ -190,8 +191,8 @@ public class CommandLine : MonoBehaviour
             sendChatMessage("keine ausreichende Berechtigung");
             return;
         }
-        GameObject.Find(Constants.SPIELER_OBJEKT_NAME).GetComponent<Steuerung>().allowFly = false;
-        GameObject.Find(Constants.SPIELER_OBJEKT_NAME).GetComponent<Steuerung>().canTakeDamage = true;
+        player.GetComponent<Steuerung>().allowFly = false;
+        player.GetComponent<Steuerung>().canTakeDamage = true;
         sendChatMessage("gamemode updated");
     }
 
@@ -202,8 +203,8 @@ public class CommandLine : MonoBehaviour
             sendChatMessage("keine ausreichende Berechtigung");
             return;
         }
-        bool current = GameObject.Find(Constants.SPIELER_OBJEKT_NAME).GetComponent<Steuerung>().NoClip;
-        GameObject.Find(Constants.SPIELER_OBJEKT_NAME).GetComponent<Steuerung>().NoClip = !current;
+        bool current = player.GetComponent<Steuerung>().NoClip;
+        player.GetComponent<Steuerung>().NoClip = !current;
         sendChatMessage("NoClip " + (!current ? "aktiviert" : "deaktiviert"));
     }
 
@@ -221,7 +222,7 @@ public class CommandLine : MonoBehaviour
                 string s = coords[1];
                 if (s == "~")
                 {
-                    x = GameObject.Find(Constants.SPIELER_OBJEKT_NAME).transform.position.x;
+                    x = player.transform.position.x;
                 }
                 else
                 {
@@ -233,7 +234,7 @@ public class CommandLine : MonoBehaviour
                 string s = coords[2];
                 if (s == "~")
                 {
-                    y = GameObject.Find(Constants.SPIELER_OBJEKT_NAME).transform.position.y;
+                    y = player.transform.position.y;
                 }
                 else
                 {
@@ -245,14 +246,14 @@ public class CommandLine : MonoBehaviour
                 string s = coords[3];
                 if (s == "~")
                 {
-                    z = GameObject.Find(Constants.SPIELER_OBJEKT_NAME).transform.position.z;
+                    z = player.transform.position.z;
                 }
                 else
                 {
                     z = float.Parse(s);
                 }
             }
-            GameObject.Find(Constants.SPIELER_OBJEKT_NAME).GetComponent<Steuerung>().WarpToPosition(new Vector3(x, y, z));
+            player.GetComponent<Steuerung>().WarpToPosition(new Vector3(x, y, z));
         }
     }
 

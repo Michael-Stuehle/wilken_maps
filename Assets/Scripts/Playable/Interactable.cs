@@ -13,6 +13,11 @@ public class Interactable : MonoBehaviour
     public KeyCode AktivierungsTaste = KeyCode.F;
 
     private bool lookingAt;
+    protected bool LookingAt
+    {
+        get => lookingAt;
+    }
+
     private float timeOut;
     private float defaultTimeOut = 0.5f;
     private 

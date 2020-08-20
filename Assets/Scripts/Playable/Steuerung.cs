@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class Steuerung : Shootable
 {
     //Variables
-    public RectTransform body;
+    public RectTransform head;
     public float speed;
     public float jumpSpeed;
     public float gravity;
@@ -36,6 +36,9 @@ public class Steuerung : Shootable
             characterController.enabled = !noClip;
         }
     }
+
+    public bool petDogWithLeftArm = false;
+
     float doubleClickButtonCooler = 1.0f; // Half a second before reset
     int doubleClickButtonCount = 0;
 
@@ -52,6 +55,11 @@ public class Steuerung : Shootable
         {
             SceneManager.UnloadSceneAsync(Constants.GAME_SCENE);
             SceneManager.LoadScene(Constants.DEATH_SCENE);
+        };
+
+        gun.GetComponent<gunScript>().GunEnabledChangedEvent += (gunIsEnabled) =>
+        {
+            petDogWithLeftArm = gunIsEnabled;
         };
     }
 
@@ -91,7 +99,7 @@ public class Steuerung : Shootable
 
     void normalMovement()
     {
-        // is the controller on the ground?
+        // is the controller on the ground? 
         if (characterController.isGrounded)
         {
             setMoveDirection();
@@ -194,12 +202,12 @@ public class Steuerung : Shootable
         mouseY += Input.GetAxis("Mouse Y");
 
         mouseY = Mathf.Min(90, mouseY); // muss zwischen -90 und +90
-        mouseY = Mathf.Max(-90, mouseY);
+        mouseY = Mathf.Max(-45, mouseY);
 
         Vector3 cameraRotationTransform = new Vector3(0.0f, mouseX, 0.0f) * turnSpeed;
         transform.eulerAngles = cameraRotationTransform;
         Vector3 cameraRotationBody = new Vector3(mouseY * -1, mouseX, 0.0f) * turnSpeed;
-        body.eulerAngles = cameraRotationBody;
+        head.eulerAngles = cameraRotationBody;
     }
 
     void Update()

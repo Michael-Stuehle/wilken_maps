@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class gunScript : MonoBehaviour
 {
+    public delegate void GunEnabledChangedEventHandler(bool newValue);
+    public event GunEnabledChangedEventHandler GunEnabledChangedEvent;
+
     public GameObject barrel;
     public float timeOut = 1.0f;
     public GameObject ScorchmarkPrefab;
@@ -11,8 +14,22 @@ public class gunScript : MonoBehaviour
 
     public bool IsEnabled
     {
-        get { return isEnabled; }
-        set { isEnabled = value; }
+        get
+        {
+            return isEnabled;
+        }
+
+        set
+        {
+            isEnabled = value;
+            gameObject.SetActive(isEnabled);
+            OnGunEnabledChanged(isEnabled);
+        }
+    }
+
+    public void OnGunEnabledChanged(bool newValue)
+    {
+        GunEnabledChangedEvent?.Invoke(newValue);
     }
 
     private bool isEnabled = true;
@@ -21,7 +38,7 @@ public class gunScript : MonoBehaviour
     
     void Start()
     {
-        gameObject.SetActive(false);
+        IsEnabled = false;
     }
 
     void Shoot()
