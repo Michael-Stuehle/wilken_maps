@@ -210,50 +210,54 @@ public class CommandLine : MonoBehaviour
 
     void Tp(string parameters)
     {        
-        var coords = parameters.Replace(" ", ";").Split(';');
-        if (coords.Length < 4)
+        string[] coords = parameters.Replace(" ", ";").Split(';');
+        Vector3 tpPos = Constants.RAUM_NOT_FOUNT_COORDS;
+        Vector3 temp = helperMethods.lookupCoordsFuerRaum(coords[1]);
+        if (coords.Length == 2 && temp != Constants.RAUM_NOT_FOUNT_COORDS)
+        {
+            tpPos = temp;
+        }
+        else if (coords.Length < 4)
         {
             sendChatMessage("syntaxfehler: erwartet \"/tp x y z\" (\"~\" für aktuelle position)");
         }
         else
         {
-            float x;
+            string s = coords[1];
+            if (s == "~")
             {
-                string s = coords[1];
-                if (s == "~")
-                {
-                    x = player.transform.position.x;
-                }
-                else
-                {
-                    x = float.Parse(s);
-                }
+                tpPos.x = player.transform.position.x;
             }
-            float y;
+            else
             {
-                string s = coords[2];
-                if (s == "~")
-                {
-                    y = player.transform.position.y;
-                }
-                else
-                {
-                    y = float.Parse(s);
-                }
+                tpPos.x = float.Parse(s);
             }
-            float z;
+            
+            s = coords[2];
+            if (s == "~")
             {
-                string s = coords[3];
-                if (s == "~")
-                {
-                    z = player.transform.position.z;
-                }
-                else
-                {
-                    z = float.Parse(s);
-                }
+                tpPos.y = player.transform.position.y;
             }
-            player.GetComponent<Steuerung>().WarpToPosition(new Vector3(x, y, z));
+            else
+            {
+                tpPos.y = float.Parse(s);
+            }
+            
+            s = coords[3];
+            if (s == "~")
+            {
+                tpPos.z = player.transform.position.z;
+            }
+            else
+            {
+                tpPos.z = float.Parse(s);
+            }
+        }
+        if (tpPos != Constants.RAUM_NOT_FOUNT_COORDS)
+        {
+            player.GetComponent<CharacterController>().enabled = false;
+            player.transform.position = tpPos;
+            player.GetComponent<CharacterController>().enabled = true;
         }
     }
 
