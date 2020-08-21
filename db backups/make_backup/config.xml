@@ -1,0 +1,8 @@
+<?xml version = "1.0"?>
+<class>
+	<phpMyAdminUrl>http://ul-ws-mistueh</phpMyAdminUrl>
+	<dbUser>root</dbUser>
+	<dbPasswort></dbPasswort>
+	<dbName>wilken_maps</dbName>
+	<saveFileLocation>D:\GitHub\wilken_maps\trunk\db backups\</saveFileLocation>
+</class>
