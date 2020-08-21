@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>wilken maps</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/styles.css">
+    <script src="Build/UnityLoader.js"></script>
+    <script>
+		document.onkeydown = function (e) {
+			if (e.keyCode === 116 || e.keyCode === 114) {
+				return false;
+			}
+		};
+		var unityInstance = UnityLoader.instantiate("unityContainer", "Build/build 76.json");
+	</script>
+  </head>
+  <body onbeforeunload="return beforeUnload()">
+	<script>
+		function beforeUnload() {
+			return 'Soll die Seite wirklich verlassen werden?';
+		}
+	</script>
+	<iframe id="frmFile" src="mitarbeiter.txt"; style="display: none;"></iframe>
+  <iframe id="frmFileUserInfo" src="StreamingAssets/userinfo.txt"; style="display: none;"></iframe>
+	<div class="webgl-content">
+      <div id="unityContainer" style="width: 960px; height: 600px"></div>
+      <div class="footer">
+        <div class="webgl-logo"></div>
+        <div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
+        <div class="title">wilken maps</div>
+      </div>
+    </div>
+  </body>
+</html> 
