@@ -64,8 +64,8 @@ public class start {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
-		File downloaded = new File("C:\\Users\\mistueh\\Downloads\\"+map.get("dbname")+".sql");
+		String home = System.getProperty("user.home");
+		File downloaded = new File(home + "\\Downloads\\"+map.get("dbname")+".sql");
 		String destFileNameMove = map.get("location") + getDateToday();
 		File destFileMove = new File(destFileNameMove);
 		

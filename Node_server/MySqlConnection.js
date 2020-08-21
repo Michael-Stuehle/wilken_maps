@@ -32,7 +32,7 @@ var checkIsConnected = function(onConnection){
 }
 
 var con = mysql.createConnection({
-    host: "localhost",
+    host: "ul-ws-mistueh/phpmyadmin",
     user: "root",
     password: "",
     database: "wilken_maps"

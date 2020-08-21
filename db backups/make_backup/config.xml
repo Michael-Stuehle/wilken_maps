@@ -4,5 +4,5 @@
 	<dbUser>root</dbUser>
 	<dbPasswort></dbPasswort>
 	<dbName>wilken_maps</dbName>
-	<saveFileLocation>D:\GitHub\wilken_maps\trunk\db backups\</saveFileLocation>
+	<saveFileLocation>..\</saveFileLocation>
 </class>
