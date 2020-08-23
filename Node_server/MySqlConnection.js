@@ -18,7 +18,9 @@ module.exports = {
         });
     },
 
-    checkPasswordForUser: function(user, enteredPassword, callback){
+    checkPasswordForUser: function(user, enteredPassword, clientSalt, serverSalt, callback){
+        console.log('client Salt ' + clientSalt);
+        console.log('server Salt ' + serverSalt);
         /*checkIsConnected(function(){
             var sql = "SELECT DISTINCT user.pwd password from user where user.name = " + user;
             
@@ -27,12 +29,15 @@ module.exports = {
                 var resultValue = false;
 
                 if (result.length > 0) {
-                    resultValue =  result[0]["password"] === enteredPassword;
+                    resultValue = MD5(result[0]["password"] + serverSalt + clientSalt) === enteredPassword;
                 }               
                 return callback(resultValue)
             });
         });*/
-        return callback(enteredPassword === 'f7dc2e1937940bb8486274edc88cc3c5')
+        var hash = MD5('900150983cd24fb0d6963f7d28e17f72' + serverSalt + clientSalt);
+        console.log('hash ' + hash);
+        console.log('entered ' + enteredPassword);
+        return callback(hash === enteredPassword)
     },
 
     checkUserExists: function(user, callback){

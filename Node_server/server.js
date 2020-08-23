@@ -9,7 +9,7 @@ var bodyParser = require('body-parser');
 var path = require('path');
 const { Console } = require('console');
 
-var allowedUrls = ['/auth', '/register', '/changePassword', '/register.html', 'changePassword.html'];
+var allowedUrls = ['/auth', '/register', '/changePassword', '/register.html', 'changePassword.html', '/salt'];
 
 var app = express();
 app.use(session({
@@ -45,6 +45,7 @@ app.post('/register', function(request, response){
 				response.send('der Benutzer: "'+username+'" existiert bereits')
 			}
 			else{
+				console.log(password);
 				mysqlConnection.registerUser(username, password);
 				response.send('Registrieren erfolgreich')
 			}
@@ -55,9 +56,10 @@ app.post('/register', function(request, response){
 app.post('/auth', function(request, response) {
 	var username = request.body.username;
 	var password = request.body.password;
-	console.log(password);
+	var clientSalt = request.body.salt;
+	var serverSalt = request.session.salt;
 	if (username && password) {
-		mysqlConnection.checkPasswordForUser(username, password, function(results){
+		mysqlConnection.checkPasswordForUser(username, password, clientSalt, serverSalt, function(results){
 			if (results) {
 				console.log('login erfolgreich');
 				request.session.loggedin = true;
@@ -92,6 +94,28 @@ app.get('/permissions', function(request, response){
 	mysqlConnection.getPermissionsForUser(request.session.username, function(result){
 		response.send(result);
 	})
+	response.end();
+});
+
+function makeSalt(length) {
+	var result           = '';
+	var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	var charactersLength = characters.length;
+	for ( var i = 0; i < length; i++ ) {
+	   result += characters.charAt(Math.floor(Math.random() * charactersLength));
+	}
+	return result;
+ }
+
+app.get('/salt', function(request, response){
+	request.session.salt;
+	if (request.session.salt === undefined ) {
+		var salt = makeSalt(10);
+		request.session.salt = salt;
+		response.send(salt);
+	}else{
+		response.send(request.session.salt);
+	}
 	response.end();
 });
 

@@ -125,7 +125,7 @@
                         return false;
                     }
                     document.getElementById("submit-username").value = document.getElementById("user").value;
-                    document.getElementById("submit-pwd").value = MD5(document.getElementById("pwd").value + document.getElementById("submit-username").value);// username as salt
+                    document.getElementById("submit-pwd").value = MD5(document.getElementById("pwd").value);// username as salt
                     document.getElementById("form").submit();
                 }
 

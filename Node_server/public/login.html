@@ -106,10 +106,12 @@
 		<div class="login-form">
             <h1>Wilken Maps</h1>
             <iframe id="resultFrame" name="formDestination" style="visibility: hidden; width: 0px; height: 0px;" onload="loginResult()"></iframe>
-            
+            <iframe id="saltFrame" src="/salt" style="visibility: hidden; width: 0px; height: 0px;"></iframe>
+           
             <form id="form" action="auth" method="POST" target="formDestination" style="visibility: hidden; height: 0px;">
                 <input name="username" id="submit-username">
                 <input name="password" id="submit-pwd">
+                <input name="salt" id="submit-salt">
             </form>
             <div>
                 <input type="text" id="user" name="username" placeholder="E-Mail" required>
@@ -121,9 +123,14 @@
             <script>
                 function DoSubmit(){
                     document.getElementById("submit-username").value = document.getElementById("user").value;
-
+                    var clientSalt =  makeSalt(10);
+                    var serverSalt = document.getElementById("saltFrame").contentWindow.document.body.innerHTML;
+                    document.getElementById("submit-salt").value = clientSalt;
                     // username as salt
-                    document.getElementById("submit-pwd").value = MD5(document.getElementById("pwd").value + document.getElementById("submit-username").value);
+                    var justPassHash = MD5(document.getElementById("pwd").value);
+                    var hash = MD5(justPassHash + serverSalt + clientSalt);
+                    console.log(hash);
+                    document.getElementById("submit-pwd").value = hash;
                     document.getElementById("form").submit();
                 }
 
@@ -143,6 +150,16 @@
                     }else{
                         window.alert('passwort / email falsch');
                     }
+                }
+
+                function makeSalt(length) {
+                    var result           = '';
+                    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                    var charactersLength = characters.length;
+                    for ( var i = 0; i < length; i++ ) {
+                    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+                    }
+                    return result;
                 }
             </script>
         </div>
