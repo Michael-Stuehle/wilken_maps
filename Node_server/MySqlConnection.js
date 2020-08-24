@@ -19,10 +19,24 @@ module.exports = {
     },
 
     checkPasswordForUser: function(user, enteredPassword, clientSalt, serverSalt, callback){
-        console.log('client Salt ' + clientSalt);
-        console.log('server Salt ' + serverSalt);
-        /*checkIsConnected(function(){
-            var sql = "SELECT DISTINCT user.pwd password from user where user.name = " + user;
+        checkIsConnected(function(){
+            var sql = "SELECT user.password from user where user.name = '" + user + "'";
+            
+            con.query(sql, function (err, result, fields) {
+                if (err) throw err;
+                var resultValue = false;
+
+                if (result.length > 0) {
+                    resultValue = MD5(result[0]["password"] + serverSalt + clientSalt) === enteredPassword;
+                }                     
+                return callback(resultValue)
+            });
+        });
+    },
+
+    checkPasswordForUserPasswordVergessen: function(user, enteredPassword, clientSalt, serverSalt, callback){
+        checkIsConnected(function(){
+            var sql = "SELECT user.1malPasswort password from user where user.name = '" + user + "' and TIMESTAMPDIFF(HOUR, 1malPasswortAblauf, DATE_ADD(NOW(), INTERVAL 1 HOUR)) = 0";
             
             con.query(sql, function (err, result, fields) {
                 if (err) throw err;
@@ -33,16 +47,26 @@ module.exports = {
                 }               
                 return callback(resultValue)
             });
-        });*/
-        var hash = MD5('900150983cd24fb0d6963f7d28e17f72' + serverSalt + clientSalt);
-        console.log('hash ' + hash);
-        console.log('entered ' + enteredPassword);
-        return callback(hash === enteredPassword)
+        });
+    },
+
+    set1malPasswort: function(user, password, callback){
+        checkIsConnected(function(){
+            var sql = "Update user set user.1malPasswort = '"+MD5(password)+"', 1malPasswortAblauf = DATE_ADD(NOW(), INTERVAL 1 HOUR) where user.name = '" + user + "'";
+            
+            con.query(sql, function (err) {
+                if (err) {
+                    return callback(false);
+                }else{
+                    return callback(true);
+                }                         
+            });
+        });
     },
 
     checkUserExists: function(user, callback){
-        /*checkIsConnected(function(){
-            var sql = "SELECT * from user where user.name = " + user "";
+        checkIsConnected(function(){
+            var sql = "SELECT * from user where user.name = '" + user + "'";
             
             con.query(sql, function (err, result, fields) {
                 if (err) throw err;
@@ -53,23 +77,22 @@ module.exports = {
                 }               
                 return callback(resultValue)
             });
-        });*/
-        return callback(false)
+        });
     },
 
     registerUser: function(user, password){
-         /*checkIsConnected(function(){
-            var sql = "INSERT INTO user (id, name, pwd, perms) values(NULL, "+ user + ", " + password +", NULL) ";
-            
+         checkIsConnected(function(){
+            var sql = "INSERT INTO user (id, name, password, permissions) values(NULL, '"+ user + "', '" + password +"', NULL) ";
+            console.log(sql);
             con.query(sql, function (err) {
                 if (err) throw err;
             });
-        });*/
+        });
     },
 
-    getPermissionsForUser(user, callback){
+    getPermissionsForUser: function(user, callback){
         checkIsConnected(function(){
-            var sql = "SELECT perms FROM user where name = " + user;
+            var sql = "SELECT perms FROM user where name = '" + user + "'";
             con.query(sql, function (err, result, fields) {
                 if (err) throw err;
                 var resultValue = "";
@@ -80,8 +103,30 @@ module.exports = {
                 return callback(resultValue)
             });
         })
+    },
+
+    changePassword: function(user, newPassword, callback){
+        checkIsConnected(function(){
+            var sql = "UPDATE user set password = '" + newPassword + "' WHERE user.name = '" + user + "'";
+            con.query(sql, function (err, result, fields) {
+                if (err) {
+                    return callback(false);
+                }
+                else{
+                    return callback(true);
+                }
+            });
+        })
     }
 };
+
+var con = mysql.createConnection({
+    host: "ul-ws-mistueh",
+    port: 3306,
+    user: "root",
+    password: "",
+    database: "wilken_maps"
+});
   
 var checkIsConnected = function(onConnection){
     if (con.state === 'disconnected') {
@@ -93,13 +138,6 @@ var checkIsConnected = function(onConnection){
         onConnection();
     }
 }
-
-var con = mysql.createConnection({
-    host: "ul-ws-mistueh/phpmyadmin",
-    user: "root",
-    password: "",
-    database: "wilken_maps"
-});
 
 
 var MD5 = function(e) {

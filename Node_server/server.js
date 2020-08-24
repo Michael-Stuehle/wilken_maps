@@ -8,8 +8,10 @@ var session = require('express-session');
 var bodyParser = require('body-parser');
 var path = require('path');
 const { Console } = require('console');
+const { exec } = require("child_process");
+const { checkUserExists } = require('./MySqlConnection');
 
-var allowedUrls = ['/auth', '/register', '/changePassword', '/register.html', 'changePassword.html', '/salt'];
+var allowedUrls = ['/auth', '/register', '/register.html', '/salt', '/passwordVergessen.html', '/passwordVergessen'];
 
 var app = express();
 app.use(session({
@@ -53,6 +55,65 @@ app.post('/register', function(request, response){
 	}
 });
 
+app.post('/passwordVergessen', function(request, response){
+	var username = request.body.username;
+	var password = makeSalt(6);	
+	checkUserExists(username, function(result){
+		if (result) {
+			mysqlConnection.set1malPasswort(username, password, function(result){
+				if (result) {
+					sendPasswordVergessenMail(username, password, function(result){
+						if (result) {
+							response.send('mail wurde gesendet');
+						}
+					})
+				}	
+			});
+		}else{
+			response.send('der benuezter: "' + username + '" existiert nicht');
+		}
+	})
+	
+});
+
+var sendPasswordVergessenMail = function (username, password, callback){
+	var sendMailBat = path.join(__dirname + "/sendMail/sendPasswortVergessenMail.bat"); 
+	exec(sendMailBat + " " + username + " " + password, function(error, stdout, stderr){
+		if (error) throw error;
+		return callback(true)
+	});
+}
+
+app.post('/changePassword', function(request, response){
+	var username = request.session.username;
+	var password = request.body.password;
+	var newPassword = request.body.newPassword;
+	var clientSalt = request.body.salt;
+	var serverSalt = request.session.salt;
+	
+	mysqlConnection.checkPasswordForUser(username, password, clientSalt, serverSalt, function(result){
+		if (result) {
+			mysqlConnection.changePassword(username, newPassword, function(result){
+				if (result) {
+					response.send('passwort erfolgreich geändert!');
+				}
+			});			
+		}else{
+			mysqlConnection.checkPasswordForUserPasswordVergessen(username, password, clientSalt, serverSalt, function(result){
+				if (result) {
+					mysqlConnection.changePassword(username, newPassword, function(result){
+						if (result) {
+							response.send('passwort erfolgreich geändert!');
+						}
+					});			
+				}else{
+					response.send('passwort falsch');
+				}
+			});
+		}
+	})	
+});
+
 app.post('/auth', function(request, response) {
 	var username = request.body.username;
 	var password = request.body.password;
@@ -66,15 +127,27 @@ app.post('/auth', function(request, response) {
 				request.session.username = username;
 				app.use(express.static("public"));
 				response.send('Welcome back, ' + request.session.username + '!');
+				response.end();
 			} else {
-				response.send('Incorrect Username and/or Password!');
+				// auf 1mal passwort prüfen
+				mysqlConnection.checkPasswordForUserPasswordVergessen(username, password, clientSalt, serverSalt, function(result){
+					if (result) {
+						console.log('login erfolgreich');
+						request.session.loggedin = true;
+						request.session.username = username;
+						app.use(express.static("public"));
+						response.send('Welcome back, ' + request.session.username + '!');
+					}else{
+						response.send('Incorrect Username and/or Password!');
+					}
+					response.end();
+				})
 			}			
-			response.end();
 		})
 	} else {
 		response.send('Please enter Username and Password!');
 		response.end();
-	}
+	}	
 });
 
 app.get('/home', function(request, response) {
@@ -89,6 +162,11 @@ app.get('/logout', function(request, response){
 		response.redirect('/');
 	});
 });
+
+app.get('/angemeldetAls', function(request, response){
+	console.log('angemeldet als get');
+	response.send(request.session.username);
+})
 
 app.get('/permissions', function(request, response){
 	mysqlConnection.getPermissionsForUser(request.session.username, function(result){
@@ -123,11 +201,20 @@ app.get('/register.html', function(request, response){
 	response.sendFile(path.join(__dirname + "/public/register.html"));
 });
 
+app.get('/changePassword.html', function(request, response){
+	response.sendFile(path.join(__dirname + "/public/changePassword.html"));
+});
+
+app.get('/passwordVergessen.html', function(request, response){
+	response.sendFile(path.join(__dirname + "/public/passwordVergessen.html"));
+});
+
+
 app.get('/mitarbeiter.txt', function(request, response){
-	/*mysqlConnection.getMitarbeiter(function(result) {
+	mysqlConnection.getMitarbeiter(function(result) {
 		response.send('<pre style="word-wrap: break-word; white-space: pre-wrap;">' + result + '</pre>');
-	})*/
-	response.send('<pre style="word-wrap: break-word; white-space: pre-wrap;">' + 'name=raum' + '</pre>')
+	})
+	//response.send('<pre style="word-wrap: break-word; white-space: pre-wrap;">' + 'name=raum' + '</pre>')
 }); 
 
 app.listen(port, () => console.log(`listening on port ${port}!`))
