@@ -1,6 +1,7 @@
 var port = 8080;
 var serverUrl = "127.0.0.1";
 var mysqlConnection = require('./MySqlConnection');
+var logger = require('./logger');
 
 var mysql = require('mysql');
 var express = require('express');
@@ -10,8 +11,9 @@ var path = require('path');
 const { Console } = require('console');
 const { exec } = require("child_process");
 const { checkUserExists } = require('./MySqlConnection');
+const { send } = require('process');
 
-var allowedUrls = ['/auth', '/register', '/register.html', '/salt', '/passwordVergessen.html', '/passwordVergessen'];
+var allowedUrls = ['/auth', '/register', '/register.html', '/salt', '/passwordVergessen.html', '/passwordVergessen', '/permissions'];
 
 var app = express();
 app.use(session({
@@ -27,7 +29,6 @@ app.use(function (req, res, next) {
 	if (req.session.loggedin || allowedUrls.indexOf(req.originalUrl) > -1) {
 		next()
 	}else{
-		console.log("not logged in");
 		res.sendFile(path.join(__dirname + '/public/login.html'));
 	}
 })
@@ -47,9 +48,9 @@ app.post('/register', function(request, response){
 				response.send('der Benutzer: "'+username+'" existiert bereits')
 			}
 			else{
-				console.log(password);
 				mysqlConnection.registerUser(username, password);
-				response.send('Registrieren erfolgreich')
+				response.send('Registrieren erfolgreich');
+				logger.log('user: ' + username + ' hat sich registriert');
 			}
 		});
 	}
@@ -65,6 +66,7 @@ app.post('/passwordVergessen', function(request, response){
 					sendPasswordVergessenMail(username, password, function(result){
 						if (result) {
 							response.send('mail wurde gesendet');
+							logger.log('user: ' + username + ' hat sein passwort zurückgesetzt');
 						}
 					})
 				}	
@@ -78,8 +80,10 @@ app.post('/passwordVergessen', function(request, response){
 
 var sendPasswordVergessenMail = function (username, password, callback){
 	var sendMailBat = path.join(__dirname + "/sendMail/sendPasswortVergessenMail.bat"); 
-	exec(sendMailBat + " " + username + " " + password, function(error, stdout, stderr){
+	logger.log(sendMailBat);
+	exec("call " + sendMailBat + " " + username + " " + password, function(error, stdout, stderr){
 		if (error) throw error;
+		if (stderr)	console.log(stderr);
 		return callback(true)
 	});
 }
@@ -96,6 +100,7 @@ app.post('/changePassword', function(request, response){
 			mysqlConnection.changePassword(username, newPassword, function(result){
 				if (result) {
 					response.send('passwort erfolgreich geändert!');
+					logger.log('user: ' + username + ' hat sein passwort geändert');
 				}
 			});			
 		}else{
@@ -104,6 +109,7 @@ app.post('/changePassword', function(request, response){
 					mysqlConnection.changePassword(username, newPassword, function(result){
 						if (result) {
 							response.send('passwort erfolgreich geändert!');
+							logger.log('user: ' + username + ' hat sein passwort geändert');
 						}
 					});			
 				}else{
@@ -122,25 +128,16 @@ app.post('/auth', function(request, response) {
 	if (username && password) {
 		mysqlConnection.checkPasswordForUser(username, password, clientSalt, serverSalt, function(results){
 			if (results) {
-				console.log('login erfolgreich');
-				request.session.loggedin = true;
-				request.session.username = username;
-				app.use(express.static("public"));
-				response.send('Welcome back, ' + request.session.username + '!');
-				response.end();
+				authErfolgreich(request, response, username);
 			} else {
 				// auf 1mal passwort prüfen
 				mysqlConnection.checkPasswordForUserPasswordVergessen(username, password, clientSalt, serverSalt, function(result){
 					if (result) {
-						console.log('login erfolgreich');
-						request.session.loggedin = true;
-						request.session.username = username;
-						app.use(express.static("public"));
-						response.send('Welcome back, ' + request.session.username + '!');
+						authErfolgreich(request, response, username);
 					}else{
 						response.send('Incorrect Username and/or Password!');
+						response.end();
 					}
-					response.end();
 				})
 			}			
 		})
@@ -150,30 +147,33 @@ app.post('/auth', function(request, response) {
 	}	
 });
 
+var authErfolgreich = function(request, response, username){
+	request.session.loggedin = true;
+	request.session.username = username;
+	logger.log('user: '+username+' hat sich angemeldet');
+	app.use(express.static("public"));
+	response.send('Welcome back, ' + request.session.username + '!');
+	response.end();
+}
+
 app.get('/home', function(request, response) {
 	response.sendFile(path.join(__dirname + '/public/home.html'));
 });
 
 app.get('/logout', function(request, response){
+	var username = request.session.username;
 	request.session.destroy(function(err) {
 		if (err) {
 			throw err;
 		}
+		logger.log('user: '+username+' hat sich abgemeldet');
 		response.redirect('/');
 	});
 });
 
 app.get('/angemeldetAls', function(request, response){
-	console.log('angemeldet als get');
 	response.send(request.session.username);
 })
-
-app.get('/permissions', function(request, response){
-	mysqlConnection.getPermissionsForUser(request.session.username, function(result){
-		response.send(result);
-	})
-	response.end();
-});
 
 function makeSalt(length) {
 	var result           = '';
@@ -197,6 +197,14 @@ app.get('/salt', function(request, response){
 	response.end();
 });
 
+app.get('/permissions', function(request, response){
+	var username = request.session.username;
+	mysqlConnection.getPermissionsForUser(username, function(result){
+		response.send(result);
+		response.end();
+	})
+});
+
 app.get('/register.html', function(request, response){
 	response.sendFile(path.join(__dirname + "/public/register.html"));
 });
@@ -208,7 +216,6 @@ app.get('/changePassword.html', function(request, response){
 app.get('/passwordVergessen.html', function(request, response){
 	response.sendFile(path.join(__dirname + "/public/passwordVergessen.html"));
 });
-
 
 app.get('/mitarbeiter.txt', function(request, response){
 	mysqlConnection.getMitarbeiter(function(result) {

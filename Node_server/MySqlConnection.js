@@ -9,7 +9,7 @@ module.exports = {
                 var resultText = "";
 
                 for (let index = 0; index < result.length-1; index++) {
-                    resultText +=  result[index]["mitarbeiterName"] + "=" + result[index]["raumName"] + ";";
+                    resultText += result[index]["mitarbeiterName"] + "=" + result[index]["raumName"] + ";";
                 }
                 resultText +=  result[result.length-1]["mitarbeiterName"] + "=" + result[result.length-1]["raumName"]
                 
@@ -83,7 +83,6 @@ module.exports = {
     registerUser: function(user, password){
          checkIsConnected(function(){
             var sql = "INSERT INTO user (id, name, password, permissions) values(NULL, '"+ user + "', '" + password +"', NULL) ";
-            console.log(sql);
             con.query(sql, function (err) {
                 if (err) throw err;
             });
@@ -92,13 +91,13 @@ module.exports = {
 
     getPermissionsForUser: function(user, callback){
         checkIsConnected(function(){
-            var sql = "SELECT perms FROM user where name = '" + user + "'";
+            var sql = "SELECT permissions FROM user where name = '" + user + "'";
             con.query(sql, function (err, result, fields) {
                 if (err) throw err;
                 var resultValue = "";
 
                 if (result.length > 0) {
-                    resultValue = result[0]["perms"];
+                    resultValue = result[0]["permissions"];
                 }               
                 return callback(resultValue)
             });

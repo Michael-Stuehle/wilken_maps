@@ -11,7 +11,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{C9C5ACED-AF37-B251-9AC8-2374AADD4A08}</ProjectGuid>
+    <ProjectGuid>{8AEB9C8C-E416-B546-BD16-E272D161A615}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -55,10 +55,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\F3Script.cs" />
      <Compile Include="Assets\Scripts\Builder.cs" />
      <Compile Include="Assets\Scripts\ClientApi.cs" />
      <Compile Include="Assets\Scripts\Clientscript.cs" />
+     <Compile Include="Assets\Scripts\F3Script.cs" />
      <Compile Include="Assets\Scripts\Helper\Constants.cs" />
      <Compile Include="Assets\Scripts\Helper\CustomKeyCode.cs" />
      <Compile Include="Assets\Scripts\Helper\Map.cs" />
@@ -630,52 +630,31 @@
  <HintPath>D:/Programme/2019.4.2f1/Editor/Data/NetStandard/compat/2.0.0/shims/netfx/System.Xml.Serialization.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Timeline.Editor">
- <HintPath>D:/GitHub/wilken_maps/trunk/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.ProGrids">
- <HintPath>D:/GitHub/wilken_maps/trunk/Library/ScriptAssemblies/Unity.ProGrids.dll</HintPath>
+ <HintPath>D:/GitHub/wilken_maps/trunk/Untiy_Zeug/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.VSCode.Editor">
- <HintPath>D:/GitHub/wilken_maps/trunk/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.ProBuilder">
- <HintPath>D:/GitHub/wilken_maps/trunk/Library/ScriptAssemblies/Unity.ProBuilder.dll</HintPath>
- </Reference>
- <Reference Include="Unity.ProBuilder.Editor">
- <HintPath>D:/GitHub/wilken_maps/trunk/Library/ScriptAssemblies/Unity.ProBuilder.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.ProBuilder.AssetIdRemapUtility">
- <HintPath>D:/GitHub/wilken_maps/trunk/Library/ScriptAssemblies/Unity.ProBuilder.AssetIdRemapUtility.dll</HintPath>
- </Reference>
- <Reference Include="Unity.ProGrids.Editor">
- <HintPath>D:/GitHub/wilken_maps/trunk/Library/ScriptAssemblies/Unity.ProGrids.Editor.dll</HintPath>
+ <HintPath>D:/GitHub/wilken_maps/trunk/Untiy_Zeug/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.TextMeshPro.Editor">
- <HintPath>D:/GitHub/wilken_maps/trunk/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+ <HintPath>D:/GitHub/wilken_maps/trunk/Untiy_Zeug/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.UI">
- <HintPath>D:/GitHub/wilken_maps/trunk/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+ <HintPath>D:/GitHub/wilken_maps/trunk/Untiy_Zeug/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Timeline">
- <HintPath>D:/GitHub/wilken_maps/trunk/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+ <HintPath>D:/GitHub/wilken_maps/trunk/Untiy_Zeug/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
  </Reference>
  <Reference Include="Unity.CollabProxy.Editor">
- <HintPath>D:/GitHub/wilken_maps/trunk/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
+ <HintPath>D:/GitHub/wilken_maps/trunk/Untiy_Zeug/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Rider.Editor">
- <HintPath>D:/GitHub/wilken_maps/trunk/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.2D.Sprite.Editor">
- <HintPath>D:/GitHub/wilken_maps/trunk/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.ProBuilder.AddOns.Editor">
- <HintPath>D:/GitHub/wilken_maps/trunk/Library/ScriptAssemblies/Unity.ProBuilder.AddOns.Editor.dll</HintPath>
+ <HintPath>D:/GitHub/wilken_maps/trunk/Untiy_Zeug/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.TextMeshPro">
- <HintPath>D:/GitHub/wilken_maps/trunk/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+ <HintPath>D:/GitHub/wilken_maps/trunk/Untiy_Zeug/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.UI">
- <HintPath>D:/GitHub/wilken_maps/trunk/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+ <HintPath>D:/GitHub/wilken_maps/trunk/Untiy_Zeug/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>

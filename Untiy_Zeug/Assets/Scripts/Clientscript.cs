@@ -16,14 +16,45 @@ public class Clientscript : MonoBehaviour
 {
     public delegate void MitarbeiterFileLoadEventHandler(string fileContent);
     private event MitarbeiterFileLoadEventHandler FileLoadEvent;
-
-
     public delegate void UserInfoFileLoadEventHandler(string fileContent);
     public event UserInfoFileLoadEventHandler UserInfoFileLoadEvent;
+
+    string username = "";
+    public string UserName
+    {
+        get => username;
+    }
 
     void Start()
     {
         getUserInfo();
+        StartCoroutine(GetRequest("http://ul-ws-mistueh:8080/permissions"));
+    }
+
+    string get = "";
+
+    IEnumerator GetRequest(string url)
+    {
+        List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
+        formData.Add(new MultipartFormDataSection("username", "michael.stuehle@wilken.de"));
+
+        UnityWebRequest uwr = UnityWebRequest.Post(url, formData);
+        yield return uwr.SendWebRequest();
+
+        if (uwr.isNetworkError)
+        {
+            Debug.Log("Error While Sending: " + uwr.error);
+        }
+        else
+        {
+            Debug.Log("Received: " + uwr.downloadHandler.text);
+        }
+    
+    }
+
+    public void setUserName(string user)
+    {
+        username = user;
     }
 
     public void OnFileLoad(string fileContent)
@@ -34,6 +65,20 @@ public class Clientscript : MonoBehaviour
     public void OnUsersLoad(string filecontent)
     {
         UserInfoFileLoadEvent?.Invoke(filecontent);
+    }
+
+    protected void ShowInfoLabel(string text)
+    {
+        var textDimensions = GUI.skin.label.CalcSize(new GUIContent(text));
+        GUI.Label(new Rect(Screen.width / 2 - (textDimensions.x / 2), Screen.height - 100, textDimensions.x, textDimensions.y), text);
+    }
+
+    void OnGUI()
+    {
+        if (get != "")
+        {
+            ShowInfoLabel(get);
+        }
     }
 
 #if UNITY_WEBGL && !UNITY_EDITOR

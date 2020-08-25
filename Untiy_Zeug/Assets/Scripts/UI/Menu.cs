@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class Menu : MonoBehaviour
@@ -97,10 +98,23 @@ public class Menu : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown("escape") || Input.GetKeyDown(CustomKeyCode.MenuOpenCloseKey))
+        if (Input.GetKeyDown("escape") || (Input.GetKeyDown(CustomKeyCode.MenuOpenCloseKey) && !IsUIElementActive()))
         {
             Paused = !Paused;
         }
+    }
+
+    public static bool IsUIElementActive()
+    {
+        if (EventSystem.current.currentSelectedGameObject != null)
+        {
+            InputField IF = EventSystem.current.currentSelectedGameObject.GetComponent<InputField>();
+            if (IF != null)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     void OnGUI()
