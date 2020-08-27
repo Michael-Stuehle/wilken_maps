@@ -19,42 +19,14 @@ public class Clientscript : MonoBehaviour
     public delegate void UserInfoFileLoadEventHandler(string fileContent);
     public event UserInfoFileLoadEventHandler UserInfoFileLoadEvent;
 
-    string username = "";
-    public string UserName
-    {
-        get => username;
-    }
-
     void Start()
     {
-        getUserInfo();
-        StartCoroutine(GetRequest("http://ul-ws-mistueh:8080/permissions"));
+        LoadUserInfo(); // calls setPerms from javascript
     }
 
-    string get = "";
-
-    IEnumerator GetRequest(string url)
+    public void setPerms(string perms)
     {
-        List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
-        formData.Add(new MultipartFormDataSection("username", "michael.stuehle@wilken.de"));
-
-        UnityWebRequest uwr = UnityWebRequest.Post(url, formData);
-        yield return uwr.SendWebRequest();
-
-        if (uwr.isNetworkError)
-        {
-            Debug.Log("Error While Sending: " + uwr.error);
-        }
-        else
-        {
-            Debug.Log("Received: " + uwr.downloadHandler.text);
-        }
-    
-    }
-
-    public void setUserName(string user)
-    {
-        username = user;
+        Login.Permissions = perms;
     }
 
     public void OnFileLoad(string fileContent)
@@ -73,14 +45,6 @@ public class Clientscript : MonoBehaviour
         GUI.Label(new Rect(Screen.width / 2 - (textDimensions.x / 2), Screen.height - 100, textDimensions.x, textDimensions.y), text);
     }
 
-    void OnGUI()
-    {
-        if (get != "")
-        {
-            ShowInfoLabel(get);
-        }
-    }
-
 #if UNITY_WEBGL && !UNITY_EDITOR
     [DllImport("__Internal")]
     private static extern void LoadMitarbeiter();
@@ -92,15 +56,13 @@ public class Clientscript : MonoBehaviour
     private void LoadMitarbeiter()
     {
         string text = "";
-        text = System.IO.File.ReadAllText(Application.streamingAssetsPath + "/mitarbeiter.txt");
+        Debug.Log("Methode: 'Clientscript.LoadMitarbeiter()' ist im editor nicht verfügbar");
         OnFileLoad(text);
     }
 
     private void LoadUserInfo()
     {
-        string text = "";
-        text = System.IO.File.ReadAllText(Application.streamingAssetsPath + "/userinfo.txt");
-        OnUsersLoad(text);
+        Debug.Log("Methode: 'Clientscript.LoadUserInfo()' ist im editor nicht verfügbar");
     }
 #endif
 
@@ -140,11 +102,5 @@ public class Clientscript : MonoBehaviour
     {
         FileLoadEvent += AddToRaumliste;
         LoadMitarbeiter();
-    }
-
-    public void getUserInfo()
-    {
-        UserInfoFileLoadEvent += Login.SetUserInfo;
-        LoadUserInfo();
     }
 }

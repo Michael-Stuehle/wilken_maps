@@ -78,7 +78,7 @@ public class Tür : Interactable
     {
         if (raumName != "")
         {
-            RaumListe.Add(raumName, transform.Find("WarpPosition").transform.position);
+            RaumListe.Add(raumName.ToLower(), transform.Find("WarpPosition").transform.position);
             
             gameObject.GetComponentsInChildren<TextMeshPro>()[0].text = raumName;
             gameObject.GetComponentsInChildren<TextMeshPro>()[1].text = raumName;

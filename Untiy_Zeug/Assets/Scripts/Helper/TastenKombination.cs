@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,12 @@ namespace Assets.Scripts.Helper
         KeyCode[] lastInputs;
         KeyCode[] expected;
         bool isActive;
+        bool isAllowed = false;
+
+        public bool IsAllowed
+        {
+            get => isAllowed;
+        }
 
         public bool Active
         {
@@ -28,6 +35,11 @@ namespace Assets.Scripts.Helper
             expected = kombination;
             this.isActive = isActive;
             KeyCombinationFoundEvent += () => Active = false;
+
+            Login.PermissionsChangedEvent += (val) =>
+            {
+                isAllowed = val.Split(';').hasItemNotEmpty();
+            };
         }
 
         bool isComplete()
@@ -59,7 +71,7 @@ namespace Assets.Scripts.Helper
 
         public void Update()
         {
-            if (!isActive)
+            if (!isActive || !IsAllowed)
             {
                 return;
             }

@@ -21,6 +21,18 @@ public class CommandLine : MonoBehaviour
 
     Dictionary<string, ActionEventHandler> commands;
 
+    void Awake()
+    {
+        tastenkombination = new TastenKombination(new KeyCode[] {
+            KeyCode.UpArrow, KeyCode.UpArrow,
+            KeyCode.DownArrow, KeyCode.DownArrow,
+            KeyCode.LeftArrow, KeyCode.RightArrow,
+            KeyCode.LeftArrow, KeyCode.RightArrow,
+            KeyCode.B, KeyCode.A,
+            KeyCode.Return
+        }, true);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,20 +51,7 @@ public class CommandLine : MonoBehaviour
             { "/godmode", (noParams) =>  Godmode() },
             { "/noclip", (noParams) =>  NoClip() },
             { "/tp", (parameters) =>  Tp(parameters) }
-
-           //doesnt work:
-           // { "/register", (parameters) =>  Register(parameters) }, // /register USERNAME=PASSWORT
-           // { "/login", (parameters) =>  LoginWith(parameters) },   // /login USERNAME=PASSWORT
         };
-
-        tastenkombination = new TastenKombination(new KeyCode[] {
-            KeyCode.UpArrow, KeyCode.UpArrow,
-            KeyCode.DownArrow, KeyCode.DownArrow,
-            KeyCode.LeftArrow, KeyCode.RightArrow,
-            KeyCode.LeftArrow, KeyCode.RightArrow,
-            KeyCode.B, KeyCode.A,
-            KeyCode.Return
-        }, true);
 
         commandLine.GetComponent<InputField>().onValueChanged.AddListener(TextChanged);
 
@@ -116,13 +115,14 @@ public class CommandLine : MonoBehaviour
         commandLine.GetComponent<InputField>().text = "";
     }
 
-    bool checkPermissions()
+    bool checkPermissions(string action)
     {
-#if UNITY_EDITOR
-        return true;
-#else
-        return Login.isDev;
-#endif
+        bool allowed = Login.ActionIsAllowed(action.ToLower());
+        if (!allowed)
+        {
+            sendChatMessage("keine ausreichende Berechtigung");
+        }
+        return allowed;        
     }
 
     public void sendChatMessage(string message)
@@ -137,9 +137,9 @@ public class CommandLine : MonoBehaviour
 
     void ActivateGun()
     {
-        if (!checkPermissions())
+        if (!checkPermissions("activate gun"))
         {
-            sendChatMessage("keine ausreichende Berechtigung");
+            
             return;
         }
         gunScript gun = player.GetComponent<Steuerung>().gun.GetComponent<gunScript>();
@@ -150,9 +150,8 @@ public class CommandLine : MonoBehaviour
 
     void Fly()
     {
-        if (!checkPermissions())
+        if (!checkPermissions("fly"))
         {
-            sendChatMessage("keine ausreichende Berechtigung");
             return;
         }
         bool current = player.GetComponent<Steuerung>().allowFly;
@@ -162,9 +161,8 @@ public class CommandLine : MonoBehaviour
 
     void Godmode()
     {
-        if (!checkPermissions())
+        if (!checkPermissions("godmode"))
         {
-            sendChatMessage("keine ausreichende Berechtigung");
             return;
         }
         bool current = player.GetComponent<Steuerung>().canTakeDamage;
@@ -174,9 +172,8 @@ public class CommandLine : MonoBehaviour
 
     void Gamemode1()
     {
-        if (!checkPermissions())
+        if (!checkPermissions("gamemode1"))
         {
-            sendChatMessage("keine ausreichende Berechtigung");
             return;
         }
         player.GetComponent<Steuerung>().allowFly = true;
@@ -186,9 +183,8 @@ public class CommandLine : MonoBehaviour
 
     void Gamemode0()
     {
-        if (!checkPermissions())
+        if (!checkPermissions("gamemode0"))
         {
-            sendChatMessage("keine ausreichende Berechtigung");
             return;
         }
         player.GetComponent<Steuerung>().allowFly = false;
@@ -198,9 +194,8 @@ public class CommandLine : MonoBehaviour
 
     void NoClip()
     {
-        if (!checkPermissions())
+        if (!checkPermissions("noclip"))
         {
-            sendChatMessage("keine ausreichende Berechtigung");
             return;
         }
         bool current = player.GetComponent<Steuerung>().NoClip;
@@ -209,7 +204,11 @@ public class CommandLine : MonoBehaviour
     }
 
     void Tp(string parameters)
-    {        
+    {
+        if (!checkPermissions("tp"))
+        {
+            return;
+        }
         string[] coords = parameters.Replace(" ", ";").Split(';');
         Vector3 tpPos = Constants.RAUM_NOT_FOUNT_COORDS;
         Vector3 temp = helperMethods.lookupCoordsFuerRaum(coords[1]);
@@ -258,49 +257,6 @@ public class CommandLine : MonoBehaviour
             player.GetComponent<CharacterController>().enabled = false;
             player.transform.position = tpPos;
             player.GetComponent<CharacterController>().enabled = true;
-        }
-    }
-
-    void Register(string paramText)
-    {
-        string name = "";
-        string passwort = "";
-        try
-        {
-            paramText = paramText.Replace("\r", "").Replace("\n", "");
-            name = paramText.Split('=')[0].Trim();
-            passwort = paramText.Split('=')[1].Trim();
-        }
-        catch (Exception e)
-        {
-            Debug.Log(e.Message);
-            sendChatMessage("syntaxfehler");
-            return;
-        }
-        bool erfolg = Login.Register(name, passwort);
-        sendChatMessage("registrieren " + (erfolg ? "" : "nicht ") + "erfolgreich");
-    }
-
-    void LoginWith(string paramText)
-    {
-        if (Login.isDev)
-        {
-            sendChatMessage("bereits angemeldet!");
-            return;
-        }
-        string name = "";
-        string passwort = "";
-        try
-        {
-            paramText = paramText.Replace("\r", "").Replace("\n", "");
-            name = paramText.Split('=')[0].Trim();
-            passwort = paramText.Split('=')[1].Trim();
-            bool erfolg = Login.checkLogin(name, passwort);
-            sendChatMessage("login " + (erfolg ? "erfolgreich" : "fehlgeschlagen"));
-        }
-        catch
-        {
-            sendChatMessage("syntaxfehler");
         }
     }
 }

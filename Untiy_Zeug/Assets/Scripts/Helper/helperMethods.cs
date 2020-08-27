@@ -18,11 +18,11 @@ namespace Assets.Scripts.Helper
         {
             Vector3 position = Constants.RAUM_NOT_FOUNT_COORDS;
             float minDist = float.PositiveInfinity;
-            List<Vector3> list = Tür.ZielPunktListe.FindAll(raumName);
+            List<Vector3> list = Tür.ZielPunktListe.FindAll(raumName.ToLower());
 
             if (list.Count == 0)
             {
-                Debug.Log($"raum not found: {raumName}");
+                Debug.Log($"raum not found: {raumName.ToLower()}");
             }
             else if(list[0] == Constants.AKTUELLE_POSITION_COORDS) // spezialfall aktuelle position (garantiert nur 1 item also list[0])
             {
@@ -46,9 +46,9 @@ namespace Assets.Scripts.Helper
         public static Vector3 lookupCoordsFuerRaum(string raumName)
         {
             Vector3 position;
-            if (!Tür.ZielPunktListe.TryGetValue(raumName, out position))
+            if (!Tür.ZielPunktListe.TryGetValue(raumName.ToLower(), out position))
             {
-                Debug.Log($"raum not found: {raumName}");
+                Debug.Log($"raum not found: {raumName.ToLower()}");
                 position = Constants.RAUM_NOT_FOUNT_COORDS;
             }
             else if (position == Constants.AKTUELLE_POSITION_COORDS) // spezialfall aktuelle position

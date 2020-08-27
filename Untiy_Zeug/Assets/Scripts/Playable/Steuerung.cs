@@ -7,6 +7,8 @@ public class Steuerung : Shootable
 {
     //Variables
     public RectTransform head;
+    public GameObject body;
+
     public float speed;
     public float jumpSpeed;
     public float gravity;
@@ -77,6 +79,7 @@ public class Steuerung : Shootable
         {
             petDogWithLeftArm = gunIsEnabled;
         };
+        setVisible(cameraIsInF5Mode);
     }
 
     Vector3 warpPosition = Vector3.zero;
@@ -230,7 +233,7 @@ public class Steuerung : Shootable
         mouseY += Input.GetAxis("Mouse Y");
 
         mouseY = Mathf.Min(90, mouseY); // muss zwischen -90 und +90
-        mouseY = Mathf.Max(-45, mouseY);
+        mouseY = Mathf.Max(-90, mouseY);
 
         Vector3 cameraRotationTransform = new Vector3(0.0f + Convert.ToInt32(IsCrouching) * 30, mouseX, 0.0f) * turnSpeed;
         transform.eulerAngles = cameraRotationTransform;
@@ -238,16 +241,27 @@ public class Steuerung : Shootable
         head.eulerAngles = cameraRotationBody;
     }
 
+    void setVisible(bool visible)
+    {
+        body.GetComponent<Renderer>().enabled = visible;
+        foreach (var item in body.GetComponentsInChildren<Renderer>())
+        {
+            item.enabled = visible;
+        }
+    }
+
     void SwitchCameraMode()
     {
         if (cameraIsInF5Mode)
         {
+            setVisible(false);
             cameraIsInF5Mode = false;
             cam.transform.localEulerAngles = Vector3.zero;
             cam.transform.localPosition = defaultCameraPosition;
         }
         else
         {
+            setVisible(true);
             cameraIsInF5Mode = true;
             cam.transform.localEulerAngles = new Vector3(18.0f, 0, 0);
             cam.transform.localPosition = F5CameraPosition;
