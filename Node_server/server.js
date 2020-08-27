@@ -1,19 +1,16 @@
-var port = 8080;
+var port = 80;
 var serverUrl = "127.0.0.1";
 var mysqlConnection = require('./MySqlConnection');
 var logger = require('./logger');
-
-var mysql = require('mysql');
+var formatSql = require('./formatSql');
 var express = require('express');
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var path = require('path');
-const { Console } = require('console');
 const { exec } = require("child_process");
-const { checkUserExists } = require('./MySqlConnection');
-const { send } = require('process');
+var favicon = require('serve-favicon');
 
-var allowedUrls = ['/auth', '/register', '/register.html', '/salt', '/passwordVergessen.html', '/passwordVergessen', '/permissions'];
+var allowedUrls = ['/auth', '/register', '/register.html', '/salt', '/passwordVergessen.html', '/passwordVergessen'];
 
 var app = express();
 app.use(session({
@@ -23,6 +20,8 @@ app.use(session({
 }));
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
+
+app.use(favicon(path.join(__dirname,'public','images','logo.png')));
 
 
 app.use(function (req, res, next) {
@@ -59,7 +58,7 @@ app.post('/register', function(request, response){
 app.post('/passwordVergessen', function(request, response){
 	var username = request.body.username;
 	var password = makeSalt(6);	
-	checkUserExists(username, function(result){
+	mysqlConnection.checkUserExists(username, function(result){
 		if (result) {
 			mysqlConnection.set1malPasswort(username, password, function(result){
 				if (result) {
@@ -120,6 +119,20 @@ app.post('/changePassword', function(request, response){
 	})	
 });
 
+app.post('/sql', function(request, response){
+	mysqlConnection.hasPermissionForSQL(request, function(result){
+		if (result) {
+			mysqlConnection.execSql(request.body.sql, function(err, result, fields){
+				if (err) {
+					response.send(err);
+				}else{
+					response.send(formatSql.formatAsHtmlTable(result, fields));
+				}
+			});
+		}
+	})
+});
+
 app.post('/auth', function(request, response) {
 	var username = request.body.username;
 	var password = request.body.password;
@@ -157,7 +170,13 @@ var authErfolgreich = function(request, response, username){
 }
 
 app.get('/home', function(request, response) {
-	response.sendFile(path.join(__dirname + '/public/home.html'));
+	mysqlConnection.hasPermissionForSQL(request, function(result){
+		if (result) {
+			response.sendFile(path.join(__dirname + '/public/home_sql.html'));
+		}else{
+			response.sendFile(path.join(__dirname + '/public/home.html'));
+		}
+	});
 });
 
 app.get('/logout', function(request, response){
@@ -170,10 +189,6 @@ app.get('/logout', function(request, response){
 		response.redirect('/');
 	});
 });
-
-app.get('/angemeldetAls', function(request, response){
-	response.send(request.session.username);
-})
 
 function makeSalt(length) {
 	var result           = '';
@@ -200,10 +215,23 @@ app.get('/salt', function(request, response){
 app.get('/permissions', function(request, response){
 	var username = request.session.username;
 	mysqlConnection.getPermissionsForUser(username, function(result){
+		logger.log('user: '+username+' hat berechtigung für '+result );
 		response.send(result);
 		response.end();
 	})
 });
+
+app.get('/sql.html', function(request, response){
+	mysqlConnection.hasPermissionForSQL(request, function(result){
+		if (result) {
+			response.sendFile(path.join(__dirname + '/public/sql.html'));
+		}
+	})
+})
+
+app.get('/angemeldetAls', function(request, response){
+	response.send(request.session.username);
+})
 
 app.get('/register.html', function(request, response){
 	response.sendFile(path.join(__dirname + "/public/register.html"));
@@ -221,7 +249,6 @@ app.get('/mitarbeiter.txt', function(request, response){
 	mysqlConnection.getMitarbeiter(function(result) {
 		response.send('<pre style="word-wrap: break-word; white-space: pre-wrap;">' + result + '</pre>');
 	})
-	//response.send('<pre style="word-wrap: break-word; white-space: pre-wrap;">' + 'name=raum' + '</pre>')
 }); 
 
 app.listen(port, () => console.log(`listening on port ${port}!`))

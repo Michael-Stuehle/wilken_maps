@@ -7,7 +7,7 @@
 		.register-form {
 			width: 300px;
 			margin: 0 auto;
-			font-family: Tahoma, Geneva, sans-serif;
+			font-family: "Open Sans", Helvetica, Arial, sans-serif;;
 		}
 		.register-form h1 {
 			text-align: center;
@@ -26,7 +26,7 @@
 		.register-form input[type="submit"] {
 			width: 100%;
 			padding: 15px;
-			background-color: #535b63;
+			background-color: #0069b4;
 			border: 0;
 			box-sizing: border-box;
 			cursor: pointer;
@@ -115,7 +115,7 @@
                 <input type="text" id="user" name="username" placeholder="E-Mail" required>
                 <input type="password" id="pwd" name="password" placeholder="Password" required>
                 <input type="password" id="pwd2" name="password wiederholen" placeholder="Password Wiederholen" onchange="checkPasswordSame()" required>
-                <input type="submit" value="Registrieren" onclick="DoSubmit()">
+                <input type="submit" id="btn-submit" value="Registrieren" onclick="DoSubmit()">
             </div>
             <a href="/login.html">Anmelden</a>
             <a style="float: right" href="/passwordVergessen.html">passwort vergessen</a>
@@ -154,6 +154,16 @@
                         window.alert(resultText);
                     }
                 }
+
+                document.addEventListener("keydown", function(event) {
+                    // Number 13 is the "Enter" key on the keyboard
+                    if (event.keyCode === 13) {
+                        // Cancel the default action, if needed
+                        event.preventDefault();
+                        // Trigger the button element with a click
+                        document.getElementById("btn-submit").click();
+                    }
+                });
             </script>
         </div>
 	</body>

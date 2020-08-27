@@ -1,0 +1,17 @@
+{
+"companyName": "DefaultCompany",
+"productName": "wilken maps",
+"productVersion": "0.1",
+"dataUrl": "build 83.data.unityweb",
+"wasmCodeUrl": "build 83.wasm.code.unityweb",
+"wasmFrameworkUrl": "build 83.wasm.framework.unityweb",
+"graphicsAPI": ["WebGL 2.0","WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"backgroundUrl": "build 83.jpg",
+"splashScreenStyle": "Light",
+"backgroundColor": "#FFFFFF",
+"cacheControl": {"default": "must-revalidate"},
+"developmentBuild": false,
+"multithreading": false,
+"unityVersion": "2019.4.2f1"
+}

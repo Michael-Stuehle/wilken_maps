@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Wilken Maps Sql Control Panel</title>
+		<style>
+		body {
+            width: 100%;
+			margin: 0 auto;
+			font-family: "Open Sans", Helvetica, Arial, sans-serif;
+		}
+		h1 {
+			text-align: center;
+			color: #4d4d4d;
+			font-size: 24px;
+			padding: 20px 0 20px 0;
+		}
+		.form input[type="pass"],
+		.form input[type="text"] {
+			width: 100%;
+			padding: 15px;
+			border: 1px solid #dddddd;
+			margin-bottom: 15px;
+			box-sizing:border-box;
+		}
+		button{
+			width: 300px;
+			padding: 15px;
+			background-color: #0069b4;
+			border: 0;
+			box-sizing: border-box;
+			cursor: pointer;
+			font-weight: bold;
+			color: #ffffff;
+		}
+
+		.startButton{
+			padding: 15px;
+			background-color: #0069b4;
+			border: 0;
+			cursor: pointer;
+			font-weight: bold;
+			color: rgb(255, 255, 255);
+            float: right;
+		}
+		</style>
+	</head>
+	<body style="text-align:center;">
+		<div class="form">
+            <h1>Wilken Maps</h1>
+            
+           
+            <form id="form" action="sql" method="POST" target="formDestination" style="visibility: hidden; height: 0px;">
+                <input name="sql" id="submit-sql">
+            </form>
+            <div>
+                <textarea rows="10" style="width: 90%;font-size: medium;" type="text" id="sql" name="_sql" placeholder="" required></textarea>
+            </div>
+            <div>
+                <iframe style="width: 90%;box-sizing: border-box;height: 600px;" id="resultFrame" name="formDestination">  </iframe>
+            </div>
+                <input style="float: right;margin-right: 5%;" class="startButton" id="btn_submit" type="submit" value="ausführen" onclick="DoSubmit()">
+            </div>
+            <a style="float: left;margin-left: 5%;" href="/home">zurück</a>
+
+            <script>
+                function DoSubmit(){
+					var text =  document.getElementById("sql").value.replace(/\s/gm," ");
+                    document.getElementById("submit-sql").value = text;
+                    document.getElementById("form").submit();
+                }
+
+                function getUrl(){
+                    var arr = window.location.href.split('/');
+                    return arr[0] + '//' + arr[2];
+                }
+
+                document.addEventListener("keydown", function(event) {
+                    // Number 13 is the "Enter" key on the keyboard
+                    if (event.keyCode === 13 && !event.shiftKey) {
+                        // Cancel the default action, if needed
+                        event.preventDefault();
+                        // Trigger the button element with a click
+                        document.getElementById("btn_submit").click();
+                    }
+                });
+            </script>
+        </div>
+		<div>
+			<a href="/logout" style="position: absolute; right: 50px; top:10px;">Abmelden</a>
+		</div>		
+        <script>
+			
+			function getUrl(){
+                    var arr = window.location.href.split('/');
+                    return arr[0] + '//' + arr[2];
+                }
+        </script>
+    </body>
+</html>

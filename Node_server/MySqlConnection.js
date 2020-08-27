@@ -82,7 +82,7 @@ module.exports = {
 
     registerUser: function(user, password){
          checkIsConnected(function(){
-            var sql = "INSERT INTO user (id, name, password, permissions) values(NULL, '"+ user + "', '" + password +"', NULL) ";
+            var sql = "INSERT INTO user (id, name, password) values(NULL, '"+ user + "', '" + password +"') ";
             con.query(sql, function (err) {
                 if (err) throw err;
             });
@@ -90,18 +90,7 @@ module.exports = {
     },
 
     getPermissionsForUser: function(user, callback){
-        checkIsConnected(function(){
-            var sql = "SELECT permissions FROM user where name = '" + user + "'";
-            con.query(sql, function (err, result, fields) {
-                if (err) throw err;
-                var resultValue = "";
-
-                if (result.length > 0) {
-                    resultValue = result[0]["permissions"];
-                }               
-                return callback(resultValue)
-            });
-        })
+        return getPermissionsUser(user, callback);
     },
 
     changePassword: function(user, newPassword, callback){
@@ -116,11 +105,46 @@ module.exports = {
                 }
             });
         })
+    },
+
+    hasPermissionForSQL: function(request, callback){
+        var username = request.session.username;
+        getPermissionsUser(username, function(result){
+            if (result != null && result.split(';').indexOf('sql') > -1) { // hat berechtigung für sql
+                return callback(true);
+            }else{
+                return callback(false);
+            }
+    
+        })
+    },
+
+    execSql: function(sql, callback){
+        checkIsConnected(function(){
+            con.query(sql, function (err, result, fields) {
+                callback(err, result, fields);                
+            });
+        })
     }
 };
 
+var getPermissionsUser = function(user, callback){
+    checkIsConnected(function(){
+        var sql = "SELECT permissions FROM rank, user where user.name = '" + user + "' and rank.name = user.rank";
+        con.query(sql, function (err, result, fields) {
+            if (err) throw err;
+            var resultValue = "";
+
+            if (result.length > 0) {
+                resultValue = result[0]["permissions"];
+            }               
+            return callback(resultValue)
+        });
+    })
+}
+
 var con = mysql.createConnection({
-    host: "ul-ws-mistueh",
+    host: "localhost",
     port: 3306,
     user: "root",
     password: "",
