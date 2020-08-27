@@ -1,6 +1,6 @@
 <?xml version = "1.0"?>
 <class>
-	<phpMyAdminUrl>http://ul-ws-mistueh</phpMyAdminUrl>
+	<phpMyAdminUrl>http://ul-ws-mistueh:8080</phpMyAdminUrl>
 	<dbUser>root</dbUser>
 	<dbPasswort></dbPasswort>
 	<dbName>wilken_maps</dbName>
