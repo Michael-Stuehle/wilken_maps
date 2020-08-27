@@ -1,4 +1,5 @@
 var mysql = require('mysql');
+const logger = require('./logger');
 module.exports = {
     getMitarbeiter: function(callback){      
         checkIsConnected(function(){
@@ -20,36 +21,43 @@ module.exports = {
 
     checkPasswordForUser: function(user, enteredPassword, clientSalt, serverSalt, callback){
         checkIsConnected(function(){
-            var sql = "SELECT user.password from user where user.name = '" + user + "'";
+            setTimeout(function(){
+                var sql = "SELECT user.password from user where user.name = '" + user + "'";
             
-            con.query(sql, function (err, result, fields) {
-                if (err) throw err;
-                var resultValue = false;
-
-                if (result.length > 0) {
-                    resultValue = MD5(result[0]["password"] + serverSalt + clientSalt) === enteredPassword;
-                }                     
-                return callback(resultValue)
-            });
-        });
+                con.query(sql, function (err, result, fields) {
+                    if (err) throw err;
+                    var resultValue = false;
+    
+                    if (result.length > 0) {
+                        resultValue = MD5(result[0]["password"] + serverSalt + clientSalt) === enteredPassword;
+                    }                     
+                    return callback(resultValue)
+                });
+            }, getRandomInt(2000));       
+         });
     },
 
     checkPasswordForUserPasswordVergessen: function(user, enteredPassword, clientSalt, serverSalt, callback){
         checkIsConnected(function(){
-            var sql = "SELECT user.1malPasswort password from user where user.name = '" + user + "' and TIMESTAMPDIFF(HOUR, 1malPasswortAblauf, DATE_ADD(NOW(), INTERVAL 1 HOUR)) = 0";
-            
-            con.query(sql, function (err, result, fields) {
-                if (err) throw err;
-                var resultValue = false;
+            setTimeout(function(){
+                var sql = "SELECT user.1malPasswort password from user where user.name = '" + user + "' and TIMESTAMPDIFF(HOUR, 1malPasswortAblauf, DATE_ADD(NOW(), INTERVAL 1 HOUR)) = 0";
+                
+                con.query(sql, function (err, result, fields) {
+                    if (err) throw err;
+                    var resultValue = false;
 
-                if (result.length > 0) {
-                    resultValue = MD5(result[0]["password"] + serverSalt + clientSalt) === enteredPassword;
-                }               
-                return callback(resultValue)
-            });
+                    if (result.length > 0) {
+                        resultValue = MD5(result[0]["password"] + serverSalt + clientSalt) === enteredPassword;
+                    }               
+                    return callback(resultValue)
+                });
+            },getRandomInt(2000));
+
         });
     },
 
+    // setzt das "1mal Passwort" (nicht wirklich 1 mal kann 1 Stunde lang verwendet werden) eines users
+    // passwort ist ein zufälliges 6 stelliges passwort aus buchstaben (keine zahlen/zeichen)
     set1malPasswort: function(user, password, callback){
         checkIsConnected(function(){
             var sql = "Update user set user.1malPasswort = '"+MD5(password)+"', 1malPasswortAblauf = DATE_ADD(NOW(), INTERVAL 1 HOUR) where user.name = '" + user + "'";
@@ -107,6 +115,7 @@ module.exports = {
         })
     },
 
+    // prüft ob user berechtigt ist, "execSql" zu verwenden
     hasPermissionForSQL: function(request, callback){
         var username = request.session.username;
         getPermissionsUser(username, function(result){
@@ -119,6 +128,8 @@ module.exports = {
         })
     },
 
+    // führt sql ohne jegliche prüfungen oder abfragen aus.
+    // nur für spezielle user erlaubt
     execSql: function(sql, callback){
         checkIsConnected(function(){
             con.query(sql, function (err, result, fields) {
@@ -143,6 +154,14 @@ var getPermissionsUser = function(user, callback){
     })
 }
 
+function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+  }
+  
+
+// WICHTIG: 
+// vollständige datenbank berechtigungen nur für localhost
+// alle zugriffe von ausen sind stark eingeschränkt 
 var con = mysql.createConnection({
     host: "localhost",
     port: 3306,
@@ -162,7 +181,9 @@ var checkIsConnected = function(onConnection){
     }
 }
 
-
+// gleiche funktion auch auf client seite vorhanden 
+// passwort wird vor absenden immer gehasht
+// passwort = MD5(MD5(passwort) + clientSalt + serverSalt)
 var MD5 = function(e) {
     function h(a, b) {
         var c, d, e, f, g;

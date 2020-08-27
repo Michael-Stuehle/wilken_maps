@@ -28,7 +28,7 @@ var formatSqlHtml = function(result, fields){
         for (let index = 0; index < result.length; index++) {
             str += 	"<tr>" + formatRow(result[index], fields) + "</tr>";		
         }		
-        str += "</table>"
+        str += "</table>" ;
         return str;
     }else{
         return JSON.stringify(result);
@@ -37,7 +37,7 @@ var formatSqlHtml = function(result, fields){
 }
 
 var tableSyle = function(){
-	return 	'<style>'+
+	return '<style>'+
 		'body {margin: 0}' +
 		'#result {'+
 			'font-family: "Open Sans", Helvetica, Arial, sans-serif;'+

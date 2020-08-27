@@ -10,6 +10,9 @@ var path = require('path');
 const { exec } = require("child_process");
 var favicon = require('serve-favicon');
 
+// zugriff auf diese urls auch ohne angemeldet zu sein
+// ???.html = html seite 
+// ??? 		= post an server (gesendet von ???.html)
 var allowedUrls = ['/auth', '/register', '/register.html', '/salt', '/passwordVergessen.html', '/passwordVergessen'];
 
 var app = express();
@@ -21,13 +24,16 @@ app.use(session({
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
 
+// fenster icon
 app.use(favicon(path.join(__dirname,'public','images','logo.png')));
 
-
+// aufruf dieser function vor allen get / post / etc.
 app.use(function (req, res, next) {
+	// prüfung ob angemeldet / anmedlung nicht erforderlich ist
 	if (req.session.loggedin || allowedUrls.indexOf(req.originalUrl) > -1) {
 		next()
 	}else{
+		// falls nicht wird auf login seite weitergeleitet
 		res.sendFile(path.join(__dirname + '/public/login.html'));
 	}
 })
@@ -77,6 +83,7 @@ app.post('/passwordVergessen', function(request, response){
 	
 });
 
+// ruft externes java programm auf um die mail zu senden (java programm sendet per mail1.rechenzentrum.wilken)
 var sendPasswordVergessenMail = function (username, password, callback){
 	var sendMailBat = path.join(__dirname + "/sendMail/sendPasswortVergessenMail.bat"); 
 	logger.log(sendMailBat);
@@ -119,6 +126,7 @@ app.post('/changePassword', function(request, response){
 	})	
 });
 
+// sql befehl wird vom sql panel an datenbank weitergeleitet
 app.post('/sql', function(request, response){
 	mysqlConnection.hasPermissionForSQL(request, function(result){
 		if (result) {
@@ -139,6 +147,7 @@ app.post('/auth', function(request, response) {
 	var clientSalt = request.body.salt;
 	var serverSalt = request.session.salt;
 	if (username && password) {
+		// normales passwort prüfen
 		mysqlConnection.checkPasswordForUser(username, password, clientSalt, serverSalt, function(results){
 			if (results) {
 				authErfolgreich(request, response, username);
@@ -160,6 +169,7 @@ app.post('/auth', function(request, response) {
 	}	
 });
 
+// falls erfolgreich angemeldet wurde wird homepage/app/etc. freigegeben
 var authErfolgreich = function(request, response, username){
 	request.session.loggedin = true;
 	request.session.username = username;
@@ -179,6 +189,7 @@ app.get('/home', function(request, response) {
 	});
 });
 
+// beendet die sesssion und leitet zu loggin-seite weiter
 app.get('/logout', function(request, response){
 	var username = request.session.username;
 	request.session.destroy(function(err) {
@@ -190,6 +201,7 @@ app.get('/logout', function(request, response){
 	});
 });
 
+// salt für passwort (length zufällige chars)
 function makeSalt(length) {
 	var result           = '';
 	var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -200,6 +212,7 @@ function makeSalt(length) {
 	return result;
  }
 
+ // 1 salt pro session
 app.get('/salt', function(request, response){
 	request.session.salt;
 	if (request.session.salt === undefined ) {
@@ -212,6 +225,9 @@ app.get('/salt', function(request, response){
 	response.end();
 });
 
+// permissions für unity programm
+// WICHTIG: hat nichts mit datenbank berechtigungen zu tun
+// 			representiert eine extra datenbank-tabelle (rank)
 app.get('/permissions', function(request, response){
 	var username = request.session.username;
 	mysqlConnection.getPermissionsForUser(username, function(result){
@@ -221,6 +237,7 @@ app.get('/permissions', function(request, response){
 	})
 });
 
+// seite um sql befehle abzusenden (berechtigung nicht in * enthalten)
 app.get('/sql.html', function(request, response){
 	mysqlConnection.hasPermissionForSQL(request, function(result){
 		if (result) {
@@ -245,6 +262,7 @@ app.get('/passwordVergessen.html', function(request, response){
 	response.sendFile(path.join(__dirname + "/public/passwordVergessen.html"));
 });
 
+// erstellt mitarbeiter liste aus datenbank einträgen (verwendung für unity programm)
 app.get('/mitarbeiter.txt', function(request, response){
 	mysqlConnection.getMitarbeiter(function(result) {
 		response.send('<pre style="word-wrap: break-word; white-space: pre-wrap;">' + result + '</pre>');

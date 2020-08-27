@@ -62,14 +62,13 @@
                 <input style="float: right;margin-right: 5%;" class="startButton" id="btn_submit" type="submit" value="ausführen" onclick="DoSubmit()">
             </div>
             <a style="float: left;margin-left: 5%;" href="/home">zurück</a>
-
             <script>
                 function DoSubmit(){
 					var text =  document.getElementById("sql").value.replace(/\s/gm," ");
                     document.getElementById("submit-sql").value = text;
                     document.getElementById("form").submit();
-                }
-
+				}
+			
                 function getUrl(){
                     var arr = window.location.href.split('/');
                     return arr[0] + '//' + arr[2];

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="utf-8">
+		<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
 		<title>Wilken Maps Login</title>
 		<style>
 		.login-form {
@@ -32,9 +32,30 @@
 			cursor: pointer;
 			font-weight: bold;
 			color: #ffffff;
-		}
+        }
+        .loader {
+            border: 16px solid #3b3b3b;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            z-index: 2;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite; /* Safari */
+            animation: spin 2s linear infinite;
+            }
+
+            /* Safari */
+            @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+            }
+
+            @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 		</style>
-	</head>
+    </head>
 	<body>
         <script>
             var MD5 = function(e) {
@@ -103,7 +124,8 @@
                 return (p(a) + p(b) + p(c) + p(d)).toLowerCase()
             };
         </script>
-		<div class="login-form">
+        <div style="position: absolute;top: 50%; left: 50%; margin: -120px 0 0 -70px;"  id="wait"></div>
+		<div id="login-form" class="login-form">
             <h1>Wilken Maps</h1>
             <iframe id="resultFrame" name="formDestination" style="visibility: hidden; width: 0px; height: 0px;" onload="loginResult()"></iframe>
            
@@ -125,6 +147,7 @@
                     fetch('/salt').then(function(response) {
                         return response.text();
                     }).then(function(salt){
+                        setWait(true);
                         document.getElementById("submit-username").value = document.getElementById("user").value;
                         var clientSalt =  makeSalt(10);
                         var serverSalt = salt
@@ -140,23 +163,38 @@
                     });
                 }
 
+                function setWait(wait){
+                    if (wait) {
+                       document.getElementById("login-form").style="filter: blur(2px);";
+                       document.getElementById("wait").className = "loader";
+                    }
+                    else{
+                        document.getElementById("login-form").style="";
+                       document.getElementById("wait").className = "";
+                    }
+                }
+
                 function getUrl(){
                     var arr = window.location.href.split('/');
                     return arr[0] + '//' + arr[2];
                 }
 
                 function loginResult(){
-                    var iframe = document.getElementById("resultFrame");
-                    var resultText = iframe.contentWindow.document.body.innerHTML;
-                    console.log(resultText);
-                    if (resultText === '') {
-                        // do nothing
-                    }
-                    else if (resultText.startsWith('Welcome back')) {
-                        window.location.href = getUrl() + '/home';
-                    }else{
-                        window.alert('passwort / email falsch');
-                    }
+                    setWait(false);
+                    // wait before
+                    setTimeout(function() {
+                        var iframe = document.getElementById("resultFrame");
+                        var resultText = iframe.contentWindow.document.body.innerHTML;
+                        console.log(resultText);
+                        if (resultText === '') {
+                            // do nothing
+                        }
+                        else if (resultText.startsWith('Welcome back')) {
+                            window.location.href = getUrl() + '/home';
+                        }else{
+                            window.alert('passwort / email falsch');
+                        }
+                    },10)
                 }
 
                 function makeSalt(length) {
