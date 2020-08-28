@@ -17,7 +17,7 @@ var allowedUrls = ['/auth', '/register', '/register.html', '/salt', '/passwordVe
 
 var app = express();
 app.use(session({
-	secret: 'secret',
+	secret: generateRandomString(128),
 	resave: true,
 	saveUninitialized: true
 }));
@@ -61,9 +61,21 @@ app.post('/register', function(request, response){
 	}
 });
 
+var randomPasswort = function(){
+    var length = 6;
+    var result           = '';
+	var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	var charactersLength = characters.length;
+	for ( var i = 0; i < length; i++ ) {
+	   result += characters.charAt(Math.floor(Math.random() * charactersLength));
+	}
+	return result;
+}
+
+
 app.post('/passwordVergessen', function(request, response){
 	var username = request.body.username;
-	var password = makeSalt(6);	
+	var password = randomPasswort(6);	
 	mysqlConnection.checkUserExists(username, function(result){
 		if (result) {
 			mysqlConnection.set1malPasswort(username, password, function(result){
@@ -98,10 +110,8 @@ app.post('/changePassword', function(request, response){
 	var username = request.session.username;
 	var password = request.body.password;
 	var newPassword = request.body.newPassword;
-	var clientSalt = request.body.salt;
-	var serverSalt = request.session.salt;
 	
-	mysqlConnection.checkPasswordForUser(username, password, clientSalt, serverSalt, function(result){
+	mysqlConnection.checkPasswordForUser(username, password, function(result){
 		if (result) {
 			mysqlConnection.changePassword(username, newPassword, function(result){
 				if (result) {
@@ -110,7 +120,7 @@ app.post('/changePassword', function(request, response){
 				}
 			});			
 		}else{
-			mysqlConnection.checkPasswordForUserPasswordVergessen(username, password, clientSalt, serverSalt, function(result){
+			mysqlConnection.checkPasswordForUserPasswordVergessen(username, password, function(result){
 				if (result) {
 					mysqlConnection.changePassword(username, newPassword, function(result){
 						if (result) {
@@ -144,16 +154,14 @@ app.post('/sql', function(request, response){
 app.post('/auth', function(request, response) {
 	var username = request.body.username;
 	var password = request.body.password;
-	var clientSalt = request.body.salt;
-	var serverSalt = request.session.salt;
 	if (username && password) {
 		// normales passwort prüfen
-		mysqlConnection.checkPasswordForUser(username, password, clientSalt, serverSalt, function(results){
+		mysqlConnection.checkPasswordForUser(username, password, function(results){
 			if (results) {
 				authErfolgreich(request, response, username);
 			} else {
 				// auf 1mal passwort prüfen
-				mysqlConnection.checkPasswordForUserPasswordVergessen(username, password, clientSalt, serverSalt, function(result){
+				mysqlConnection.checkPasswordForUserPasswordVergessen(username, password, function(result){
 					if (result) {
 						authErfolgreich(request, response, username);
 					}else{
@@ -202,9 +210,9 @@ app.get('/logout', function(request, response){
 });
 
 // salt für passwort (length zufällige chars)
-function makeSalt(length) {
+function generateRandomString(length) {
 	var result           = '';
-	var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!§$%&/()=?_-:;.,<>|^°[]²³';
 	var charactersLength = characters.length;
 	for ( var i = 0; i < length; i++ ) {
 	   result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -212,17 +220,17 @@ function makeSalt(length) {
 	return result;
  }
 
- // 1 salt pro session
-app.get('/salt', function(request, response){
-	request.session.salt;
-	if (request.session.salt === undefined ) {
-		var salt = makeSalt(10);
-		request.session.salt = salt;
-		response.send(salt);
+ // 1 salt pro user
+app.post('/salt', function(request, response){
+	if (request.body.username === undefined ) {
+		response.send(generateRandomString(128));
+		response.end();
 	}else{
-		response.send(request.session.salt);
+		mysqlConnection.getSaltForUSer(request.body.username, function(result){
+			response.send(result);
+			response.end();
+		})
 	}
-	response.end();
 });
 
 // permissions für unity programm
