@@ -36,11 +36,30 @@
 			color: #ffffff;
 		}
 
-		.startButton{
-			width: 45%;
+		.sqlButton{
+			float: left; 
 			margin-top: 30px;
+		}
+
+		.startButton{
+			margin-top: 30px;
+			margin-left: 10%;
+			float: left;
 			background-color: #0069b4;
 		}
+
+		@media only screen and (max-width:620px) {
+		/* For mobile phones: */
+			.startButton, .sqlButton {
+				width:70%;
+				float: none;
+			}
+
+			.startButton{
+				margin-left: 0px;
+			}
+		}
+
 		</style>
 	</head>
 	<body style="text-align:center;">
@@ -48,8 +67,8 @@
 			Homepage
 		</h1>
 		<div>
-			<button style="float: left; margin-top: 30px;" onclick="gotoSql()" class="sqlButton">SQL Interface</button>
-			<button style="float: left;margin-left: 10%;" onclick="startWilkenMaps()" class="startButton">Wilken Maps Starten</button>
+			<button onclick="gotoSql()" class="sqlButton">SQL Interface</button>
+			<button onclick="startWilkenMaps()" class="startButton">Wilken Maps Starten</button>
 		</div>
 		<div>
 			<a href="/changePassword.html" style="position:absolute; bottom:10px; right:10px;">Passwort ändern</a>

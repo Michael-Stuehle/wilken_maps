@@ -10,8 +10,6 @@ var path = require('path');
 const { exec } = require("child_process");
 var favicon = require('serve-favicon');
 
-var crypt = require('./public/crypto-js')
-
 // zugriff auf diese urls auch ohne angemeldet zu sein
 // ???.html = html seite 
 // ??? 		= post an server (gesendet von ???.html)
@@ -252,7 +250,9 @@ app.get('/home', function(request, response) {
 
 // beendet die sesssion und leitet zu loggin-seite weiter
 app.get('/logout', function(request, response){
+	// bug wenn man direkt nach abmelden auf zurück drukt wird seite geladen
 	var username = request.session.username;
+	request.session.loggedin = false;
 	request.session.destroy(function(err) {
 		if (err) {
 			throw err;
