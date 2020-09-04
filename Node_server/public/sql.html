@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Wilken Maps Sql Control Panel</title>
 		<style>
 		body {
@@ -24,7 +25,7 @@
 			box-sizing:border-box;
 		}
 		button{
-			width: 300px;
+			width: 100%;
 			padding: 15px;
 			background-color: #0069b4;
 			border: 0;
@@ -45,28 +46,63 @@
 		}
 		</style>
 	</head>
-	<body style="text-align:center;">
+	<body style="text-align:center;" onload="getButtons()">
 		<div class="form">
             <h1>Wilken Maps</h1>
             
-           
-            <form id="form" action="sql" method="POST" target="formDestination" style="visibility: hidden; height: 0px;">
-                <input name="sql" id="submit-sql">
-            </form>
-            <div>
-                <textarea rows="10" style="width: 90%;font-size: medium;" type="text" id="sql" name="_sql" placeholder="" required></textarea>
-            </div>
-            <div>
-                <iframe style="width: 90%;box-sizing: border-box;height: 600px;" id="resultFrame" name="formDestination">  </iframe>
-            </div>
-                <input style="float: right;margin-right: 5%;" class="startButton" id="btn_submit" type="submit" value="ausführen" onclick="DoSubmit()">
-            </div>
-            <a style="float: left;margin-left: 5%;" href="/home">zurück</a>
+           	<div style="width: 78%; height: 80%; margin-left: 4%; float: left;">
+				<form id="form" action="sql" method="POST" target="formDestination" style="visibility: hidden; height: 0px;">
+					<input name="sql" id="submit-sql">
+				</form>
+				<div>
+					<textarea rows="5" style="width: 100%;font-size: medium;" type="text" id="sql" name="_sql" placeholder="" required></textarea>
+				</div>
+				<div>
+					<iframe style="width: 100%;box-sizing: border-box;height: 40%;" id="resultFrame" name="formDestination">  </iframe>
+				</div>
+				<a style="float: left;" href="/home">zurück</a>
+
+				<div style="position: absolute; left: 0;right: 0;">
+					<input style="float: right; margin-right: 3%;" class="startButton" id="btn_submit" type="submit" value="ausführen" onclick="DoSubmit()">
+				</div>
+			</div>
+			<div style="position: absolute;  float: left; right: 4%;" id="buttonsFrame">
+				<!-- hier werden procedure buttons erstellet -->
+			</div>             
             <script>
                 function DoSubmit(){
 					var text =  document.getElementById("sql").value.replace(/\s/gm," ");
                     document.getElementById("submit-sql").value = text;
                     document.getElementById("form").submit();
+				}
+
+				window.onresize = function () {
+						var iframe = document.getElementById("resultFrame");
+						var newHeigth = window.innerHeight - iframe.getBoundingClientRect().top -50 + 'px';
+						console.log(newHeigth)
+						iframe.style.height = newHeigth;
+					}
+
+				function getButtons(){
+					fetch('/getProceduresAndFunctions')
+                    .then(function(response) {
+                        return response.text();
+                    }).then(function(text){
+						var buttons = text.split(';');
+						console.log(buttons);
+						for (let index = 0; index < buttons.length && buttons[index] != ""; index++) {
+							var button = buttons[index];
+							var onclickVal = 'call ' + button + '();';
+							var elem = document.createElement('button');
+							elem.style = 'float: right';
+							elem.textContent = button;
+							elem.onclick = function() {
+								document.getElementById('sql').value="call "+elem.textContent+"();"; 
+								DoSubmit(); 
+							};
+							document.getElementById('buttonsFrame').appendChild(elem);
+						}
+					});
 				}
 			
                 function getUrl(){
@@ -86,7 +122,7 @@
             </script>
         </div>
 		<div>
-			<a href="/logout" style="position: absolute; right: 50px; top:10px;">Abmelden</a>
+			<a href="/logout" style="position: absolute; right: 4%; top:1%;">Abmelden</a>
 		</div>		
         <script>
 			

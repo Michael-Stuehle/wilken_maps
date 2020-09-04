@@ -1,5 +1,5 @@
 var port = 80;
-var serverUrl = "127.0.0.1";
+var serverUrl = "http://ul-ws-mistueh";
 var mysqlConnection = require('./MySqlConnection');
 var logger = require('./logger');
 var formatSql = require('./formatSql');
@@ -10,10 +10,12 @@ var path = require('path');
 const { exec } = require("child_process");
 var favicon = require('serve-favicon');
 
+var crypt = require('./public/crypto-js')
+
 // zugriff auf diese urls auch ohne angemeldet zu sein
 // ???.html = html seite 
 // ??? 		= post an server (gesendet von ???.html)
-var allowedUrls = ['/auth', '/register', '/register.html', '/salt', '/passwordVergessen.html', '/passwordVergessen'];
+var allowedUrls = ['/auth', '/register', '/register.html', '/salt', '/passwordVergessen.html', '/passwordVergessen', '/verify', '/verify.html'];
 
 var app = express();
 app.use(session({
@@ -27,10 +29,19 @@ app.use(bodyParser.json());
 // fenster icon
 app.use(favicon(path.join(__dirname,'public','images','logo.png')));
 
+function isInAllowedUrls(value){
+	for (let index = 0; index < allowedUrls.length; index++) {
+		if (value.startsWith(allowedUrls[index])) {
+			return true;
+		}
+	}
+	return false;
+}
+
 // aufruf dieser function vor allen get / post / etc.
 app.use(function (req, res, next) {
 	// prüfung ob angemeldet / anmedlung nicht erforderlich ist
-	if (req.session.loggedin || allowedUrls.indexOf(req.originalUrl) > -1) {
+	if (req.session.loggedin || isInAllowedUrls(req.originalUrl)) {
 		next()
 	}else{
 		// falls nicht wird auf login seite weitergeleitet
@@ -53,7 +64,14 @@ app.post('/register', function(request, response){
 				response.send('der Benutzer: "'+username+'" existiert bereits')
 			}
 			else{
-				mysqlConnection.registerUser(username, password);
+				var token = generateRandomStringSafe(20);
+				console.log("hier")
+				sendVerifyMail(username, token, function(mailSent){
+					if (mailSent) {
+						console.log("gesendet");
+					}
+				})
+				mysqlConnection.registerUser(username, password, token);
 				response.send('Registrieren erfolgreich');
 				logger.log('user: ' + username + ' hat sich registriert');
 			}
@@ -110,7 +128,7 @@ app.post('/changePassword', function(request, response){
 	var username = request.session.username;
 	var password = request.body.password;
 	var newPassword = request.body.newPassword;
-	
+
 	mysqlConnection.checkPasswordForUser(username, password, function(result){
 		if (result) {
 			mysqlConnection.changePassword(username, newPassword, function(result){
@@ -133,7 +151,36 @@ app.post('/changePassword', function(request, response){
 				}
 			});
 		}
-	})	
+	})
+});
+
+function sendVerifyMail(username, token, callback){
+	//logger.log("sendVerifyMail is not yet implemented");
+	//return callback(false);
+	var sendMailBat = path.join(__dirname + "/sendMail/sendVerifyMail.bat")+ " " + serverUrl + ":" + port + " " + username + " " + token;
+	exec("call " + sendMailBat , function(error, stdout, stderr){
+		if (error) throw error;
+		if (stderr)	console.log(stderr);
+		return callback(true)
+	});
+}
+
+app.post('/verify', function(request, response){
+	var username = request.body.username;
+	mysqlConnection.isUserVerified(username, function(isVerified){
+		if (!isVerified) {
+			mysqlConnection.verifieUserWithToken(username, request.body.verificationToken, function(verifySuccess){
+				if (verifySuccess) {
+					logger.log(username + " wurde verifiziert");
+					response.send("verifizierung erfolgreich");
+					response.end();
+				}else{
+					response.send("verifizierung nicht erfolgreich");
+					response.end();
+				}
+			})
+		}
+	})
 });
 
 // sql befehl wird vom sql panel an datenbank weitergeleitet
@@ -155,22 +202,28 @@ app.post('/auth', function(request, response) {
 	var username = request.body.username;
 	var password = request.body.password;
 	if (username && password) {
-		// normales passwort prüfen
-		mysqlConnection.checkPasswordForUser(username, password, function(results){
-			if (results) {
-				authErfolgreich(request, response, username);
-			} else {
-				// auf 1mal passwort prüfen
-				mysqlConnection.checkPasswordForUserPasswordVergessen(username, password, function(result){
-					if (result) {
+		mysqlConnection.isUserVerified(username, function(isverified){
+			if (isverified) {
+				// normales passwort prüfen
+				mysqlConnection.checkPasswordForUser(username, password, function(results){
+					if (results) {
 						authErfolgreich(request, response, username);
-					}else{
-						response.send('Incorrect Username and/or Password!');
-						response.end();
-					}
+					} else {
+						// auf 1mal passwort prüfen
+						mysqlConnection.checkPasswordForUserPasswordVergessen(username, password, function(result){
+							if (result) {
+								authErfolgreich(request, response, username);
+							}else{
+								response.send('Incorrect Username and/or Password!');
+								response.end();
+							}
+						})
+					}			
 				})
-			}			
-		})
+			}else{
+				response.send('bitte e-mail verifizieren!');
+			}
+		});
 	} else {
 		response.send('Please enter Username and Password!');
 		response.end();
@@ -209,10 +262,27 @@ app.get('/logout', function(request, response){
 	});
 });
 
+// sends verify html file (hat unsichtbare from und macht einen post zurück an den server per url parametern)
+app.get('/verify.html/:username/:token', function(request, response){
+	response.sendFile(path.join(__dirname + '/public/verify.html'));
+})
+
 // salt für passwort (length zufällige chars)
 function generateRandomString(length) {
 	var result           = '';
 	var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!§$%&/()=?_-:;.,<>|^°[]²³';
+	var charactersLength = characters.length;
+	for ( var i = 0; i < length; i++ ) {
+	   result += characters.charAt(Math.floor(Math.random() * charactersLength));
+	}
+	return result;
+ }
+
+ // salt für passwort (length zufällige chars)
+ // safe hat keine zeichen (nur A-Z a-z 0-9)
+function generateRandomStringSafe(length) {
+	var result           = '';
+	var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 	var charactersLength = characters.length;
 	for ( var i = 0; i < length; i++ ) {
 	   result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -250,6 +320,16 @@ app.get('/sql.html', function(request, response){
 	mysqlConnection.hasPermissionForSQL(request, function(result){
 		if (result) {
 			response.sendFile(path.join(__dirname + '/public/sql.html'));
+		}
+	})
+})
+
+app.get('/getProceduresAndFunctions', function(request, response){
+	mysqlConnection.hasPermissionForSQL(request, function(result){
+		if (result) {
+			mysqlConnection.getallProceduresAndFunctions(function(text){
+				response.send(text);
+			})			
 		}
 	})
 })

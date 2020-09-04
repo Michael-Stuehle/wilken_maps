@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+		<title>Wilken Maps Verifizierung</title>	
+    </head>
+	<body onload="DoSubmit()">
+		<div id="verify-form" class="verify-form">
+            <iframe id="resultFrame" name="formDestination" style="visibility: hidden; width: 0px; height: 0px;" onload="result()"></iframe>
+            <script>
+                function DoSubmit(){
+                    var splitUrl = window.location.href.split('/');
+                    var u = splitUrl[splitUrl.length-2];
+                    var t = splitUrl[splitUrl.length-1];
+
+                    var opt = {
+                        username: u,
+                        verificationToken: t
+                    };
+                    fetch('/verify', {
+                        method: 'POST',
+                        body: JSON.stringify(opt),
+                        headers: { 'Content-type': 'application/json' }
+                    })
+                    .then(function(response) {
+                        return response.text();
+                    }).then(function(res){
+                        window.alert(res);
+                    });
+                }
+
+                function setWait(wait){
+                    if (wait) {
+                       document.getElementById("login-form").style="filter: blur(2px);";
+                       document.getElementById("wait").className = "loader";
+                    }
+                    else{
+                        document.getElementById("login-form").style="";
+                       document.getElementById("wait").className = "";
+                    }
+                }
+
+                function getUrl(){
+                    var arr = window.location.href.split('/');
+                    return arr[0] + '//' + arr[2];
+                }
+
+                function result(){
+                    // wait before
+                    setTimeout(function() {
+                        var iframe = document.getElementById("resultFrame");
+                        var resultText = iframe.contentWindow.document.body.innerHTML;
+                        if (resultText === '') {
+                            // do nothing
+                        }
+                        else{
+                            window.alert(resultText);
+                        }
+                    },10)
+                }
+
+            </script>
+        </div>
+	</body>
+</html>

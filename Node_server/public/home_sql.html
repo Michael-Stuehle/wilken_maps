@@ -2,10 +2,12 @@
 <html>
 	<head>
 		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Wilken Maps Homepage</title>
 		<style>
 		body {
-			width: 650px;
+			width: 70%;
+			height: 100%;
 			margin: 0 auto;
 			font-family: "Open Sans", Helvetica, Arial, sans-serif;
 		}
@@ -46,12 +48,12 @@
 			Homepage
 		</h1>
 		<div>
-			<a href="/changePassword.html" style="position:absolute; bottom:10px; right:10px;">Passwort ändern</a>
-			<a href="/logout" style="position:absolute; top:10px; right: 10px;">Abmelden</a>
+			<button style="float: left; margin-top: 30px;" onclick="gotoSql()" class="sqlButton">SQL Interface</button>
+			<button style="float: left;margin-left: 10%;" onclick="startWilkenMaps()" class="startButton">Wilken Maps Starten</button>
 		</div>
 		<div>
-            <button style="float: right;" onclick="startWilkenMaps()" class="startButton">Wilken Maps Starten</button>
-            <button style="float: left; margin-top: 30px;" onclick="gotoSql()" class="sqlButton">SQL Interface</button>
+			<a href="/changePassword.html" style="position:absolute; bottom:10px; right:10px;">Passwort ändern</a>
+			<a href="/logout" style="position:absolute; top:10px; right: 10px;">Abmelden</a>
 		</div>
 		
         <script>

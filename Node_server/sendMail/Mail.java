@@ -11,11 +11,25 @@ public class Mail {
 	private static final String HOST = "mail1.rechenzentrum.wilken";
 	
 	public static void main(String[] args){
-		sendMail(
-			args[0],
-			"wilken maps passwort zurücksetzen",
-			args[1]
-		);
+		if (args.length == 2) {
+			sendMail(
+					args[0],
+					"Wilken Maps Passwort Vergessen",
+					args[1]
+				);
+		}else{
+			//args[1] == http://ul-ws-mistueh:80
+			// 			 /verify?username=
+			//args[0] == michael.stuehle@wilken.de
+			//			 &verifyToken=
+			//args[2] == 9g8SJhi855
+			sendMail(
+					args[0],
+					"Wilken Maps E-Mail Verifizieren",
+					"link: (nur fuer 1 Tag gueltig): " + args[1] + "/verify.html/"+args[0]+"/"+args[2]
+				);
+		}
+		
 	}
 	
 	/**
@@ -43,7 +57,7 @@ public class Mail {
 	      
 	    // Get the default Session object.
 	    Session session = Session.getDefaultInstance(properties);
-	
+	    System.out.println(text);
 	    try {
     		if (!adresseGueltig(empfaenger)) {
 				System.out.println("die E-mail adresse: \""+empfaenger+"\" ist nicht gueltig.");
@@ -63,7 +77,7 @@ public class Mail {
 	       
 	        message.setContent(
         		"<font size =\"2\" face=\"arial\" >"+
-        				"neues passwort (nur für 1 Stunde gültig): " + text + 
+        				text + 
 				"<font/>", "text/html; charset=utf-8");
 
 	        // Send message
