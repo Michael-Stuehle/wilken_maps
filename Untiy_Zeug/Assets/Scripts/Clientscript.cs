@@ -52,9 +52,10 @@ public class Clientscript : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void LoadUserInfo();
 
-#elif UNITY_EDITOR
+#else
     private void LoadMitarbeiter()
     {
+        
         string text = "";
         Debug.Log("Methode: 'Clientscript.LoadMitarbeiter()' ist im editor nicht verfügbar");
         OnFileLoad(text);
@@ -62,8 +63,60 @@ public class Clientscript : MonoBehaviour
 
     private void LoadUserInfo()
     {
-        Debug.Log("Methode: 'Clientscript.LoadUserInfo()' ist im editor nicht verfügbar");
+        StartCoroutine(LoginUser());
     }
+
+    IEnumerator GetRequest(string uri)
+    {
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
+        {
+            // Request and wait for the desired page.
+            webRequest.SetRequestHeader("X-Requested-With", "XMLHttpRequest");
+            webRequest.SetRequestHeader("Cookie", sessionCookie);
+            yield return webRequest.SendWebRequest();
+
+            string[] pages = uri.Split('/');
+            int page = pages.Length - 1;
+
+            if (webRequest.isNetworkError)
+            {
+                Debug.Log(pages[page] + ": Error: " + webRequest.error);
+            }
+            else
+            {
+                Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+            }
+        }
+    }
+
+    string sessionCookie;
+
+    public IEnumerator LoginUser()
+    {
+        WWWForm loginForm = new WWWForm();
+
+        loginForm.AddField("username", "sql");
+        loginForm.AddField("passwort", "1234");
+
+        UnityWebRequest www = UnityWebRequest.Post("http:/ul-ws-mistueh/", loginForm);
+
+        www.SetRequestHeader("X-Requested-With", "XMLHttpRequest");
+
+        yield return www.SendWebRequest();
+
+        if (www.isNetworkError || www.isHttpError)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            string s = www.GetResponseHeader("set-cookie");
+            Debug.Log(s);
+            sessionCookie = s.Substring(s.LastIndexOf("sessionID")).Split(';')[0];
+            StartCoroutine(GetRequest("http://ul-ws-mistueh/mitarbeiter.txt"));
+        }
+    }
+
 #endif
 
     Vector3 getValue(string raumNummer)

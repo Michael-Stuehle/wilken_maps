@@ -139,7 +139,6 @@ public class CommandLine : MonoBehaviour
     {
         if (!checkPermissions("activate gun"))
         {
-            
             return;
         }
         gunScript gun = player.GetComponent<Steuerung>().gun.GetComponent<gunScript>();
