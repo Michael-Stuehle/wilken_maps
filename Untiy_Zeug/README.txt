@@ -1,4 +1,4 @@
-datenbank: ul-ws-mistueh/phpmyadmin --> wilken_maps (sollte normalerweise immer laufen, kann sein dass mal abgeschaltet ist)
+datenbank: ul-ws-mistueh:8080/phpmyadmin --> wilken_maps (sollte normalerweise immer laufen, kann sein dass mal abgeschaltet ist)
 projekt: 
 1. Github account erstellen
 2. svn installieren
