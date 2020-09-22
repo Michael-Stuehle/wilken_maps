@@ -14,6 +14,7 @@ public class CommandLine : MonoBehaviour
     public GameObject chat;
     public delegate void ActionEventHandler(string parameters);
     public GameObject player;
+    public GameObject planePrefab;
 
     string inputText;
 
@@ -50,7 +51,8 @@ public class CommandLine : MonoBehaviour
             { "/fly", (noParams) =>  Fly() },
             { "/godmode", (noParams) =>  Godmode() },
             { "/noclip", (noParams) =>  NoClip() },
-            { "/tp", (parameters) =>  Tp(parameters) }
+            { "/tp", (parameters) =>  Tp(parameters) },
+            { "/spawn", (parameters) =>  SpawnSomething(parameters.Trim()) }
         };
 
         commandLine.GetComponent<InputField>().onValueChanged.AddListener(TextChanged);
@@ -200,6 +202,23 @@ public class CommandLine : MonoBehaviour
         bool current = player.GetComponent<Steuerung>().NoClip;
         player.GetComponent<Steuerung>().NoClip = !current;
         sendChatMessage("NoClip " + (!current ? "aktiviert" : "deaktiviert"));
+    }
+
+    void SpawnSomething(string thing)
+    {
+        if (!checkPermissions("spawn"))
+        {
+            return;
+        }
+        switch (thing)
+        {
+            case "plane":
+                GameObject plane = Instantiate(planePrefab);
+                plane.SetActive(true);
+                plane.GetComponent<planeControls>().player = player;
+                plane.GetComponent<planeControls>().SpawnPlaneAtPosition(player.transform.position);
+                break;
+        }
     }
 
     void Tp(string parameters)

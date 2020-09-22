@@ -111,7 +111,6 @@ public class Clientscript : MonoBehaviour
         else
         {
             string s = www.GetResponseHeader("set-cookie");
-            Debug.Log(s);
             sessionCookie = s.Substring(s.LastIndexOf("sessionID")).Split(';')[0];
             StartCoroutine(GetRequest("http://ul-ws-mistueh/mitarbeiter.txt"));
         }

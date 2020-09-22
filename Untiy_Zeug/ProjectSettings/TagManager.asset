@@ -15,6 +15,7 @@ TagManager:
   - wand
   - cheatMenu
   - commandLine
+  - floor
   layers:
   - Default
   - TransparentFX

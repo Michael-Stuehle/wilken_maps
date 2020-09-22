@@ -22,7 +22,8 @@ namespace Assets.Scripts.UI
             "gamemode1",
             "gamemode0",
             "tp",
-            "godmode"
+            "godmode",
+            "spawn"
         };
 
         private static string[] permissions;

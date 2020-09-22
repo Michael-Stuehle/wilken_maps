@@ -36,8 +36,12 @@ namespace Assets.Scripts.Helper
             this.isActive = isActive;
             KeyCombinationFoundEvent += () => Active = false;
 
+#if UNITY_EDITOR
+            isAllowed = true;
+#endif
             Login.PermissionsChangedEvent += (val) =>
             {
+                Debug.Log(val);
                 isAllowed = val.Split(';').hasItemNotEmpty();
             };
         }
