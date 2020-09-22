@@ -8,7 +8,7 @@ module.exports = {
 var formatRow = function(row, fields){
 	var str = "";
 	for (let index = 0; index < fields.length; index++) {
-		str += "<td>" +row[fields[index].name] + "</td>";		
+		str += "<td title=\""+row[fields[index].name]+"\">" +row[fields[index].name] + "</td>";		
 	}
 	return str;
 }
@@ -54,6 +54,13 @@ var tableSyle = function(){
 		'#result tr:nth-child(even){background-color: #f2f2f2;}'+
 
 		'#result tr:hover {background-color: #ddd;}'+
+
+		'#result td{' +
+			'max-width: 0;' + 
+			'overflow: hidden;'+
+			'text-overflow: ellipsis;'+
+			'white-space: nowrap;'+
+		'}'+
 
 		'#result th {'+
 			'padding-top: 12px;'+

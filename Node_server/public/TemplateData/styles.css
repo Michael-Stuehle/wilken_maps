@@ -1,7 +1,7 @@
 .webgl-content * {border: 0; margin: 0; padding: 0}
 .webgl-content {position: absolute; top: 50%; left: 50%; -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%);}
 
-.webgl-content .footer {margin-top: 5px; height: 38px; line-height: 38px; font-family: "Open Sans", Helvetica, Arial, sans-serif; font-size: 18px;}
+.webgl-content .footer {margin-top: 5px; height: 38px; line-height: 38px; font-family: Helvetica, Verdana, Arial, sans-serif; font-size: 18px;}
 .webgl-content .footer .webgl-logo, .title, .fullscreen {height: 100%; display: inline-block; background: transparent center no-repeat;}
 .webgl-content .footer .webgl-logo {background-image: url('wilken.png'); width: 204px; height: 117px; float: left;}
 .webgl-content .footer .title {margin-right: 10px; float: right;}

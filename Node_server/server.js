@@ -309,7 +309,6 @@ app.post('/salt', function(request, response){
 app.get('/permissions', function(request, response){
 	var username = request.session.username;
 	mysqlConnection.getPermissionsForUser(username, function(result){
-		logger.log('user: '+username+' hat berechtigung für '+result );
 		response.send(result);
 		response.end();
 	})

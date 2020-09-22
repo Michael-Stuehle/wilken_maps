@@ -60,10 +60,11 @@
 				<div>
 					<iframe style="width: 100%;box-sizing: border-box;height: 40%;" id="resultFrame" name="formDestination">  </iframe>
 				</div>
-				<a style="float: left;" href="/home">zurück</a>
+				
 
-				<div style="position: absolute; left: 0;right: 0;">
-					<input style="float: right; margin-right: 3%;" class="startButton" id="btn_submit" type="submit" value="ausführen" onclick="DoSubmit()">
+				<div style="position: absolute; left: 0;right: 0; margin: 3%">
+					<a style="float: left;" href="/home">zurück</a>
+					<input style="float: right;" class="startButton" id="btn_submit" type="submit" value="ausführen" onclick="DoSubmit()">
 				</div>
 			</div>
 			<div style="position: absolute;  float: left; right: 4%;" id="buttonsFrame">
@@ -76,12 +77,18 @@
                     document.getElementById("form").submit();
 				}
 
+				window.onload = function () {
+					var iframe = document.getElementById("resultFrame");
+					var newHeigth = window.innerHeight - iframe.getBoundingClientRect().top -(window.innerHeight*0.2) + 'px';
+					iframe.style.height = newHeigth;
+					getButtons();
+				}
+
 				window.onresize = function () {
 						var iframe = document.getElementById("resultFrame");
-						var newHeigth = window.innerHeight - iframe.getBoundingClientRect().top -50 + 'px';
-						console.log(newHeigth)
+						var newHeigth = window.innerHeight - iframe.getBoundingClientRect().top -(window.innerHeight*0.2) + 'px';
 						iframe.style.height = newHeigth;
-					}
+				}
 
 				function getButtons(){
 					fetch('/getProceduresAndFunctions')
