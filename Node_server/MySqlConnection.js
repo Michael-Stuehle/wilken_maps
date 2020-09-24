@@ -1,6 +1,7 @@
 var mysql = require('mysql');
 const logger = require('./logger');
 var crypto = require('crypto');
+const { exit } = require('process');
 const dbName = 'wilken_maps';
 
 
@@ -10,7 +11,11 @@ module.exports = {
             var sql = "SELECT DISTINCT mitarbeiter.name mitarbeiterName, raum.name raumName from mitarbeiter, raum where mitarbeiter.raum_id = raum.id";
             
             con.query(sql, function (err, result, fields) {
-                if (err) throw err;
+                if (err) {
+                    logger.log( err);
+                    return;
+                }
+
                 var resultText = "";
 
                 for (let index = 0; index < result.length-1; index++) {
@@ -29,7 +34,10 @@ module.exports = {
                 var sql = "SELECT user.password, user.salt from user where user.name = '" + user + "'";
             
                 con.query(sql, function (err, result, fields) {
-                    if (err) throw err;
+                    if (err) {
+                        logger.log( err);
+                        return;
+                    }
                     var resultValue = false;
     
                     if (result.length > 0) {
@@ -48,7 +56,11 @@ module.exports = {
                 var sql = "SELECT user.1malPasswort password, user.salt from user where user.name = '" + user + "' and TIMESTAMPDIFF(HOUR, 1malPasswortAblauf, DATE_ADD(NOW(), INTERVAL 1 HOUR)) = 0";
                 
                 con.query(sql, function (err, result, fields) {
-                    if (err) throw err;
+                    if (err) {
+                        logger.log(err);
+                        return;
+                    }
+
                     var resultValue = false;
 
                     if (result.length > 0) {                       
@@ -87,7 +99,10 @@ module.exports = {
             var sql = "SELECT * from user where user.name = '" + user + "'";
             
             con.query(sql, function (err, result, fields) {
-                if (err) throw err;
+                if (err) {
+                    logger.log( err);
+                    return;
+                }
                 var resultValue = false;
 
                 if (result.length > 0) {
@@ -106,7 +121,10 @@ module.exports = {
             var hash2 = md5(password + salt);
             var final = PBKDF2(hash2, salt);
             con.query("INSERT INTO user (id, name, password, salt, verificationToken) values(NULL, '"+ user + "', '"+final+"', '"+salt+"', '"+token+"')", function (err) {
-                if (err) throw err;
+                if (err) {
+                    logger.log( err);
+                    return;
+                }
             });
         });
     },
@@ -153,7 +171,10 @@ module.exports = {
             var sql = "SELECT isVerified FROM user WHERE user.name = '" + username + "'";
                 
             con.query(sql, function (err, result, fields) {
-                if (err) throw err;
+                if (err) {
+                    logger.log(err);
+                    return;
+                }
                 var resultValue = false;
 
                 if (result.length > 0) {                  
@@ -170,7 +191,10 @@ module.exports = {
                 " AND verificationTokenExpires < DATE_ADD(NOW(), INTERVAL 1 DAY)";
                 
             con.query(sql, function (err, result, fields) {
-                if (err) throw err;
+                if (err) {
+                    logger.log(err);
+                    return;
+                }
                 var resultValue = false;
 
                 if (result.affectedRows > 0) {                       
@@ -186,6 +210,23 @@ module.exports = {
             getAllFunctions(function(functions){
                 callback(procedures + functions);
             })
+        })
+    },
+
+    getUserRaum: function(user, callback){
+        checkIsConnected(function(){
+            let splitByPunkt = user.split('.');
+            let vorname = splitByPunkt[0];
+            let nachname = splitByPunkt[1].split('@')[0];
+            let sql = 'select raum.name from raum, mitarbeiter where raum.id = mitarbeiter.raum_id AND mitarbeiter.name LIKE "' + nachname + ' ' + vorname  + '"';
+            con.query(sql, function (err, result, fields) {
+                if (err) {
+                    logger.log(err);
+                    return;
+                }
+                let raumName = result[0]['name'];
+                callback(raumName);                
+            });
         })
     },
 
@@ -205,7 +246,10 @@ var getAllProcedures = function(callback){
         var sql = "SHOW PROCEDURE STATUS where db = '"+dbName+"';";
             
         con.query(sql, function (err, result, fields) {
-            if (err) throw err;
+            if (err) {
+                logger.log(err);
+                return;
+            }
             var resultText = "";
             for (let index = 0; index < result.length; index++) {
                 resultText += result[index]["Name"] + ";";
@@ -220,7 +264,10 @@ var getAllFunctions = function(callback){
         var sql = "SHOW FUNCTION STATUS where db = '"+dbName+"';";
             
         con.query(sql, function (err, result, fields) {
-            if (err) throw err;
+            if (err) {
+                logger.log(err);
+                return;
+            }
             var resultText = "";
             for (let index = 0; index < result.length-1; index++) {
                 resultText += result[index]["Name"] + ";";
@@ -232,9 +279,12 @@ var getAllFunctions = function(callback){
 
 var getSalt = function(user, callback){
     checkIsConnected(function(){
-        var sql = "Select salt from user WHERE user.name = '" + user + "'";
-        con.query(sql, function (err, result, fields) {
-            if (err) throw err;
+        var sql = "Select salt from user WHERE user.name = ?";
+        con.query(sql, user, function (err, result, fields) {
+            if (err) {
+                logger.log(err);
+                return;
+            }
             var resultValue = '';
 
             if (result.length > 0) {
@@ -249,7 +299,10 @@ var getPermissionsUser = function(user, callback){
     checkIsConnected(function(){
         var sql = "SELECT permissions FROM rank, user where user.name = '" + user + "' and rank.name = user.rank";
         con.query(sql, function (err, result, fields) {
-            if (err) throw err;
+            if (err){
+                logger.log( err);
+                return;
+            } 
             var resultValue = "";
 
             if (result.length > 0) {
@@ -264,6 +317,14 @@ function getRandomInt(max){
     return Math.floor(Math.random() * Math.floor(max));
 }
 
+function umlauteErsetzen(str){
+    str = str.toLowerCase();
+    str = str.replace('ä', 'ae');
+    str = str.replace('ö', 'oe');
+    str = str.replace('ü', 'ue');
+    str = str.replace('ß', 'ss');
+    return str;
+}
 
 function generateRandomString(length) {
 	var result           = '';
@@ -290,7 +351,10 @@ var con = mysql.createConnection({
 var checkIsConnected = function(onConnection){
     if (con.state === 'disconnected') {
         con.connect(function(err) {
-            if (err) throw err;
+            if (err) {
+                logger.log( err);
+                return;
+            }
             onConnection();
         });
     }else{
@@ -305,15 +369,15 @@ function PBKDF2(password, salt){
 function _pbkdf2(password, salt, iterations, len, hashType) {
     hashType = hashType || 'sha1';
     if (!Buffer.isBuffer(password)) {
-      password = new Buffer(password);
+      password = Buffer.from(password);
     }
     if (!Buffer.isBuffer(salt)) {
-      salt = new Buffer(salt);
+      salt = Buffer.from(salt);
     }
-    var out = new Buffer('');
+    var out = Buffer.from('');
     var md, prev, i, j;
     var num = 0;
-    var block = Buffer.concat([salt, new Buffer(4)]);
+    var block = Buffer.concat([salt, Buffer.alloc(4)]);
     while (out.length < len) {
       num++;
       block.writeUInt32BE(num, salt.length);

@@ -63,7 +63,6 @@ app.post('/register', function(request, response){
 			}
 			else{
 				var token = generateRandomStringSafe(20);
-				console.log("hier")
 				sendVerifyMail(username, token, function(mailSent){
 					if (mailSent) {
 						console.log("gesendet");
@@ -289,7 +288,7 @@ function generateRandomStringSafe(length) {
 	}
 	return result;
  }
-
+ 
  // 1 salt pro user
 app.post('/salt', function(request, response){
 	if (request.body.username === undefined ) {
