@@ -15,6 +15,8 @@ public class CommandLine : MonoBehaviour
     public delegate void ActionEventHandler(string parameters);
     public GameObject player;
     public GameObject planePrefab;
+    public GameObject dogPrefab;
+    public GameObject carPrefab;
 
     string inputText;
 
@@ -217,6 +219,17 @@ public class CommandLine : MonoBehaviour
                 plane.SetActive(true);
                 plane.GetComponent<planeControls>().player = player;
                 plane.GetComponent<planeControls>().SpawnPlaneAtPosition(player.transform.position);
+                break;
+            case "dog":
+                GameObject dog = Instantiate(dogPrefab);
+                dog.SetActive(true);
+                dog.transform.position = player.transform.position;
+                break;
+            case "car":
+            case "auto":
+                GameObject auto = Instantiate(carPrefab);
+                auto.SetActive(true);
+                auto.transform.position = player.transform.position;
                 break;
         }
     }
