@@ -1,6 +1,9 @@
 module.exports = {
     log: function(str){
         console.log(TimeStamp() + str);
+    },
+    logError: function(errStr, exception){
+        console.error('ERROR ' + TimeStamp() + errStr + '\r\n' + exception);
     }
 }
 

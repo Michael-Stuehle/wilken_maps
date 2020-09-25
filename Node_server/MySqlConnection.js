@@ -122,10 +122,44 @@ module.exports = {
             var final = PBKDF2(hash2, salt);
             con.query("INSERT INTO user (id, name, password, salt, verificationToken) values(NULL, '"+ user + "', '"+final+"', '"+salt+"', '"+token+"')", function (err) {
                 if (err) {
-                    logger.log( err);
+                    logger.logError('user: ' + user + ' konnte nicht angelegt werden', err);
                     return;
+                }else{
+                    con.query("INSERT INTO einstellungen (id, user_id) VALUES (NULL, (select id from user where name = ?));", user, function(err){
+                        if (err) {
+                            logger.logError('einstellungs-zeile für user: ' + user + ' konnte nicht auf der datenbank angelegt werden!', err);
+                            return;
+                        }else{
+                            con.query("UPDATE mitarbeiter set user_id = (select id from user where name = ?) where name = ?", [user, getNameFromEmail(user)], function(err){
+                                if (err) {
+                                    logger.logError('konnte user: ' + user + ' mit keinem mitarbeiter verknüpfen!', err);
+                                    return;
+                                }      
+                            });
+                        }
+                    })
                 }
             });
+        });
+    },
+
+    getEinstellungenForUser(user, callback){
+        var sql = "select einstellungen.* from einstellungen, user where einstellungen.user_id = user.id and user.name = ? ";
+                
+        con.query(sql, user, function (err, result, fields) {
+            if (err) {
+                logger.log(err);
+                return;
+            }
+            var resultValue = [];
+            if (result.length > 0) {
+                for (let index = 0; index < fields.length; index++) {
+                    let obj = {};
+                    obj[fields[index].name] = result[0][fields[index].name];
+                    resultValue.push(obj);
+                }         
+            }    
+            return callback(resultValue)
         });
     },
 
@@ -215,10 +249,8 @@ module.exports = {
 
     getUserRaum: function(user, callback){
         checkIsConnected(function(){
-            let splitByPunkt = user.split('.');
-            let vorname = splitByPunkt[0];
-            let nachname = splitByPunkt[1].split('@')[0];
-            let sql = 'select raum.name from raum, mitarbeiter where raum.id = mitarbeiter.raum_id AND mitarbeiter.name LIKE "' + nachname + ' ' + vorname  + '"';
+           
+            let sql = 'select raum.name from raum, mitarbeiter where raum.id = mitarbeiter.raum_id AND mitarbeiter.name LIKE "' + getNameFromEmail(user)  + '"';
             con.query(sql, function (err, result, fields) {
                 if (err) {
                     logger.log(err);
@@ -240,6 +272,13 @@ module.exports = {
         })
     }
 };
+
+var getNameFromEmail = function(Email){
+    let splitByPunkt = Email.split('.');
+    let vorname = splitByPunkt[0];
+    let nachname = splitByPunkt[1].split('@')[0];
+    return nachname.toLowerCase() + ' ' + vorname.toLowerCase();
+}
 
 var getAllProcedures = function(callback){
     checkIsConnected(function(){
