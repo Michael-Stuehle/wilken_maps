@@ -30,6 +30,10 @@ namespace Assets
         private Vector3 lastPanPosition;
         private bool moveCamToStartPos = false;
 
+        private int panFingerId; // Touch mode only
+
+        private bool wasZoomingLastFrame; // Touch mode only
+        private Vector2[] lastZoomPositions; // Touch mode only
 
         private int currStockIndex = 0;
         public GameObject AktuelleEtage
@@ -194,6 +198,59 @@ namespace Assets
             }
         }
 
+        void HandleTouchControlls()
+        {
+            switch (Input.touchCount)
+            {
+                case 1: // Panning
+                    wasZoomingLastFrame = false;
+
+                    // If the touch began, capture its position and its finger ID.
+                    // Otherwise, if the finger ID of the touch doesn't match, skip it.
+                    Touch touch = Input.GetTouch(0);
+                    if (touch.phase == TouchPhase.Began)
+                    {
+                        lastPanPosition = touch.position;
+                        panFingerId = touch.fingerId;
+                    }
+                    else if (touch.fingerId == panFingerId && touch.phase == TouchPhase.Moved)
+                    {
+                        PanCamera(touch.position);
+                    }
+                    break;
+
+                case 2: // Zooming
+                    Vector2[] newPositions = new Vector2[] { Input.GetTouch(0).position, Input.GetTouch(1).position };
+                    if (!wasZoomingLastFrame)
+                    {
+                        lastZoomPositions = newPositions;
+                        wasZoomingLastFrame = true;
+                    }
+                    else
+                    {
+                        // Zoom based on the distance between the new positions compared to the 
+                        // distance between the previous positions.
+                        float newDistance = Vector2.Distance(newPositions[0], newPositions[1]);
+                        float oldDistance = Vector2.Distance(lastZoomPositions[0], lastZoomPositions[1]);
+                        if (newDistance > oldDistance)
+                        {
+                            OnZoom(+1);
+                        }
+                        else if (newDistance < oldDistance)
+                        {
+                            OnZoom(-1);
+                        }                      
+
+                        lastZoomPositions = newPositions;
+                    }
+                    break;
+
+                default:
+                    wasZoomingLastFrame = false;
+                    break;
+            }
+        }
+
         void Update()
         {
             if (moveCamToStartPos)
@@ -208,6 +265,11 @@ namespace Assets
             HandleCameraZoom();
 
             HandleCameraPan();
+
+            if (Input.touchSupported)
+            {
+                HandleTouchControlls();
+            }
 
         }
     }
