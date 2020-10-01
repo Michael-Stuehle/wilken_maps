@@ -1,6 +1,7 @@
 var port = 80;
 var serverUrl = "http://ul-ws-mistueh";
 var mysqlConnection = require('./MySqlConnection');
+var einstellungen = require('./einstellung');
 var logger = require('./logger');
 var formatSql = require('./formatSql');
 var express = require('express');
@@ -68,9 +69,15 @@ app.post('/register', function(request, response){
 						console.log("gesendet");
 					}
 				})
-				mysqlConnection.registerUser(username, password, token);
-				response.send('Registrieren erfolgreich');
-				logger.log('user: ' + username + ' hat sich registriert');
+				mysqlConnection.registerUser(username, password, token, function(result){
+					if (result) {
+						logger.log('user: ' + username + ' wurde erfolgreich regsitriert!', request.ip);
+						response.send('Registrieren erfolgreich');
+					}else{
+						response.send('Registrieren nicht erfolgreich');
+					}
+				});
+				
 			}
 		});
 	}
@@ -311,6 +318,14 @@ app.get('/permissions', function(request, response){
 		response.send(result);
 		response.end();
 	})
+});
+
+
+app.get('/einstellungen.html', function(request, response){
+	var username = request.session.username;
+	mysqlConnection.getEinstellungenForUser(username, function(result){
+		response.send(einstellungen.buildEinstellungenSeite(result))
+	});
 });
 
 // seite um sql befehle abzusenden (berechtigung nicht in * enthalten)

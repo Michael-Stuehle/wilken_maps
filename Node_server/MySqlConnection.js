@@ -112,49 +112,75 @@ module.exports = {
         });
     },
 
-    registerUser: function(user, password, token){
+    registerUser: function(user, password, token, callback){
          checkIsConnected(function(){
             var salt = generateRandomString(128);
             // password
             // hash1 = md5(passwort) (hash auf client seite)
             var hash2 = md5(password + salt);
             var final = PBKDF2(hash2, salt);
-            con.query("INSERT INTO user (id, name, password, salt, verificationToken) values(NULL, ?, ?, ?, ?)", [user, final, salt, token], function (err) {
-                if (err) {
-                    logger.logError('user: ' + user + ' konnte nicht angelegt werden', err);
-                    return;
-                }else{
-                    con.query("INSERT INTO einstellungen (id, user_id) VALUES (NULL, (select id from user where name = ?));", user, function(err){
+            con.getConnection(function(err, connection){
+                if (err) logger.logError(err);
+
+                connection.beginTransaction(function(err){
+                    if (err) logger.logError(err);
+
+                    connection.query("INSERT INTO einstellungen (id) VALUES (NULL);", user, function(err){
                         if (err) {
-                            logger.logError('einstellungs-zeile für user: ' + user + ' konnte nicht auf der datenbank angelegt werden!', err);
-                            return;
-                        }else{
-                            con.query("UPDATE mitarbeiter set user_id = (select id from user where name = ?) where name = ?", [user, getNameFromEmail(user)], function(err){
-                                if (err) {
-                                    logger.logError('konnte user: ' + user + ' mit keinem mitarbeiter verknüpfen!', err);
-                                    return;
-                                }      
+                            connection.rollback(function(){
+                                logger.logError(err);
                             });
-                        }
-                    })
-                }
-            });
+                            logger.logError('einstellungs-zeile für user: ' + user + ' konnte nicht auf der datenbank angelegt werden!', err);
+                            return callback(false);
+                        }   
+                        
+                        connection.query("INSERT INTO user"+
+                            " (id, name, password, salt, verificationToken, einstellungen_id, mitarbeiter_id)"+
+                            " values (NULL, ?, ?, ?, ?, (Select LAST_INSERT_ID()), (select id from mitarbeiter where name = ?))", [user, final, salt, token, getNameFromEmail(user)], function (err) {
+                            if (err) {
+                                connection.rollback(function (err){
+                                    logger.logError(err);
+                                });    
+                                logger.logError('user: ' + user + ' konnte nicht angelegt werden', err);
+                                return callback(false);                    
+                            }
+
+                            connection.commit(function(){
+                                return callback(true);
+                            });
+                        });
+                    });                  
+                })
+            })
+            
         });
     },
 
     getEinstellungenForUser(user, callback){
-        var sql = "select einstellungen.* from einstellungen, user where einstellungen.user_id = user.id and user.name = ? ";
+        var sql = "select einstellungen.* from einstellungen, user where einstellungen.id = user.einstellungen_id and user.name = ? ";
                 
         con.query(sql, user, function (err, result, fields) {
             if (err) {
                 logger.log(err);
                 return;
             }
-            var resultValue = [];
+            var resultValue = []
             if (result.length > 0) {
                 for (let index = 0; index < fields.length; index++) {
+                    if (fields[index].name == 'id' || fields[index].name == 'user_id') {
+                        continue;
+                    }
                     let obj = {};
-                    obj[fields[index].name] = result[0][fields[index].name];
+                    obj.name = fields[index].name;
+                    obj.value = result[0][fields[index].name];
+
+                    if (fields[index].length == 1) {
+                        obj.typ = 'bool';
+                    }else if (fields[index].type == 3){
+                        obj.typ = 'int';
+                    }else{
+                        obj.typ = 'string';
+                    }
                     resultValue.push(obj);
                 }         
             }    
@@ -378,7 +404,8 @@ function generateRandomString(length) {
 // WICHTIG: 
 // vollständige datenbank berechtigungen nur für localhost
 // alle zugriffe von ausen sind stark eingeschränkt 
-var con = mysql.createConnection({
+var con = mysql.createPool({
+    connectionLimit : 50,
     host: "localhost",
     port: 3306,
     user: "root",

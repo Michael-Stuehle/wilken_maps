@@ -2,8 +2,14 @@ module.exports = {
     log: function(str){
         console.log(TimeStamp() + str);
     },
+    log: function(str, ip){
+        console.log(TimeStamp() + str);
+    },
     logError: function(errStr, exception){
         console.error('ERROR ' + TimeStamp() + errStr + '\r\n' + exception);
+    },
+    logError: function(exception){
+        console.error('ERROR ' + TimeStamp() + exception);
     }
 }
 
