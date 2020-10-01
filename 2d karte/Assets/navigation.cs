@@ -99,12 +99,12 @@ namespace Assets
             int i = 0;
             while (i < positions.Count)
             {
-                if (positions[i].y - main.AktuelleEtageIndex * 20 < -0.5f) // unter aktueller etage
+                if (positions[i].y - main.AktuelleEtageIndex * 50 < -0.5f) // unter aktueller etage
                 {
                     positions.RemoveAt(i);
                     continue;
                 }
-                else if (positions[i].y - main.AktuelleEtageIndex * 20 > 0.5f)// über aktueller etage
+                else if (positions[i].y - main.AktuelleEtageIndex * 50 > 0.5f)// über aktueller etage
                 {
                     positions.RemoveAt(i);
                     continue;
