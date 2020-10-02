@@ -62,10 +62,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\HelperMethods.cs" />
-    <Compile Include="Assets\Main.cs" />
-    <Compile Include="Assets\Steuerung.cs" />
-    <Compile Include="Assets\navigation.cs" />
+    <Compile Include="Assets\Scripts\ClientScript.cs" />
+    <Compile Include="Assets\Scripts\Helper\Constants.cs" />
+    <Compile Include="Assets\Scripts\Helper\HelperMethods.cs" />
+    <Compile Include="Assets\Scripts\Helper\Map.cs" />
+    <Compile Include="Assets\Scripts\Helper\MapEnum.cs" />
+    <Compile Include="Assets\Scripts\Listbox.cs" />
+    <Compile Include="Assets\Scripts\Main.cs" />
+    <Compile Include="Assets\Scripts\MitarbeiterRaumListe.cs" />
+    <Compile Include="Assets\Scripts\navigation.cs" />
+    <None Include="Assets\mitarbeiter.txt" />
     <Reference Include="UnityEngine">
       <HintPath>D:/Programme/2019.4.2f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

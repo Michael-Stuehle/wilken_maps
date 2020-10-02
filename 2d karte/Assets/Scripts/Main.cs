@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Assets
@@ -16,6 +17,7 @@ namespace Assets
         public delegate void ZoomEventHandler(int zoomInOut);
         public ZoomEventHandler ZoomEvent;
 
+        public EventSystem eventSystem;
         public GameObject[] Stockwerke;
         public Button btnUp;
         public Button btnDown;
@@ -253,22 +255,25 @@ namespace Assets
 
         void Update()
         {
-            if (moveCamToStartPos)
+            if (eventSystem.currentSelectedGameObject == null || eventSystem.currentSelectedGameObject.GetComponent<RectTransform>() == null)
             {
-                mainCamera.transform.position = Vector3.MoveTowards(mainCamera.transform.position, AktuelleEtage.transform.position + cameraPosRelativZuEtage, camResetSpeed * Time.deltaTime);
-                if (Vector3.Distance(mainCamera.transform.position, AktuelleEtage.transform.position + cameraPosRelativZuEtage) < 0.1f)
+                if (moveCamToStartPos)
                 {
-                    moveCamToStartPos = false;
+                    mainCamera.transform.position = Vector3.MoveTowards(mainCamera.transform.position, AktuelleEtage.transform.position + cameraPosRelativZuEtage, camResetSpeed * Time.deltaTime);
+                    if (Vector3.Distance(mainCamera.transform.position, AktuelleEtage.transform.position + cameraPosRelativZuEtage) < 0.1f)
+                    {
+                        moveCamToStartPos = false;
+                    }
                 }
-            }
 
-            HandleCameraZoom();
+                HandleCameraZoom();
 
-            HandleCameraPan();
+                HandleCameraPan();
 
-            if (Input.touchSupported)
-            {
-                HandleTouchControlls();
+                if (Input.touchSupported)
+                {
+                    HandleTouchControlls();
+                }
             }
 
         }
