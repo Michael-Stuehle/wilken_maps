@@ -41,26 +41,10 @@
       button:hover {
         background-color: #70b6e7;
       }
-      a {
-        background-color: #0069b4;
-        color: white;
-        padding: 1em 1.5em;
-        font-weight: bold;
-        text-decoration: none;
-        position: relative;
-      }
-
-      a:hover {
-        background-color: #70b6e7;
-      }
-
-      a:active {
-        background-color: #073596;
-      }
 
       .sqlButton {
-        float: left;
-        margin-top: 30px;
+        margin-top: 5%;
+        float: none;
       }
 
       .startButton {
@@ -70,9 +54,15 @@
         background-color: #0069b4;
       }
 
+      .centerButton{
+        float: left;
+        margin-top: 30px;
+      }
+
       @media only screen and (max-width: 620px) {
         /* For mobile phones: */
         .startButton,
+        .centerButton,
         .sqlButton {
           width: 70%;
           float: none;
@@ -87,11 +77,15 @@
   <body style="text-align: center">
     <h1>Homepage</h1>
     <div>
-      <button onclick="gotoSql()" class="sqlButton">SQL Interface</button>
-      <button onclick="startWilkenMaps()" class="startButton">
+      <button onclick="start2dKarte()" class="centerButton">
+        2d Karte Starten
+      </button>
+      <button onclick="startWilkenMaps()" class="startButton" >
         Wilken Maps Starten
       </button>
+      <button onclick="gotoSql()" class="sqlButton">SQL Interface</button>
     </div>
+
     <div>
       <a
         href="/changePassword.html"
@@ -105,7 +99,11 @@
 
     <script>
       function startWilkenMaps() {
-        window.location.href = getUrl() + "/index.html";
+        window.location.href = getUrl() + "/3d/index.html";
+      }
+
+      function start2dKarte(){
+        window.location.href = getUrl() + "/2d/index.html";
       }
 
       function gotoSql() {
