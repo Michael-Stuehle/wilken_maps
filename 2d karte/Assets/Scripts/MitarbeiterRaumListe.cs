@@ -32,7 +32,7 @@ public static class MitarbeiterRaumListe
 
     // key (raum-name), value (pos für pathfinding)
     private static Map<string, Vector3> _raumListe;
-    private static Map<string, Vector3> RaumListe
+    public static Map<string, Vector3> RaumListe
     {
         get
         {

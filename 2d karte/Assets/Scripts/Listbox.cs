@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 
 public class Listbox : MonoBehaviour
 {
@@ -39,11 +40,16 @@ public class Listbox : MonoBehaviour
         );
         if (tmp.Count == 0)
         {
-            tmp.Add(filter);
+            dropDown.transform.Find("Label").GetComponent<Text>().text = filter;
+            //tmp.Add(filter);
+        }
+        else
+        {
+            dropDown.ClearOptions();
+            dropDown.AddOptions(tmp);
         }
         //Debug.Log($"items: {tmp.Count} filter: '{filter}'");
-        dropDown.ClearOptions();
-        dropDown.AddOptions(tmp);
+
         if (isSelected)
         {
             dropDown.Hide();
@@ -76,13 +82,21 @@ public class Listbox : MonoBehaviour
 
     void setFilter(string str)
     {
-        // wenn abgelaufen wird erst direkt nach nächstem filter ändern zurückgesetzt
-        if (filterTimeout <= 0)
+        if (str == "~")
         {
             filter = "";
         }
-        filter += str;
-        filterTimeout = defaultFilterTimeout;
+        
+        else
+        {
+            // wenn abgelaufen wird erst direkt nach nächstem filter ändern zurückgesetzt
+            if (filterTimeout <= 0)
+            {
+                filter = "";
+            }
+            filter += str;
+            filterTimeout = defaultFilterTimeout;
+        }
         setDropDownValues();
     }
 
@@ -96,17 +110,18 @@ public class Listbox : MonoBehaviour
 
     void Awake()
     {
-        values = new int[27];
+        values = new int[28];
         values[0] = 32; // space
-
+        values[1] = 8; // backspace
         // a-z
-        for (int i = 1; i < values.Length; i++)
+        for (int i = 2; i < values.Length; i++)
         {
-            values[i] = i + 96;  
+            values[i] = i + 95;  
         }
         keyCodeLookup = new string[values.Length];
         keyCodeLookup[0] = " ";
-        for (int i = 1; i < keyCodeLookup.Length; i++)
+        keyCodeLookup[1] = "~";
+        for (int i = 2; i < keyCodeLookup.Length; i++)
         {
             keyCodeLookup[i] = "" + (char)values[i];
         }
