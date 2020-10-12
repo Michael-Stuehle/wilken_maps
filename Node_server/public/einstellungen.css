@@ -1,3 +1,12 @@
+:root{
+    --btnBackgroundColor: #0069b4;
+    --btnColor: #ffffff;
+    --btnHoverColor:  #70b6e7;
+    --mainFont: "Open Sans", Helvetica, Arial, sans-serif;
+    --textColor: #4d4d4d;
+    --backgroundColor: #ffffff;
+    --borderColor: #000000;
+  }
 
 body {
     width: 70%;
@@ -5,7 +14,9 @@ body {
     margin: 0 auto;
     min-width: 230px;
     max-width: 650px;
-    font-family: "Open Sans", Helvetica, Arial, sans-serif;
+    font-family: var(--mainFont);
+    background-color: var(--backgroundColor);
+    color: var(--textColor);
 }
 
 div, form{ 
@@ -15,22 +26,26 @@ div, form{
 label{ 
     top: 20px;
     float: left;
-    width:45% 
+    width:45%; 
+    background-color: var(--backgroundColor);
+    color: var(--textColor);
 }
 
 input{
     padding: 15px; 
-    border: 1px solid #dddddd; 
+    border: 1px solid #dddddd;
     box-sizing: border-box;
     float: left; 
     width:45%; 
     height: 100%;
+    background-color: var(--backgroundColor);
+    color: var(--textColor);
 }
 
 .item{
     width: 100%; 
     height: 65px;
-    border: 1px solid #000000; 
+    border: 1px solid #dddddd;
     box-sizing: border-box;
     padding: 15px;
 }
@@ -38,15 +53,15 @@ input{
 .form input[type="submit"] {
     width: 100%;
     padding: 15px;
-    background-color: #0069b4;
+    background-color: var(--btnBackgroundColor);
+    color: var(--btnColor);
     border: 0;
     box-sizing: border-box;
     cursor: pointer;
     font-weight: bold;
-    color: #ffffff;
     margin-top: 10px;
     height: 50px;
   }
   .form input[type="submit"]:hover {
-    background-color: #70b6e7;
+    background-color: var(--btnHoverColor);
   }

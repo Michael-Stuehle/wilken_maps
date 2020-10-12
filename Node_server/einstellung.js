@@ -20,6 +20,7 @@ module.exports = {
 
 var buildClientJS = function(){
     let retVal =
+     '<script src="/script.js"></script>'+
      '<script>'+
         'function DoSubmit(){'+
             'document.getElementById("form").submit();'+

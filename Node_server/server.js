@@ -14,7 +14,7 @@ var favicon = require('serve-favicon');
 // zugriff auf diese urls auch ohne angemeldet zu sein
 // ???.html = html seite 
 // ??? 		= post an server (gesendet von ???.html)
-var allowedUrls = ['/auth', '/register', '/register.html', '/salt', '/passwordVergessen.html', '/passwordVergessen', '/verify', '/verify.html', '/style.css'];
+var allowedUrls = ['/auth', '/register', '/register.html', '/salt', '/passwordVergessen.html', '/passwordVergessen', '/verify', '/verify.html', '/style.css', '/script.js'];
 
 var app = express();
 app.use(session({
@@ -262,6 +262,28 @@ var authErfolgreich = function(request, response, username){
 	response.send('Welcome back, ' + request.session.username + '!');
 	response.end();
 }
+
+app.get('/dark_mode', function(request, response){
+	if (request.session.username != undefined && request.session.loggedin) {
+		mysqlConnection.getEinstellungValueForUser(request.session.username, 'dark_mode', function(result){
+			if (result != null) {
+				if (result.value == '1') {
+					response.send('dark');
+				}else{
+					response.send('light');
+				}
+			}			
+			response.end();
+		})
+	}else{
+		response.send('nicht angemeldet');
+	}
+	
+})
+
+app.get('/script.js', function(request, response){
+	response.sendFile(path.join(__dirname + '/public/script.js'));
+})
 
 app.get('/home', function(request, response) {
 	mysqlConnection.hasPermissionForSQL(request, function(result){

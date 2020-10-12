@@ -156,8 +156,20 @@ module.exports = {
         });
     },
 
-    getEinstellungenForUser(user, callback){
+    getEinstellungenForUser: function(user, callback){
         getEinstellungenForUserFunc(user, callback);
+    },
+
+    getEinstellungValueForUser: function(user, einstellungName, callback){
+        getEinstellungenForUserFunc(user, function(einstellungen){
+            for (let index = 0; index < einstellungen.length; index++) {
+                const element = einstellungen[index];
+                if (element.name = einstellungName) {
+                    return callback(element);
+                }
+            }
+            return callback(null);
+        });
     },
 
     setEinstellungenForUser: function(user, einstellungen, callback){
