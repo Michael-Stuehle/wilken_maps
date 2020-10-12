@@ -1,0 +1,118 @@
+body {
+    width: 70%;
+    height: 100%;
+    margin: 0 auto;
+    min-width: 230px;
+    max-width: 650px;
+    font-family: "Open Sans", Helvetica, Arial, sans-serif;
+}
+
+button{
+    background-color: #0069b4;
+    border: 0;
+    box-sizing: border-box;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: medium;
+    color: #ffffff;
+}
+
+button:hover {
+    background-color: #70b6e7;
+}
+
+.vertical-center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.center{
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);     
+}
+
+.form{
+    width: 70%;
+    max-width: 300px;
+    min-width: 155px;
+    margin: 0 auto;
+    font-family: "Open Sans", Helvetica, Arial, sans-serif;
+}
+
+.form h1{
+    text-align: center;
+    color: #4d4d4d;
+    font-size: 2em;
+    padding: 10px 0 10px 0;
+}
+
+.form input[type="password"],
+.form input[type="text"] {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #dddddd;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+}
+.form input[type="submit"] {
+  width: 100%;
+  padding: 15px;
+  background-color: #0069b4;
+  border: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-weight: bold;
+  color: #ffffff;
+}
+.form input[type="submit"]:hover {
+  background-color: #70b6e7;
+}
+
+.loader {
+    border: 16px solid #3b3b3b;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    z-index: 2;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+}
+  /* Safari */
+@-webkit-keyframes spin {
+    0% {
+      -webkit-transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+}
+
+
+.right {
+    float: right;
+  }
+
+  @media only screen and (max-width: 500px) {
+    /* For mobile phones: */
+    .right {
+      float: left;
+      width: 100%;
+    }
+  }

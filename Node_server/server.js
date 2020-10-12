@@ -14,7 +14,7 @@ var favicon = require('serve-favicon');
 // zugriff auf diese urls auch ohne angemeldet zu sein
 // ???.html = html seite 
 // ??? 		= post an server (gesendet von ???.html)
-var allowedUrls = ['/auth', '/register', '/register.html', '/salt', '/passwordVergessen.html', '/passwordVergessen', '/verify', '/verify.html'];
+var allowedUrls = ['/auth', '/register', '/register.html', '/salt', '/passwordVergessen.html', '/passwordVergessen', '/verify', '/verify.html', '/style.css'];
 
 var app = express();
 app.use(session({
@@ -52,6 +52,10 @@ app.get('/', function(request, response) {
 	response.sendFile(path.join(__dirname + '/public/login.html'));
 });
 
+app.get('/style.css', function(request, response){
+	response.sendFile(path.join(__dirname + '/public/style.css'))
+})
+
 app.post('/register', function(request, response){
 	var username = request.body.username;
 	var password = request.body.password;
@@ -72,6 +76,7 @@ app.post('/register', function(request, response){
 				mysqlConnection.registerUser(username, password, token, function(result){
 					if (result) {
 						logger.log('user: ' + username + ' wurde erfolgreich regsitriert!', request.ip);
+						request.
 						response.send('Registrieren erfolgreich');
 					}else{
 						response.send('Registrieren nicht erfolgreich');
@@ -198,6 +203,20 @@ app.post('/sql', function(request, response){
 					response.send(formatSql.formatAsHtmlTable(result, fields));
 				}
 			});
+		}
+	})
+});
+
+app.post('/einstellungen', function(request, response){
+	var einstellungen = [];
+	for(const [key, value] of Object.entries(request.body)){
+		einstellungen.push({name: key, value: value});
+	}
+	mysqlConnection.setEinstellungenForUser(request.session.username, einstellungen, function(result){
+		if (result) {
+			response.send('Speichern erfolgreich!');
+		}else{
+			response.send('fehler beim speichern');
 		}
 	})
 });
