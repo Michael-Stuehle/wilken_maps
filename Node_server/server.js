@@ -1,14 +1,14 @@
-var port = 80;
-var serverUrl = "http://ul-ws-mistueh";
-var mysqlConnection = require('./MySqlConnection');
-var einstellungen = require('./einstellung');
-var logger = require('./logger');
-var formatSql = require('./formatSql');
+const mysqlConnection = require('./SQL/MySqlConnection');
+const einstellungen = require('./RequestHandlers/einstellung');
+const formatSql = require('./formatSql');
+const HanldeRegistration = require('./RequestHandlers/HanldeRegistration');
+const HandleLogin = require('./RequestHandlers/HandleLogin');
+const Helper = require('./RequestHandlers/Helper');
+const constants = require('./constants');
 var express = require('express');
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var path = require('path');
-const { exec } = require("child_process");
 var favicon = require('serve-favicon');
 
 // zugriff auf diese urls auch ohne angemeldet zu sein
@@ -18,7 +18,7 @@ var allowedUrls = ['/auth', '/register', '/register.html', '/salt', '/passwordVe
 
 var app = express();
 app.use(session({
-	secret: generateRandomString(128),
+	secret: Helper.generateRandomString(128),
 	resave: true,
 	saveUninitialized: true
 }));
@@ -48,148 +48,20 @@ app.use(function (req, res, next) {
 	}
 })
 
-app.get('/', function(request, response) {
-	response.sendFile(path.join(__dirname + '/public/login.html'));
-});
-
-app.get('/style.css', function(request, response){
-	response.sendFile(path.join(__dirname + '/public/style.css'))
-})
-
 app.post('/register', function(request, response){
-	var username = request.body.username;
-	var password = request.body.password;
-	if (!username.endsWith('@wilken.de')) {
-		response.send('E-Mail muss auf "@wilken.de" enden')		
-	}else {
-		mysqlConnection.checkUserExists(username, function(result){
-			if (result) {
-				response.send('der Benutzer: "'+username+'" existiert bereits')
-			}
-			else{
-				var token = generateRandomStringSafe(20);
-				sendVerifyMail(username, token, function(mailSent){
-					if (mailSent) {
-						console.log("gesendet");
-					}
-				})
-				mysqlConnection.registerUser(username, password, token, function(result){
-					if (result) {
-						logger.log('user: ' + username + ' wurde erfolgreich regsitriert!', request.ip);
-						request.
-						response.send('Registrieren erfolgreich');
-					}else{
-						response.send('Registrieren nicht erfolgreich');
-					}
-				});
-				
-			}
-		});
-	}
+	HanldeRegistration.register(request, response);
 });
-
-var randomPasswort = function(){
-    var length = 6;
-    var result           = '';
-	var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	var charactersLength = characters.length;
-	for ( var i = 0; i < length; i++ ) {
-	   result += characters.charAt(Math.floor(Math.random() * charactersLength));
-	}
-	return result;
-}
-
 
 app.post('/passwordVergessen', function(request, response){
-	var username = request.body.username;
-	var password = randomPasswort(6);	
-	mysqlConnection.checkUserExists(username, function(result){
-		if (result) {
-			mysqlConnection.set1malPasswort(username, password, function(result){
-				if (result) {
-					sendPasswordVergessenMail(username, password, function(result){
-						if (result) {
-							response.send('mail wurde gesendet');
-							logger.log('user: ' + username + ' hat sein passwort zurückgesetzt');
-						}
-					})
-				}	
-			});
-		}else{
-			response.send('der benuezter: "' + username + '" existiert nicht');
-		}
-	})
-	
+	HandleLogin.passwortVergessen(request, response);	
 });
-
-// ruft externes java programm auf um die mail zu senden (java programm sendet per mail1.rechenzentrum.wilken)
-var sendPasswordVergessenMail = function (username, password, callback){
-	var sendMailBat = path.join(__dirname + "/sendMail/sendPasswortVergessenMail.bat"); 
-	logger.log(sendMailBat);
-	exec("call " + sendMailBat + " " + username + " " + password, function(error, stdout, stderr){
-		if (error) throw error;
-		if (stderr)	console.log(stderr);
-		return callback(true)
-	});
-}
 
 app.post('/changePassword', function(request, response){
-	var username = request.session.username;
-	var password = request.body.password;
-	var newPassword = request.body.newPassword;
-
-	mysqlConnection.checkPasswordForUser(username, password, function(result){
-		if (result) {
-			mysqlConnection.changePassword(username, newPassword, function(result){
-				if (result) {
-					response.send('passwort erfolgreich geändert!');
-					logger.log('user: ' + username + ' hat sein passwort geändert');
-				}
-			});			
-		}else{
-			mysqlConnection.checkPasswordForUserPasswordVergessen(username, password, function(result){
-				if (result) {
-					mysqlConnection.changePassword(username, newPassword, function(result){
-						if (result) {
-							response.send('passwort erfolgreich geändert!');
-							logger.log('user: ' + username + ' hat sein passwort geändert');
-						}
-					});			
-				}else{
-					response.send('passwort falsch');
-				}
-			});
-		}
-	})
+	HandleLogin.changePassword(request, response);
 });
 
-function sendVerifyMail(username, token, callback){
-	//logger.log("sendVerifyMail is not yet implemented");
-	//return callback(false);
-	var sendMailBat = path.join(__dirname + "/sendMail/sendVerifyMail.bat")+ " " + serverUrl + ":" + port + " " + username + " " + token;
-	exec("call " + sendMailBat , function(error, stdout, stderr){
-		if (error) throw error;
-		if (stderr)	console.log(stderr);
-		return callback(true)
-	});
-}
-
 app.post('/verify', function(request, response){
-	var username = request.body.username;
-	mysqlConnection.isUserVerified(username, function(isVerified){
-		if (!isVerified) {
-			mysqlConnection.verifieUserWithToken(username, request.body.verificationToken, function(verifySuccess){
-				if (verifySuccess) {
-					logger.log(username + " wurde verifiziert");
-					response.send("verifizierung erfolgreich");
-					response.end();
-				}else{
-					response.send("verifizierung nicht erfolgreich");
-					response.end();
-				}
-			})
-		}
-	})
+	HanldeRegistration.verify(request, response);
 });
 
 // sql befehl wird vom sql panel an datenbank weitergeleitet
@@ -208,77 +80,23 @@ app.post('/sql', function(request, response){
 });
 
 app.post('/einstellungen', function(request, response){
-	var einstellungen = [];
-	for(const [key, value] of Object.entries(request.body)){
-		einstellungen.push({name: key, value: value});
-	}
-	mysqlConnection.setEinstellungenForUser(request.session.username, einstellungen, function(result){
-		if (result) {
-			response.send('Speichern erfolgreich!');
-		}else{
-			response.send('fehler beim speichern');
-		}
-	})
+	einstellungen.einstellungenSpeichern(request, response);
 });
 
 app.post('/auth', function(request, response) {
-	var username = request.body.username;
-	var password = request.body.password;
-	if (username && password) {
-		mysqlConnection.isUserVerified(username, function(isverified){
-			if (isverified) {
-				// normales passwort prüfen
-				mysqlConnection.checkPasswordForUser(username, password, function(results){
-					if (results) {
-						authErfolgreich(request, response, username);
-					} else {
-						// auf 1mal passwort prüfen
-						mysqlConnection.checkPasswordForUserPasswordVergessen(username, password, function(result){
-							if (result) {
-								authErfolgreich(request, response, username);
-							}else{
-								response.send('Incorrect Username and/or Password!');
-								response.end();
-							}
-						})
-					}			
-				})
-			}else{
-				response.send('bitte e-mail verifizieren!');
-			}
-		});
-	} else {
-		response.send('Please enter Username and Password!');
-		response.end();
-	}	
+	HandleLogin.login(request, response);
 });
 
-// falls erfolgreich angemeldet wurde wird homepage/app/etc. freigegeben
-var authErfolgreich = function(request, response, username){
-	request.session.loggedin = true;
-	request.session.username = username;
-	logger.log('user: '+username+' hat sich angemeldet');
-	app.use(express.static("public"));
-	response.send('Welcome back, ' + request.session.username + '!');
-	response.end();
-}
+app.get('/', function(request, response) {
+	response.sendFile(path.join(__dirname + '/public/login.html'));
+});
+
+app.get('/style.css', function(request, response){
+	response.sendFile(path.join(__dirname + '/public/style.css'))
+})
 
 app.get('/dark_mode', function(request, response){
-	if (request.session.username != undefined && request.session.loggedin) {
-		mysqlConnection.getEinstellungValueForUser(request.session.username, 'dark_mode', function(result){
-			if (result != null) {
-				if (result.value == '1') {
-					response.send('dark');
-				}else{
-					response.send('light');
-				}
-			}			
-			response.end();
-		})
-	}else{
-		response.send('nicht angemeldet');
-	}
-	
+	einstellungen.getDarkMode(request, response);
 })
 
 app.get('/script.js', function(request, response){
@@ -297,16 +115,7 @@ app.get('/home', function(request, response) {
 
 // beendet die sesssion und leitet zu loggin-seite weiter
 app.get('/logout', function(request, response){
-	// bug wenn man direkt nach abmelden auf zurück drukt wird seite geladen
-	var username = request.session.username;
-	request.session.loggedin = false;
-	request.session.destroy(function(err) {
-		if (err) {
-			throw err;
-		}
-		logger.log('user: '+username+' hat sich abgemeldet');
-		response.redirect('/');
-	});
+	HandleLogin.logout(request, response);
 });
 
 // sends verify html file (hat unsichtbare from und macht einen post zurück an den server per url parametern)
@@ -314,40 +123,10 @@ app.get('/verify.html/:username/:token', function(request, response){
 	response.sendFile(path.join(__dirname + '/public/verify.html'));
 })
 
-// salt für passwort (length zufällige chars)
-function generateRandomString(length) {
-	var result           = '';
-	var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!§$%&/()=?_-:;.,<>|^°[]²³';
-	var charactersLength = characters.length;
-	for ( var i = 0; i < length; i++ ) {
-	   result += characters.charAt(Math.floor(Math.random() * charactersLength));
-	}
-	return result;
- }
-
- // salt für passwort (length zufällige chars)
- // safe hat keine zeichen (nur A-Z a-z 0-9)
-function generateRandomStringSafe(length) {
-	var result           = '';
-	var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	var charactersLength = characters.length;
-	for ( var i = 0; i < length; i++ ) {
-	   result += characters.charAt(Math.floor(Math.random() * charactersLength));
-	}
-	return result;
- }
- 
- // 1 salt pro user
+// 1 salt pro user
+// eigentlich ein GET, muss aber mit post benutzt werden, um an username ranzukommen
 app.post('/salt', function(request, response){
-	if (request.body.username === undefined ) {
-		response.send(generateRandomString(128));
-		response.end();
-	}else{
-		mysqlConnection.getSaltForUSer(request.body.username, function(result){
-			response.send(result);
-			response.end();
-		})
-	}
+	HandleLogin.getSalt(request, response);
 });
 
 // permissions für unity programm
@@ -411,4 +190,4 @@ app.get('/mitarbeiter.txt', function(request, response){
 	})
 }); 
 
-app.listen(port, () => console.log(`listening on port ${port}!`))
+app.listen(constants.port, () => console.log(`listening on port ${constants.port}!`))

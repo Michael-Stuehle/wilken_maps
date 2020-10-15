@@ -1,4 +1,4 @@
-const logger = require('./logger');
+const mySqlConnection = require('../SQL/MySqlConnection');
 
 module.exports = {
     buildEinstellungenSeite: function(einstellungen){
@@ -15,7 +15,38 @@ module.exports = {
             }
         }
         return bulidHeader() + inputs + buildSubmitBtn() + buildFooter();
-    }
+    },
+
+    einstellungenSpeichern: function(request, response){
+        var einstellungen = [];
+        for(const [key, value] of Object.entries(request.body)){
+            einstellungen.push({name: key, value: value});
+        }
+        mySqlConnection.setEinstellungenForUser(request.session.username, einstellungen, function(result){
+            if (result) {
+                response.send('Speichern erfolgreich!');
+            }else{
+                response.send('fehler beim speichern');
+            }
+        })
+    },
+
+    getDarkMode: function(request, response){
+        if (request.session.username != undefined && request.session.loggedin) {
+            mysqlConnection.getEinstellungValueForUser(request.session.username, 'dark_mode', function(result){
+                if (result != null) {
+                    if (result.value == '1') {
+                        response.send('dark');
+                    }else{
+                        response.send('light');
+                    }
+                }			
+                response.end();
+            })
+        }else{
+            response.send('nicht angemeldet');
+        }
+    }    
 };
 
 var buildClientJS = function(){
