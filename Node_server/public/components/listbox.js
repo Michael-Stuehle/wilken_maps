@@ -5,6 +5,11 @@ export class listbox{
     constructor(container, select){
         this.container = container;
         this.select = select;
+        this.raum = {};
+
+        this.select.onchange = function(){
+            self.Aktualisieren();
+        }
         
         var self = this;
 
@@ -49,7 +54,15 @@ export class listbox{
             }
         }
 
-        this.Aktualisieren = function(childNodes){
+        this.Aktualisieren = function(){
+            self.clear();
+            self.setAktuellerRaum();
+            let childNodes = [];
+            for (let index = 0; index < self.raum.mitarbeiter.length; index++) {
+                const element = self.raum.mitarbeiter[index];
+                let item = self.createSelectableItem(element.name, element.id, element.raum_id);
+                childNodes.push(item);
+            }
             for (let index = 0; index < childNodes.length; index++) {
                 const element = childNodes[index];
                 element.addEventListener('dragstart', self.handleDragStart, false);
@@ -63,6 +76,27 @@ export class listbox{
                 } 
                 self.container.appendChild(element);
             }
+        }
+
+        this.setAktuellerRaum = function(){
+            let raum_id = self.select.value;
+            window.raumliste.forEach(raum => {
+                if (raum.id == raum_id){
+                    self.raum = raum;
+                }
+            })
+        
+            self.container.setAttribute('raum_id', raum_id)
+        }
+
+        this.createSelectableItem = function(text, mitarbeiter_id, raum_id){
+            let item = document.createElement('div');
+            item.classList.add('item');
+            item.innerHTML = text;
+            item.setAttribute('mitarbeiter_id', mitarbeiter_id);
+            item.setAttribute('raum_id', raum_id);
+            item.setAttribute('draggable', true)
+            return item;
         }
 
         this.containerKeyDown = function(event){
@@ -166,10 +200,8 @@ export class listbox{
 
             if (dragSrcListbox !== self) { // in anderer listbox
                 const itemsToMove = dragSrcListbox.getSelectedItems();
-                let raum_id_neu = ""; // standart --> aus raum entfernt
-                if (dragSrcListbox === window.listboxRest) { // wird in raum geschoben
-                   raum_id_neu = self.container.getAttribute('raum_id')
-                }
+                let raum_id_neu = self.container.getAttribute('raum_id'); // standart --> aus raum entfernt
+      
                 for (let index = 0; index < itemsToMove.length; index++) {
                     const element = itemsToMove[index];
                     if (window.moveMitarbeiterToRaum(element.getAttribute('mitarbeiter_id'), raum_id_neu)){

@@ -31,8 +31,8 @@ window.raumliste = []; // alle räume mit mitarbeitern zugeteilt
 window.mitarbeiterInRaum = []; // mitarbeiter, die in einem bestimmten raum sind
 window.restlicheMitarbeiter = []; // alle mitarbeiter, die nicht in obiger liste sind
 
-window.listboxRest = new listbox(document.getElementById('rest'));
-window.listboxRaum = new listbox(document.getElementById('raum'));
+window.listboxA = new listbox(document.getElementById('A'), document.getElementById('raumSelectA'));
+window.listboxB = new listbox(document.getElementById('B'), document.getElementById('raumSelectB'));
 
 window.onload = function(){
     DatenNeuLaden();
@@ -54,54 +54,24 @@ function DatenNeuLaden(){
 }
 
 window.Aktualisieren = function(){
-    let raumSelect = document.getElementById("raumSelect");
+    let selectA = document.getElementById("raumSelectA");
+    let selectB = document.getElementById("raumSelectB");
+
     for (let index = 0; index < raumliste.length; index++) {
         const element = raumliste[index];
         const option = document.createElement('option');
         option.value = element.id;
         option.innerHTML = 'Raum: ' + element.name;
-        raumSelect.appendChild(option);
+        selectA.appendChild(option);
+        selectB.appendChild(option.cloneNode(true));
     }
-    
-    setAktuellerRaum(raumSelect.value)
 
-    let chlidNodes = [];
-    listboxRest.clear();
-    for (let index = 0; index < restlicheMitarbeiter.length; index++) {
-        const element = restlicheMitarbeiter[index];
-        let item = createSelectableItem(element.name, element.id, element.raum_id);
-        chlidNodes.push(item);
-    }
-    listboxRest.Aktualisieren(chlidNodes);
-
-    chlidNodes = [];
-    listboxRaum.clear();
-    for (let index = 0; index < mitarbeiterInRaum.length; index++) {
-        const element = mitarbeiterInRaum[index];
-        let item = createSelectableItem(element.name, element.id, element.raum_id);
-        chlidNodes.push(item);
-    }
-    listboxRaum.Aktualisieren(chlidNodes);
+    listboxA.Aktualisieren();
+    listboxB.Aktualisieren();
 }
 
 
-window.setAktuellerRaum = function(raum_id){
-    mitarbeiterInRaum = [];
-    raumliste.forEach(raum => {
-        if (raum.id == raum_id){
-            mitarbeiterInRaum = mitarbeiterInRaum.concat(raum.mitarbeiter);
-        }
-    })
 
-    document.getElementById('raum').setAttribute('raum_id', raum_id)
-    
-    restlicheMitarbeiter = [];
-    raumliste.forEach(raum => {
-        restlicheMitarbeiter = restlicheMitarbeiter.concat(raum.mitarbeiter.filter(mit => {
-            return mit.raum_id != raum_id;            
-        }))
-    })
-}
 
 function Speichern(){
     fetch("/raumliste", {
@@ -163,16 +133,4 @@ window.getRaumById = function(id){
             return raum;
         }
     }
-}
-
-
-
-function createSelectableItem(text, mitarbeiter_id, raum_id){
-    let item = document.createElement('div');
-    item.classList.add('item');
-    item.innerHTML = text;
-    item.setAttribute('mitarbeiter_id', mitarbeiter_id);
-    item.setAttribute('raum_id', raum_id);
-    item.setAttribute('draggable', true)
-    return item;
 }

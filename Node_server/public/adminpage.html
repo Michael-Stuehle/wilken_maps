@@ -9,24 +9,26 @@
         <script defer src="/components/listbox.js" type="module"></script>  
         <title>Wilken Maps Admin Seite</title>
 
-        <script>
-
-        </script>
     </head>
     <body>
         <h1>Administrations- Seite</h1>
-        <div onkeydown="">
-            <select id="raumSelect" name="Raum" onchange="window.Aktualisieren()"></select>
-        </div>
-        <div style="display: flex; flex-direction: row; justify-content: space-between;">
-            <div id="raum" raum_id="" class="container"></div>
-            <div id="rest" raum_id="" class="container">
-                <!-- <div class="item" style="display: table;">
-                        <div style="float: left; width: 50%; margin: 0px;">text a</div>
-                        <div style="float: left;width: 50%; margin: 0px;">text b</div>
-                    </div>
-                -->
+           
+        <div style="display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap;">  
+            <div style="margin: auto; width: 47%;">
+                <button>test</button>
+                <button>test</button>
+                <button>test</button>
+                <select id="raumSelectA" name="Raum" ></select>
+                <div id="A" raum_id="" class="container"></div>
             </div>
+            <div style="margin: auto; width: 47%;">
+                <button>test</button>
+                <button>test</button>
+                <button>test</button>
+                <select id="raumSelectB" name="Raum"></select>
+                <div id="B" raum_id="" class="container"></div>
+            </div>
+            
         </div>
         
     </body>
