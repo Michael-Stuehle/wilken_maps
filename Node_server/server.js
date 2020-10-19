@@ -156,6 +156,10 @@ app.get('/einstellungen.html', function(request, response){
 	});
 });
 
+app.get('/einstellungen.css', function(request, response){
+	response.sendFile(path.join(__dirname + '/public/einstellungen.css'))
+})
+
 // seite um sql befehle abzusenden (berechtigung nicht in * enthalten)
 app.get('/sql.html', function(request, response){
 	mysqlConnection.hasPermissionForSQL(request, function(result){
@@ -179,6 +183,15 @@ app.get('/adminpage.html', function(request, response){
 	HandleAdminpage.getAdminPage(request, response);
 })
 
+app.get('/adminpage.css', function(request, response){
+	response.sendFile(path.join(__dirname + '/public/adminpage.css'));
+})
+
+app.get('/adminpageScript.js', function(request, response){
+	response.sendFile(path.join(__dirname + '/public/adminpageScript.js'))
+})
+
+
 app.get('/angemeldetAls', function(request, response){
 	response.send(request.session.username);
 })
@@ -201,10 +214,6 @@ app.get('/raumliste.txt', function(request, response){
 	})
 })
 
-app.get('/adminpageScript.js', function(request, response){
-	response.sendFile(path.join(__dirname + '/public/adminpageScript.js'))
-})
-
 // erstellt mitarbeiter liste aus datenbank einträgen (verwendung für unity programm)
 app.get('/mitarbeiter.txt', function(request, response){
 	mysqlConnection.getMitarbeiter(function(result) {
@@ -212,8 +221,6 @@ app.get('/mitarbeiter.txt', function(request, response){
 	})
 }); 
 
-app.get('/adminpage.css', function(request, response){
-	response.sendFile(path.join(__dirname + '/public/adminpage.css'));
-})
+
 
 app.listen(constants.port, () => console.log(`listening on port ${constants.port}!`))

@@ -27,9 +27,9 @@
 */
 import { listbox } from "./components/listbox.js";
 
-var raumliste = []; // zum bearbeiten
-var mitarbeiterInRaum = [];
-var restlicheMitarbeiter = [];
+var raumliste = []; // alle räume mit mitarbeitern zugeteilt
+var mitarbeiterInRaum = []; // mitarbeiter, die in einem bestimmten raum sind
+var restlicheMitarbeiter = []; // alle mitarbeiter, die nicht in obiger liste sind
 
 var listboxRest = new listbox(document.getElementById('rest'));
 

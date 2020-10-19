@@ -102,6 +102,16 @@ export class listbox{
         this.clear = function(){
             self.container.textContent = '';
         }
+
+        this.getSelectedItems = function(){
+            let items = self.container.childNodes;
+            let result = [];
+            items.forEach(element => {
+                if (element.classList.contains('selected')) {
+                    result.push(element);   
+                }
+            });
+        }
         
         self.HookupEvents();        
     }    
