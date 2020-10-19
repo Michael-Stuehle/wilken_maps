@@ -1,9 +1,11 @@
-
+var dragSrcListbox = {};
 
 export class listbox{
     
-    constructor(container){
+    constructor(container, select){
         this.container = container;
+        this.select = select;
+        
         var self = this;
 
         this.deSelectAll = function(){
@@ -11,6 +13,12 @@ export class listbox{
                 item.classList.remove('selected')
             );
         }
+        this.container.ondragover = function(e){
+            self.handleDragOver(e);
+        }
+        this.container.ondrop = function(e){
+            self.handleDrop(e);
+        } 
 
         this.setItemSelected = function(item, event){
             self.scrollInView(item);
@@ -44,6 +52,12 @@ export class listbox{
         this.Aktualisieren = function(childNodes){
             for (let index = 0; index < childNodes.length; index++) {
                 const element = childNodes[index];
+                element.addEventListener('dragstart', self.handleDragStart, false);
+                element.addEventListener('dragover', self.handleDragOver, false);
+                element.addEventListener('dragenter', self.handleDragEnter, false);
+                element.addEventListener('dragleave', self.handleDragLeave, false);
+                element.addEventListener('dragend', self.handleDragEnd, false);
+                element.addEventListener('drop', self.handleDrop, false)
                 element.onclick = function(event){
                     self.setItemSelected(element, event);
                 } 
@@ -111,7 +125,63 @@ export class listbox{
                     result.push(element);   
                 }
             });
+            return result;
         }
+
+        this.handleDragStart = function(e){
+            this.style.opacity = '0.6';
+            this.style.backgroundColor = "transparent";
+
+            dragSrcListbox = self; 
+            if (!this.classList.contains('selected')) {
+                this.classList.add('selected');
+            }
+
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        this.handleDragEnd = function(e) {
+            this.style.opacity = '1';
+            this.style.backgroundColor = "";
+          }
+        
+          this.handleDragOver = function(e) {
+            if (e.preventDefault) {
+              e.preventDefault();
+            }
+        
+            return false;
+          }
+        
+          this.handleDragEnter = function(e) {
+            this.classList.add('over');
+          }
+        
+          this.handleDragLeave = function(e) {
+            this.classList.remove('over');
+          }
+
+          this.handleDrop = function(e) {
+            e.stopPropagation();
+
+            if (dragSrcListbox !== self) { // in anderer listbox
+                const itemsToMove = dragSrcListbox.getSelectedItems();
+                let raum_id_neu = ""; // standart --> aus raum entfernt
+                if (dragSrcListbox === window.listboxRest) { // wird in raum geschoben
+                   raum_id_neu = self.container.getAttribute('raum_id')
+                }
+                for (let index = 0; index < itemsToMove.length; index++) {
+                    const element = itemsToMove[index];
+                    if (window.moveMitarbeiterToRaum(element.getAttribute('mitarbeiter_id'), raum_id_neu)){
+                        window.Aktualisieren();
+                    }
+                }
+            }
+            
+            return false;
+          }
+
+
         
         self.HookupEvents();        
     }    

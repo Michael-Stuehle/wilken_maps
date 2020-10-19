@@ -27,11 +27,12 @@
 */
 import { listbox } from "./components/listbox.js";
 
-var raumliste = []; // alle räume mit mitarbeitern zugeteilt
-var mitarbeiterInRaum = []; // mitarbeiter, die in einem bestimmten raum sind
-var restlicheMitarbeiter = []; // alle mitarbeiter, die nicht in obiger liste sind
+window.raumliste = []; // alle räume mit mitarbeitern zugeteilt
+window.mitarbeiterInRaum = []; // mitarbeiter, die in einem bestimmten raum sind
+window.restlicheMitarbeiter = []; // alle mitarbeiter, die nicht in obiger liste sind
 
-var listboxRest = new listbox(document.getElementById('rest'));
+window.listboxRest = new listbox(document.getElementById('rest'));
+window.listboxRaum = new listbox(document.getElementById('raum'));
 
 window.onload = function(){
     DatenNeuLaden();
@@ -47,11 +48,12 @@ function DatenNeuLaden(){
         })
         .then(function (text) {
             raumliste = JSON.parse(text);
+            
             Aktualisieren();
         })
 }
 
-function Aktualisieren(){
+window.Aktualisieren = function(){
     let raumSelect = document.getElementById("raumSelect");
     for (let index = 0; index < raumliste.length; index++) {
         const element = raumliste[index];
@@ -60,8 +62,9 @@ function Aktualisieren(){
         option.innerHTML = 'Raum: ' + element.name;
         raumSelect.appendChild(option);
     }
-    setAktuellerRaum(raumSelect.value)
     
+    setAktuellerRaum(raumSelect.value)
+
     let chlidNodes = [];
     listboxRest.clear();
     for (let index = 0; index < restlicheMitarbeiter.length; index++) {
@@ -70,10 +73,29 @@ function Aktualisieren(){
         chlidNodes.push(item);
     }
     listboxRest.Aktualisieren(chlidNodes);
+
+    chlidNodes = [];
+    listboxRaum.clear();
+    for (let index = 0; index < mitarbeiterInRaum.length; index++) {
+        const element = mitarbeiterInRaum[index];
+        let item = createSelectableItem(element.name, element.id, element.raum_id);
+        chlidNodes.push(item);
+    }
+    listboxRaum.Aktualisieren(chlidNodes);
 }
 
-function setAktuellerRaum(raum_id){
-    mitarbeiterInRaum = raumliste.filter(raum => raum.id = raum_id).mitarbeiter;
+
+window.setAktuellerRaum = function(raum_id){
+    mitarbeiterInRaum = [];
+    raumliste.forEach(raum => {
+        if (raum.id == raum_id){
+            mitarbeiterInRaum = mitarbeiterInRaum.concat(raum.mitarbeiter);
+        }
+    })
+
+    document.getElementById('raum').setAttribute('raum_id', raum_id)
+    
+    restlicheMitarbeiter = [];
     raumliste.forEach(raum => {
         restlicheMitarbeiter = restlicheMitarbeiter.concat(raum.mitarbeiter.filter(mit => {
             return mit.raum_id != raum_id;            
@@ -116,31 +138,41 @@ function editMitarbeiter(id, name_neu){
     }
 }
 
-function editMitarbeiterRaum(mitarbeiter_id, raum_id_alt, raum_id_neu){
+window.moveMitarbeiterToRaum = function(mitarbeiter_id, raum_id){
     for (let index = 0; index < raumliste.length; index++) {
-        const element = raumliste[index];
-        var ar = [];
-        
-        if (element.id == raum_id_alt) {
-            // mitarbeiter mit id zwischenspeichern
-            let tempMitarbeiter = element.mitarbeiter.find(mit => mit.id == mitarbeiter_id); 
-            tempMitarbeiter.raum_id = raum_id_neu; 
+        const raum = raumliste[index];
+        for (let index_raum = 0; index_raum < raum.mitarbeiter.length; index_raum++) {
+            const mitarbeiter = raum.mitarbeiter[index_raum];
+            if (mitarbeiter.id == mitarbeiter_id) {
+                mitarbeiter.raum_id = raum_id;
+                mitarbeiter.changed = true;
+                raum.mitarbeiter = raum.mitarbeiter.filter(el => el !== mitarbeiter);
+                window.getRaumById(raum_id).mitarbeiter.push(mitarbeiter);
+                             
+                return true;
+            }
+        }
+    }
+    return false
+}
 
-            // mitarbeiter mit id wird rausgefiltert
-            element.mitarbeiter = element.mitarbeiter.filter(mit => mit.id != mitarbeiter_id);
-
-            // zwischengespeicherter mitarbeiter zu neuer anderer liste hinzufügen
-            raumliste.find(raum => raum.id == raum_id_neu).mitarbeiter.push(tempMitarbeiter);
-            break;
-        }       
+window.getRaumById = function(id){
+    for (let index = 0; index < raumliste.length; index++) {
+        const raum = raumliste[index];
+        if (raum.id == id) {
+            return raum;
+        }
     }
 }
 
-function createSelectableItem(text, mitarbeiter_id, raum_id1){
+
+
+function createSelectableItem(text, mitarbeiter_id, raum_id){
     let item = document.createElement('div');
     item.classList.add('item');
     item.innerHTML = text;
     item.setAttribute('mitarbeiter_id', mitarbeiter_id);
-    item.setAttribute('raum_id', raum_id1);
+    item.setAttribute('raum_id', raum_id);
+    item.setAttribute('draggable', true)
     return item;
 }
