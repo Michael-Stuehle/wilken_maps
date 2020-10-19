@@ -25,7 +25,9 @@
 
 ]
 */
+
 import { listbox } from "./components/listbox.js";
+import { contextmenu } from "./components/contextmenu.js";
 
 window.raumliste = []; // alle räume mit mitarbeitern zugeteilt
 window.mitarbeiterInRaum = []; // mitarbeiter, die in einem bestimmten raum sind
@@ -33,6 +35,8 @@ window.restlicheMitarbeiter = []; // alle mitarbeiter, die nicht in obiger liste
 
 window.listboxA = new listbox(document.getElementById('A'), document.getElementById('raumSelectA'));
 window.listboxB = new listbox(document.getElementById('B'), document.getElementById('raumSelectB'));
+
+window.contextMenuListboxA = new contextmenu(document.getElementById('menu'), window.listboxA);
 
 window.onload = function(){
     DatenNeuLaden();
