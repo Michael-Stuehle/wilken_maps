@@ -2,6 +2,7 @@ const logger = require('../logger');
 const helperSQL = require('./helperSQL');
 const globalconnection = require('./Globalconnection');
 const verschluesselung = require ('../verschluesselung');
+const Helper = require('../RequestHandlers/Helper');
 
 module.exports = {
     checkPasswordForUser: function(email, enteredPassword, callback){
@@ -22,7 +23,7 @@ module.exports = {
                     }                     
                     return callback(resultValue)
                 });
-            }, helperSQL.getRandomInt(2000));       
+            }, Helper.getRandomInt(2000));       
          });
     },
 
@@ -44,7 +45,7 @@ module.exports = {
                     }               
                     return callback(resultValue)
                 });
-            },helperSQL.getRandomInt(2000));
+            },Helper.getRandomInt(2000));
 
         });
     },

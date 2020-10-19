@@ -14,7 +14,14 @@ module.exports = {
    },
 
    getNameFromEmail: function(email){
-      return _getNameFromEmail(email);
+      let splitByPunkt = email.split('.');
+      let vorname = splitByPunkt[0];
+      if (splitByPunkt.length > 1) {
+         let nachname = splitByPunkt[1].split('@')[0];
+         return nachname.toLowerCase() + ' ' + vorname.toLowerCase();
+      }else{
+         return vorname;
+      }      
    },
    
    // salt für passwort (length zufällige chars)
@@ -28,11 +35,4 @@ module.exports = {
       }
       return result;
    }
-}
-
-var _getNameFromEmail = function(Email){
-   let splitByPunkt = Email.split('.');
-   let vorname = splitByPunkt[0];
-   let nachname = splitByPunkt[1].split('@')[0];
-   return nachname.toLowerCase() + ' ' + vorname.toLowerCase();
 }

@@ -7,8 +7,8 @@ const constants = require('../constants');
 
 module.exports = {
     register : function(request, response){
-        var username = request.body.username;
-        var password = request.body.password;
+        let username = request.body.username;
+        let password = request.body.password;
         if (!username.endsWith('@wilken.de')) {
             response.send('E-Mail muss auf "@wilken.de" enden')		
         }else {
@@ -17,16 +17,16 @@ module.exports = {
                     response.send('der Benutzer: "'+username+'" existiert bereits')
                 }
                 else{
-                    var token = helper.generateRandomStringSafe(20);
-                    sendVerifyMail(username, token, function(mailSent){
-                        if (mailSent) {
-                            console.log("gesendet");
-                        }
-                    })
+                    let token = helper.generateRandomStringSafe(20);
                     mysqlConnection.registerUser(username, password, token, function(result){
                         if (result) {
-                            logger.log('user: ' + username + ' wurde erfolgreich regsitriert!', request.ip);
+                            logger.log('user: ' + username + ' wurde erfolgreich regsitriert!', request.connection.remoteAddress);
                             response.send('Registrieren erfolgreich');
+                            sendVerifyMail(username, token, function(mailSent){
+                                if (mailSent) {
+                                    logger.log("verifizierungs-mail gesendet!");
+                                }
+                            })
                         }else{
                             response.send('Registrieren nicht erfolgreich');
                         }
@@ -38,12 +38,12 @@ module.exports = {
     },
 
     verify: function(request, response){
-        var username = request.body.username;
+        let username = request.body.username;
         mysqlConnection.isUserVerified(username, function(isVerified){
             if (!isVerified) {
                 mysqlConnection.verifieUserWithToken(username, request.body.verificationToken, function(verifySuccess){
                     if (verifySuccess) {
-                        logger.log(username + " wurde verifiziert");
+                        logger.log(username + " wurde verifiziert", request.connection.remoteAddress);
                         response.send("verifizierung erfolgreich");
                         response.end();
                     }else{
@@ -59,7 +59,7 @@ module.exports = {
 function sendVerifyMail(username, token, callback){
 	//logger.log("sendVerifyMail is not yet implemented");
 	//return callback(false);
-	var sendMailBat = path.join(__dirname + "/sendMail/sendVerifyMail.bat")+ " " + constants.serverUrl + ":" + constants.port + " " + username + " " + token;
+	let sendMailBat = path.join(process.cwd() + "/sendMail/sendVerifyMail.bat")+ " " + constants.serverUrl + ":" + constants.port + " " + username + " " + token;
 	exec("call " + sendMailBat , function(error, stdout, stderr){
 		if (error) throw error;
 		if (stderr)	console.log(stderr);

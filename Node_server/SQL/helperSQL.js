@@ -1,4 +1,5 @@
 const logger = require('../logger');
+const Helper = require('../RequestHandlers/Helper');
 const globalconnection = require('./Globalconnection');
 
 module.exports = {
@@ -43,7 +44,7 @@ module.exports = {
         globalconnection.checkIsConnected(function(){
             var sql = "select * from mitarbeiter where name = ?";
                 
-            globalconnection.con.query(sql, [_getNameFromEmail(email)], function (err, result) {
+            globalconnection.con.query(sql, [Helper.getNameFromEmail(email)], function (err, result) {
                 if (err) {
                     logger.log(err);
                     return;
@@ -74,13 +75,13 @@ module.exports = {
 
     getPermissionsUser : function(user, callback){
         globalconnection.checkIsConnected(function(){
-            var sql = "SELECT permissions FROM rank, user where user.email = ? and rank.name = user.rank";
+            let sql = "SELECT permissions FROM rank, user where user.email = ? and rank.name = user.rank";
             globalconnection.con.query(sql, [user], function (err, result, fields) {
                 if (err){
                     logger.log( err);
                     return;
                 } 
-                var resultValue = "";
+                let resultValue = "";
     
                 if (result.length > 0) {
                     resultValue = result[0]["permissions"];
@@ -111,5 +112,60 @@ module.exports = {
             });
         });
     },
+
+    getRaumListe: function(callback){      
+        globalconnection.checkIsConnected(function(){
+            var sql = "SELECT raum.name raumName, raum.id raum_id, mitarbeiter.name mit_name, mitarbeiter.id mit_id from raum, mitarbeiter where mitarbeiter.raum_id = raum.id";
+            
+            globalconnection.con.query(sql, function (err, result, fields) {
+                if (err) {
+                    logger.log( err);
+                    return;
+                }
+                let raumliste = [];
+                for (let index = 0; index < result.length; index++) {
+                    if (raumliste.find(raum => raum.id == result[index]['raum_id']) == null) {
+                        raumliste.push({
+                            name: result[index]["raumName"],
+                            id: result[index]["raum_id"],
+                            mitarbeiter: []
+                        });
+                    }
+                    
+                    raumliste.find(raum => raum.id == result[index]['raum_id']).mitarbeiter.push({
+                        id: result[index]["mit_id"],
+                        name: result[index]["mit_name"],
+                        raum_id: result[index]["raum_id"]
+                    })                                        
+                }
+                return callback(raumliste);
+            });
+        });
+    }
 }
 
+
+
+
+var getMitarbeiterFromRaum = function(raum_id, callback){
+    globalconnection.checkIsConnected(function(){
+        var sql = "SELECT DISTINCT id, name, raum_id from mitarbeiter where raum_id = ?";
+            
+        globalconnection.con.query(sql, [raum_id], function (err, result, fields) {
+            if (err) {
+                logger.log( err);
+                return;
+            }
+            var mitarbeiter = [];
+            for (let index = 0; index < result.length; index++) {
+                mitarbeiter.push({
+                    id: result[index]['id'], 
+                    name: result[index]['name'],
+                    raum_id: result[index]['raum_id']
+                });
+            }
+            
+            return callback(mitarbeiter)
+        });
+    })
+}

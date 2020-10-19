@@ -2,7 +2,7 @@ const mySqlConnection = require('../SQL/MySqlConnection');
 
 module.exports = {
     buildEinstellungenSeite: function(einstellungen){
-        var inputs = ''
+        let inputs = ''
         for (let index = 0; index < einstellungen.length; index++) {
 			const element = einstellungen[index];
             // add bool input element
@@ -18,7 +18,7 @@ module.exports = {
     },
 
     einstellungenSpeichern: function(request, response){
-        var einstellungen = [];
+        let einstellungen = [];
         for(const [key, value] of Object.entries(request.body)){
             einstellungen.push({name: key, value: value});
         }
@@ -33,7 +33,7 @@ module.exports = {
 
     getDarkMode: function(request, response){
         if (request.session.username != undefined && request.session.loggedin) {
-            mysqlConnection.getEinstellungValueForUser(request.session.username, 'dark_mode', function(result){
+            mySqlConnection.getEinstellungValueForUser(request.session.username, 'dark_mode', function(result){
                 if (result != null) {
                     if (result.value == '1') {
                         response.send('dark');
@@ -93,7 +93,7 @@ var buildBoolInput = function(element){
 }
 
 var buildIntInput = function(element){
-    var result = '<div class="item">'+
+    let result = '<div class="item">'+
     '<label for="edt'+element.name+'">'+element.name+'</label>' +
     '<input type="number" name="'+element.name+'" id="edt'+element.name+'" value="'+element.value+'">' +
     '</div>';
@@ -101,7 +101,7 @@ var buildIntInput = function(element){
 }
 
 var buildStrInput = function(element){
-    var result = '<div class="item">'+
+    let result = '<div class="item">'+
     '<label for="edt'+element.name+'">'+element.name+'</label>' +
     '<input name="'+element.name+'" id="edt'+element.name+'" value="'+element.value+'">'+
     '</div>';
@@ -110,7 +110,7 @@ var buildStrInput = function(element){
 }
 
 var bulidHeader = function(){
-    var result = '<html>'+
+    let result = '<html>'+
                     '<head>'+
                         '<meta name="viewport" charset="utf-8" content="width=device-width, initial-scale=1.0" />'+
                         '<link rel="stylesheet" href="einstellungen.css">'+
@@ -124,7 +124,7 @@ var bulidHeader = function(){
 
 
 var buildFooter = function(){
-    var result = 
+    let result = 
                 '</form>'+
             '</body>'+
         '</html>';

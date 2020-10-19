@@ -3,10 +3,16 @@ const registerSQL = require('./registerSQL');
 const helperSQL = require('./helperSQL');
 const einstellungenSQL = require('./einstellungenSQL');
 const sqlInterfaceSQL = require('./sqlInterfaceSQL');
+const serverlog = require('./serverlog');
+const adminpageSQL = require('./adminpageSQL');
 
 module.exports = {
     getMitarbeiter: function(callback){      
         helperSQL.getMitarbeiter(callback);
+    },
+
+    getRaumListe: function(callback){
+        helperSQL.getRaumListe(callback);
     },
 
     checkPasswordForUser: function(email, enteredPassword, callback){
@@ -58,6 +64,10 @@ module.exports = {
     // prüft ob user berechtigt ist, "execSql" zu verwenden
     hasPermissionForSQL: function(request, callback){
         sqlInterfaceSQL.hasPermissionForSQL(request, callback);
+    },
+
+    hasPermissionForAdminPage: function(email, callback){
+        adminpageSQL.userHasAdminpagePermission(email, callback);
     },
     
     getallProceduresAndFunctions: function(callback){

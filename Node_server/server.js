@@ -10,6 +10,8 @@ var session = require('express-session');
 var bodyParser = require('body-parser');
 var path = require('path');
 var favicon = require('serve-favicon');
+const HandleAdminpage = require('./RequestHandlers/HandleAdminpage');
+const { con } = require('./SQL/Globalconnection');
 
 // zugriff auf diese urls auch ohne angemeldet zu sein
 // ???.html = html seite 
@@ -17,11 +19,28 @@ var favicon = require('serve-favicon');
 var allowedUrls = ['/auth', '/register', '/register.html', '/salt', '/passwordVergessen.html', '/passwordVergessen', '/verify', '/verify.html', '/style.css', '/script.js'];
 
 var app = express();
+
 app.use(session({
 	secret: Helper.generateRandomString(128),
 	resave: true,
 	saveUninitialized: true
 }));
+
+// aufruf dieser function vor allen get / post / etc.
+app.use(function (req, res, next) {
+	// prüfung ob angemeldet / anmedlung nicht erforderlich ist
+	if (req.session.loggedin || isInAllowedUrls(req.originalUrl)) {
+		next()
+	}else{
+		// falls nicht wird auf login seite weitergeleitet
+		res.sendFile(path.join(__dirname + '/public/login.html'));
+	}
+})
+
+app.use('/components/', express.static(path.join(__dirname +"/public/components/")));
+app.use('/3d/',express.static(path.join(__dirname +"/public/3d/")));
+app.use('/3d/', express.static(path.join(__dirname +"/public/2d/")));
+
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
 
@@ -36,17 +55,6 @@ function isInAllowedUrls(value){
 	}
 	return false;
 }
-
-// aufruf dieser function vor allen get / post / etc.
-app.use(function (req, res, next) {
-	// prüfung ob angemeldet / anmedlung nicht erforderlich ist
-	if (req.session.loggedin || isInAllowedUrls(req.originalUrl)) {
-		next()
-	}else{
-		// falls nicht wird auf login seite weitergeleitet
-		res.sendFile(path.join(__dirname + '/public/login.html'));
-	}
-})
 
 app.post('/register', function(request, response){
 	HanldeRegistration.register(request, response);
@@ -167,6 +175,10 @@ app.get('/getProceduresAndFunctions', function(request, response){
 	})
 })
 
+app.get('/adminpage.html', function(request, response){
+	HandleAdminpage.getAdminPage(request, response);
+})
+
 app.get('/angemeldetAls', function(request, response){
 	response.send(request.session.username);
 })
@@ -183,11 +195,25 @@ app.get('/passwordVergessen.html', function(request, response){
 	response.sendFile(path.join(__dirname + "/public/passwordVergessen.html"));
 });
 
+app.get('/raumliste.txt', function(request, response){
+	mysqlConnection.getRaumListe(function(resultJSON){
+		response.send(JSON.stringify(resultJSON));
+	})
+})
+
+app.get('/adminpageScript.js', function(request, response){
+	response.sendFile(path.join(__dirname + '/public/adminpageScript.js'))
+})
+
 // erstellt mitarbeiter liste aus datenbank einträgen (verwendung für unity programm)
 app.get('/mitarbeiter.txt', function(request, response){
 	mysqlConnection.getMitarbeiter(function(result) {
 		response.send('<pre style="word-wrap: break-word; white-space: pre-wrap;">' + result + '</pre>');
 	})
 }); 
+
+app.get('/adminpage.css', function(request, response){
+	response.sendFile(path.join(__dirname + '/public/adminpage.css'));
+})
 
 app.listen(constants.port, () => console.log(`listening on port ${constants.port}!`))

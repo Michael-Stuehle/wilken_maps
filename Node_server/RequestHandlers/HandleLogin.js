@@ -2,12 +2,14 @@ const Helper = require("./Helper");
 var express = require('express');
 var mysqlConnection = require('../SQL/MySqlConnection');
 const logger = require("../logger");
+var path = require('path');
+const { exec } = require("child_process");
 
 module.exports = {
 
     login: function(request, response) {
-        var username = request.body.username;
-        var password = request.body.password;
+        let username = request.body.username;
+        let password = request.body.password;
         if (username && password) {
             mysqlConnection.isUserVerified(username, function(isverified){
                 if (isverified) {
@@ -58,14 +60,14 @@ module.exports = {
             if (err) {
                 throw err;
             }
-            logger.log('user: '+username+' hat sich abgemeldet');
+            logger.log('user: '+username+' hat sich abgemeldet', request.connection.remoteAddress);
             response.redirect('/');
         });
     },
 
     passwortVergessen: function(request, response){
-        var username = request.body.username;
-        var password = Helper.generateRandomStringSafe(6);	
+        let username = request.body.username;
+        let password = Helper.generateRandomStringSafe(6);	
         mysqlConnection.checkUserExists(username, function(result){
             if (result) {
                 mysqlConnection.set1malPasswort(username, password, function(result){
@@ -73,7 +75,7 @@ module.exports = {
                         sendPasswordVergessenMail(username, password, function(result){
                             if (result) {
                                 response.send('mail wurde gesendet');
-                                logger.log('user: ' + username + ' hat sein passwort zurückgesetzt');
+                                logger.log('user: ' + username + ' hat sein passwort zurückgesetzt',  request.connection.remoteAddress);
                             }
                         })
                     }	
@@ -86,16 +88,16 @@ module.exports = {
     },
 
     changePassword: function(request, response){
-        var username = request.session.username;
-        var password = request.body.password;
-        var newPassword = request.body.newPassword;
+        let username = request.session.username;
+        let password = request.body.password;
+        let newPassword = request.body.newPassword;
     
         mysqlConnection.checkPasswordForUser(username, password, function(result){
             if (result) {
                 mysqlConnection.changePassword(username, newPassword, function(result){
                     if (result) {
                         response.send('passwort erfolgreich geändert!');
-                        logger.log('user: ' + username + ' hat sein passwort geändert');
+                        logger.log('user: ' + username + ' hat sein passwort geändert',  request.connection.remoteAddress);
                     }
                 });			
             }else{
@@ -104,7 +106,7 @@ module.exports = {
                         mysqlConnection.changePassword(username, newPassword, function(result){
                             if (result) {
                                 response.send('passwort erfolgreich geändert!');
-                                logger.log('user: ' + username + ' hat sein passwort geändert');
+                                logger.log('user: ' + username + ' hat sein passwort geändert', request.connection.remoteAddress);
                             }
                         });			
                     }else{
@@ -121,16 +123,14 @@ module.exports = {
 var authErfolgreich = function(request, response, username){
 	request.session.loggedin = true;
 	request.session.username = username;
-	logger.log('user: '+username+' hat sich angemeldet');
-	app.use(express.static("public"));
+	logger.log('user: '+username+' hat sich angemeldet', request.connection.remoteAddress);
 	response.send('Welcome back, ' + request.session.username + '!');
 	response.end();
 }
 
 // ruft externes java programm auf um die mail zu senden (java programm sendet per mail1.rechenzentrum.wilken)
 var sendPasswordVergessenMail = function (username, password, callback){
-	var sendMailBat = path.join(__dirname + "/sendMail/sendPasswortVergessenMail.bat"); 
-	logger.log(sendMailBat);
+	let sendMailBat = path.join(process.cwd() + "/sendMail/sendPasswortVergessenMail.bat"); 
 	exec("call " + sendMailBat + " " + username + " " + password, function(error, stdout, stderr){
 		if (error) throw error;
 		if (stderr)	console.log(stderr);

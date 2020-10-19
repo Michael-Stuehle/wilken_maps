@@ -1,3 +1,4 @@
+var crypto = require('crypto');
 module.exports = {
     
     PBKDF2: function(password, salt){

@@ -66,7 +66,7 @@ module.exports = {
 
 
 var getEinstellungIdFromUser= function(user, callback){
-    checkIsConnected(function(){
+    globalconnection.checkIsConnected(function(){
         globalconnection.con.query('select einstellungen_id from user where user.email=?', [user], function(err, result){
             if (err) {
                 logger.logError(err);
