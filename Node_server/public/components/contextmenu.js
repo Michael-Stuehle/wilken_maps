@@ -36,7 +36,7 @@ export class contextmenu{
             };
             let el = document.elementFromPoint(origin.left, origin.top);
             if (el.classList.contains('item')) {
-                if (!el.classList.contains('selected') && listbox.getSelectedItems().length == 0) {
+                if (!el.classList.contains('selected')) {
                     listbox.setItemSelected(el, {});
                 }
             }

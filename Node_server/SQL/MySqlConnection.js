@@ -70,6 +70,10 @@ module.exports = {
         adminpageSQL.userHasAdminpagePermission(email, callback);
     },
     
+    raumListeSpeichern: function(raumliste, callback){
+        adminpageSQL.raumlisteSpeichern(raumliste, callback);
+    },
+
     getallProceduresAndFunctions: function(callback){
         sqlInterfaceSQL.getAllProcedures(function(procedures){
             sqlInterfaceSQL.getAllFunctions(function(functions){

@@ -25,9 +25,14 @@ h1{
     padding: 10px 0 10px 0;
 }
 
+label{
+    float: left;
+    padding: 15px 15px 15px 0px;
+}
+
 select{
     margin-top: 5px;
-    width: 100%;
+    width: 85%;
     padding: 15px;
     border: 1px solid #dddddd;
     margin-bottom: 15px;

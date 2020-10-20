@@ -14,8 +14,15 @@ module.exports = {
         MySqlConnection.hasPermissionForAdminPage(request.session.username, function(result){
             if (result) {
                 let raumliste = request.body;
-                console.log(raumliste.length);
-                response.send('Speichern erfolgreich');
+                return;
+                MySqlConnection.raumListeSpeichern(raumliste, function(result){
+                    if (result) {
+                        response.send('Speichern erfolgreich');
+                    }else{
+                        response.send('fehler beim speichern');
+                    }
+                })
+                
             }
         })  
     }

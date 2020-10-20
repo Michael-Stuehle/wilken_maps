@@ -3,6 +3,7 @@
     {
         changed: false;
         deleted: false;
+        added: false;
         name: "", 
         id: "",
         mitarbeiter : [
@@ -19,6 +20,8 @@
             {
                 id: "",
                 name: ""
+                raum_id:
+                user (email)
             }
         ]
     }
@@ -78,7 +81,7 @@ window.Aktualisieren = function(){
         const element = raumliste[index];
         const option = document.createElement('option');
         option.value = element.id;
-        option.innerHTML = 'Raum: ' + element.name;
+        option.innerHTML = element.name;
         selectA.appendChild(option);
         selectB.appendChild(option.cloneNode(true));
     }

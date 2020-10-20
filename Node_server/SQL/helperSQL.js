@@ -119,7 +119,10 @@ module.exports = {
 
     getRaumListe: function(callback){      
         globalconnection.checkIsConnected(function(){
-            var sql = "SELECT raum.name raumName, raum.id raum_id, mitarbeiter.name mit_name, mitarbeiter.id mit_id from raum, mitarbeiter where mitarbeiter.raum_id = raum.id";
+            var sql = "SELECT raum.name raumName, raum.id raum_id, mitarbeiter.name mit_name, mitarbeiter.id mit_id, user.email"+
+                      " from raum, mitarbeiter "+ 
+                      " left join user on user.mitarbeiter_id = mitarbeiter.id" +
+                      " where mitarbeiter.raum_id = raum.id";
             
             globalconnection.con.query(sql, function (err, result, fields) {
                 if (err) {
@@ -135,11 +138,17 @@ module.exports = {
                             mitarbeiter: []
                         });
                     }
+
+                    let user = result[index]['email'];
+                    if (user == undefined || user == null) {
+                        user = "";
+                    }
                     
                     raumliste.find(raum => raum.id == result[index]['raum_id']).mitarbeiter.push({
                         id: result[index]["mit_id"],
                         name: result[index]["mit_name"],
-                        raum_id: result[index]["raum_id"]
+                        raum_id: result[index]["raum_id"],
+                        user: user
                     })                                        
                 }
                 return callback(raumliste);

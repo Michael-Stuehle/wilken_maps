@@ -66,8 +66,11 @@ export class listbox{
             self.setAktuellerRaum();
             let childNodes = [];
             for (let index = 0; index < self.raum.mitarbeiter.length; index++) {
-                const element = self.raum.mitarbeiter[index];
-                let item = self.createSelectableItem(element.name, element.id, element.raum_id);
+                const mitarbeiter = self.raum.mitarbeiter[index];
+                if (mitarbeiter.deleted) {
+                    continue; // wenn als deleted geflagt wurde einfach ignorieren
+                }
+                let item = self.createSelectableItem(mitarbeiter.name, mitarbeiter.id, mitarbeiter.raum_id, mitarbeiter.user);
                 childNodes.push(item);
             }
             for (let index = 0; index < childNodes.length; index++) {
@@ -97,13 +100,14 @@ export class listbox{
             self.container.setAttribute('raum_id', raum_id)
         }
 
-        this.createSelectableItem = function(text, mitarbeiter_id, raum_id){
+        this.createSelectableItem = function(text, mitarbeiter_id, raum_id, user_email){
             let item = document.createElement('div');
             item.classList.add('item');
             item.innerHTML = text;
             item.setAttribute('mitarbeiter_id', mitarbeiter_id);
             item.setAttribute('raum_id', raum_id);
-            item.setAttribute('draggable', true)
+            item.setAttribute('draggable', true);
+            item.setAttribute('user', user_email);
             return item;
         }
 
