@@ -1,13 +1,14 @@
 function setDarkMode(darkmode){
     let root = document.documentElement;
     if (darkmode) {
-        root.style.setProperty('--btnBackgroundColor', '#0069b4');
-        root.style.setProperty('--btnColor', '#ffffff');
-        root.style.setProperty('--btnHoverColor',  '#70b6e7');
-        root.style.setProperty('--textColor', '#ffffff')
+        root.style.setProperty('--btnBackgroundColor', '#144d74');
+        root.style.setProperty('--btnColor', '#d1cfcc');
+        root.style.setProperty('--btnHoverColor',  '#175680');
+        root.style.setProperty('--textColor', '#a59f97')
         root.style.setProperty('--backgroundColor', '#202020');
-        root.style.setProperty('--settingIconColor', '#757575');    
-        
+        root.style.setProperty('--settingIconColor', '#c5c2bf');    
+        root.style.setProperty('--linkColor', '#2e83e6');
+        root.style.setProperty('--borderColor', '#34383b');
     }else {
         root.style.setProperty('--btnBackgroundColor', '#0069b4');
         root.style.setProperty('--btnColor', '#ffffff');
@@ -15,6 +16,8 @@ function setDarkMode(darkmode){
         root.style.setProperty('--textColor', '#4d4d4d');
         root.style.setProperty('--backgroundColor', '#ffffff');
         root.style.setProperty('--settingIconColor', '#141414');
+        root.style.setProperty('--linkColor', '#0000ee');
+        root.style.setProperty('--borderColor', '#dddddd');
     }
 }
 

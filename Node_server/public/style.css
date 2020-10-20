@@ -7,6 +7,11 @@
   --backgroundColor: #ffffff;
   --bodercolor: #dddddd;
   --settingIconColor: #141414;
+  --linkColor: #0000ee;
+}
+
+a{
+  color: var(--linkColor);
 }
 
 body {
