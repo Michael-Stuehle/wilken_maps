@@ -85,7 +85,11 @@ module.exports = {
     
                 if (result.length > 0) {
                     resultValue = result[0]["permissions"];
-                }               
+                }            
+                if (resultValue == null) {
+                    resultValue = "";
+                }
+                
                 return callback(resultValue)
             });
         })

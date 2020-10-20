@@ -4,6 +4,7 @@ const verschluesselung = require ('../verschluesselung');
 const helperSQL = require('./helperSQL');
 const Helper = require('../RequestHandlers/Helper');
 const { con } = require('./Globalconnection');
+const { getNameFromEmail } = require('../RequestHandlers/Helper');
 
 module.exports = {
     registerUser: function(email, password, token, callback){
@@ -41,23 +42,12 @@ module.exports = {
                                     logger.logError('user: ' + email + ' konnte nicht angelegt werden', err);
                                     return callback(false);                    
                                 }else{
-                                    getRaumId(connection, email, function(raumID){
-                                        connection.query('Update einstellungen set raum_id = ? where id = (select einstellungen_id from user where email = ?);',
-                                        [raumID, email], function(err){
-                                            if (err) {
-                                                connection.rollback();
-                                                logger.logError(err);
-                                                return callback(false);
-                                            }else{
-                                                connection.commit(function(err){
-                                                    if (err){ 
-                                                        logger.logError(err);
-                                                    }else{
-                                                        return callback(true);
-                                                    }
-                                                })
-                                            }
-                                        })
+                                    connection.commit(function(err){
+                                        if (err){ 
+                                            logger.logError(err);
+                                        }else{
+                                            return callback(true);
+                                        }
                                     })
                                 }
                             })                            
@@ -110,7 +100,7 @@ module.exports = {
 
 var checkMitarbeiter = function(connection, email, next){
     helperSQL.checkMitarbeiterExists(email, function(exists){
-        if (!exists) {
+        if (!exists && getNameFromEmail(email) != email) { // email besteht aus echtem namen
             connection.query("Insert INTO mitarbeiter (id, raum_id, name) values (NULL, (select id from raum LIMIT 1), ?)", 
                 [Helper.getNameFromEmail(email)], function (err) {
                 if (err) {
