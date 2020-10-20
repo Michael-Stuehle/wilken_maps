@@ -12,6 +12,8 @@ module.exports = {
                 inputs += buildIntInput(element);
             }else if (element.typ == 'string'){
                 inputs += buildStrInput(element);
+            }else if(element.typ == 'raum'){
+                inputs += buildRaumEinstellung(element);
             }
         }
         return bulidHeader() + inputs + buildSubmitBtn() + buildFooter();
@@ -74,6 +76,21 @@ var buildClientJS = function(){
 
 var buildSubmitBtn = function(){
     let retVal = '<input type="submit" id="btn-submit" value="Speichern" onclick="DoSubmit()"/>';
+    return retVal;
+}
+
+var buildRaumEinstellung = function(element){
+    var retVal = '<div class="item select">'+
+    '<select id="raum-select" name="raum">'
+    for (let index = 0; index < element.options.length; index++) {
+        const opt = element.options[index];
+        if (element.value == opt.id) {
+            retVal += '<option value=' + opt.id + ' selected>Raum: '+opt.value+'</option>'
+        }else{
+            retVal += '<option value=' + opt.id + '>Raum: '+opt.value+'</option>'
+        }
+    }
+    retVal += '</select>' + '</div>';;
     return retVal;
 }
 

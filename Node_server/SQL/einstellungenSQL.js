@@ -10,6 +10,9 @@ module.exports = {
         getEinstellungenForUserFunc(user, function(einstellungen){
             for (let index = 0; index < einstellungen.length; index++) {
                 const element = einstellungen[index];
+                if (element.name == undefined) {
+                    continue;
+                }               
                 if (element.name = einstellungName) {
                     return callback(element);
                 }
@@ -26,13 +29,18 @@ module.exports = {
                 connection.beginTransaction(function(err){
                     if (err) {
                         logger.logError(err);
+                        
                         connection.rollback(function (err){
                             logger.logError(err);
-                        });    
+                        });   
                     }
                     for (let index = 0; index < alteEinstellungen.length; index++) {
                         let oldElement = alteEinstellungen[index];
                         let newElement = {};
+
+                        if (oldElement.name == undefined || oldElement.name == null || oldElement.name == "") {
+                            continue;
+                        }
 
                         let newIndex = findEinstellungIndex(einstellungen, oldElement.name);
                         if (newIndex == -1) { // spezialfall checkbox false
@@ -44,16 +52,29 @@ module.exports = {
                         }
 
                         let sql = 'update einstellungen set '+newElement.name+' = ? where id = ?';
-                        getEinstellungIdFromUser(user, function(id){
-                            connection.query(sql, [newElement.value, id], function(err){
+
+                        if (oldElement.typ == 'raum') {
+                            sql = 'update mitarbeiter set raum_id = ? where id = (select mitarbeiter_id from user where email = ?)';
+                            connection.query(sql, [newElement.value, user], function(err){
                                 if (err) {
                                     logger.logError(err);
                                     connection.rollback(function (err){
                                         logger.logError(err);
-                                    });    
+                                    });  
                                 }
                             })
-                        })                   
+                        }else{
+                            getEinstellungIdFromUser(user, function(id){
+                                connection.query(sql, [newElement.value, id], function(err){
+                                    if (err) {
+                                        logger.logError(err);
+                                        connection.rollback(function (err){
+                                            logger.logError(err);
+                                        });  
+                                    }
+                                })
+                            })      
+                        }             
                     }
                 });
                 connection.commit(function(){
@@ -65,7 +86,7 @@ module.exports = {
 }
 
 
-var getEinstellungIdFromUser= function(user, callback){
+var getEinstellungIdFromUser = function(user, callback){
     globalconnection.checkIsConnected(function(){
         globalconnection.con.query('select einstellungen_id from user where user.email=?', [user], function(err, result){
             if (err) {
@@ -81,6 +102,50 @@ var getEinstellungIdFromUser= function(user, callback){
     })
 };
 
+var getraueme = function(callback){
+    var sql = "select distinct id, name from raum";
+                
+    globalconnection.con.query(sql, function (err, result, fields) {
+        if (err) {
+            logger.log(err);
+            return;
+        }
+        var resultValue = [];
+        for (let index = 0; index < result.length; index++) {
+           resultValue.push({
+                id: result[index]['id'],
+                value: result[index]['name']
+           });
+        }
+        return callback(resultValue)
+    });
+}
+
+var getRaumEinstellung = function(user, callback){
+    var sql = "select raum.id raum_id, raum.name, mitarbeiter.id mit_id from raum, mitarbeiter, user where user.mitarbeiter_id = mitarbeiter.id and mitarbeiter.raum_id = raum.id and user.email = ?";
+                
+    globalconnection.con.query(sql, [user], function (err, result, fields) {
+        if (err) {
+            logger.log(err);
+            return;
+        }
+        var resultValue = {};
+        getraueme(function(raueme){
+            if (result.length > 0) {
+                resultValue = {
+                    typ: 'raum',
+                    name: 'raum',
+                    value: result[0]['raum_id'],
+                    id: result[0]['mit_id'],
+                    options: raueme
+                }
+             }
+             return callback(resultValue)
+        })
+        
+    });
+}
+
 var getEinstellungenForUserFunc = function(user, callback){
     var sql = "select einstellungen.* from einstellungen, user where einstellungen.id = user.einstellungen_id and user.email = ? ";
                 
@@ -90,26 +155,30 @@ var getEinstellungenForUserFunc = function(user, callback){
             return;
         }
         var resultValue = []
-        if (result.length > 0) {
-            for (let index = 0; index < fields.length; index++) {
-                if (fields[index].name == 'id' || fields[index].name == 'user_id') {
-                    continue;
-                }
-                let obj = {};
-                obj.name = fields[index].name;
-                obj.value = result[0][fields[index].name];
-
-                if (fields[index].length == 1) {
-                    obj.typ = 'bool';
-                }else if (fields[index].type == 3){
-                    obj.typ = 'int';
-                }else{
-                    obj.typ = 'string';
-                }
-                resultValue.push(obj);
-            }         
-        }    
-        return callback(resultValue)
+        getRaumEinstellung(user, function(raumeinst){
+            resultValue.push(raumeinst);
+            if (result.length > 0) {
+                for (let index = 0; index < fields.length; index++) {
+                    if (fields[index].name == 'id' || fields[index].name == 'user_id') {
+                        continue;
+                    }
+                    let obj = {};
+                    obj.name = fields[index].name;
+                    obj.value = result[0][fields[index].name];
+    
+                    if (fields[index].length == 1) {
+                        obj.typ = 'bool';
+                    }else if (fields[index].type == 3){
+                        obj.typ = 'int';
+                    }else{
+                        obj.typ = 'string';
+                    }
+                    resultValue.push(obj);
+                }         
+            }    
+            return callback(resultValue)
+        })
+        
     });
 }
 

@@ -50,6 +50,10 @@ input{
     padding: 15px;
 }
 
+.item.select{
+    padding: 0;
+}
+
 .form input[type="submit"] {
     width: 100%;
     padding: 15px;
@@ -65,3 +69,13 @@ input{
   .form input[type="submit"]:hover {
     background-color: var(--btnHoverColor);
   }
+
+  select{
+    width: 100%;
+    padding: 15px;
+    height: 100%;
+    border: 1px solid #dddddd;
+    box-sizing: border-box;
+    background-color: var(--backgroundColor);
+    color: var(--textColor);
+}
