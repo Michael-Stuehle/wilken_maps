@@ -30,17 +30,30 @@ import { listbox } from "./components/listbox.js";
 import { contextmenu } from "./components/contextmenu.js";
 
 window.raumliste = []; // alle räume mit mitarbeitern zugeteilt
-window.mitarbeiterInRaum = []; // mitarbeiter, die in einem bestimmten raum sind
-window.restlicheMitarbeiter = []; // alle mitarbeiter, die nicht in obiger liste sind
 
-window.listboxA = new listbox(document.getElementById('A'), document.getElementById('raumSelectA'));
-window.listboxB = new listbox(document.getElementById('B'), document.getElementById('raumSelectB'));
+window.listboxA = new listbox(document.getElementById('A'), document.getElementById('raumSelectA'), true, function(items){
+    if (items.length > 0) {
+        document.getElementById("btn-rechts").disabled = false;
+    }else{
+        document.getElementById("btn-rechts").disabled = true;
+    }
+});
+window.listboxB = new listbox(document.getElementById('B'), document.getElementById('raumSelectB'), false, function(items){
+    if (items.length > 0) {
+        document.getElementById("btn-links").disabled = false;
+    }else{
+        document.getElementById("btn-links").disabled = true;
+    }
+});
 
 window.contextMenuListboxA = new contextmenu(document.getElementById('menu'), window.listboxA);
+window.contextMenuListboxB = new contextmenu(document.getElementById('menu'), window.listboxB);
 
-window.onload = function(){
+window.addEventListener("load", function(){
     DatenNeuLaden();
-}
+});
+
+
 
 function DatenNeuLaden(){
     fetch("/raumliste.txt", {
@@ -75,9 +88,7 @@ window.Aktualisieren = function(){
 }
 
 
-
-
-function Speichern(){
+window.Speichern = function(){
     fetch("/raumliste", {
         method: "POST",
         body: JSON.stringify(raumliste),
@@ -111,6 +122,27 @@ function editMitarbeiter(id, name_neu){
         }       
     }
 }
+
+window.moveItemsRechts = function(){
+    let items = listboxA.getSelectedItems();
+    for (let index = 0; index < items.length; index++) {
+        const element = items[index];
+        if (window.moveMitarbeiterToRaum(element.getAttribute('mitarbeiter_id'), listboxB.container.getAttribute('raum_id'))){
+            window.Aktualisieren();
+        }
+    }
+}
+
+window.moveItemsLeft = function(){
+    let items = listboxB.getSelectedItems();
+    for (let index = 0; index < items.length; index++) {
+        const element = items[index];
+        if (window.moveMitarbeiterToRaum(element.getAttribute('mitarbeiter_id'), listboxA.container.getAttribute('raum_id'))){
+            window.Aktualisieren();
+        }
+    }
+}
+
 
 window.moveMitarbeiterToRaum = function(mitarbeiter_id, raum_id){
     for (let index = 0; index < raumliste.length; index++) {

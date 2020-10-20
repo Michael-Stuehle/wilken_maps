@@ -2,16 +2,21 @@ var dragSrcListbox = {};
 
 export class listbox{
     
-    constructor(container, select){
+    constructor(container, select, left, onselectItem){
         this.container = container;
         this.select = select;
         this.raum = {};
+        this.isLeft = left;
+        this.onselectItem = onselectItem;
+        var self = this;
 
         this.select.onchange = function(){
             self.Aktualisieren();
-        }
+        }       
         
-        var self = this;
+        this.isLeftListbox = function(){
+            return self.isLeft;
+        }
 
         this.deSelectAll = function(){
             self.container.querySelectorAll('div').forEach(item =>
@@ -27,15 +32,17 @@ export class listbox{
 
         this.setItemSelected = function(item, event){
             self.scrollInView(item);
+            let wasSelected = item.classList.contains('selected');
             if (!event.ctrlKey && !event.shiftKey) {
                 self.deSelectAll(item.parentNode);
             }
-            if (item.classList.contains('selected')) {
+            if (wasSelected) {
                 item.classList.remove('selected');
             }else{
                 item.classList.add('selected');
                 self.lastSelectedItem = item;
             }
+            self.onselectItem(self.getSelectedItems())
         }
 
         this.scrollInView = function (element) {
@@ -76,6 +83,7 @@ export class listbox{
                 } 
                 self.container.appendChild(element);
             }
+            self.onselectItem(self.getSelectedItems());
         }
 
         this.setAktuellerRaum = function(){
@@ -211,9 +219,7 @@ export class listbox{
             }
             
             return false;
-          }
-
-
+        }
         
         self.HookupEvents();        
     }    

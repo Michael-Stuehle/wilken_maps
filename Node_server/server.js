@@ -95,6 +95,10 @@ app.post('/auth', function(request, response) {
 	HandleLogin.login(request, response);
 });
 
+app.post('/raumliste', function(request, response){
+	HandleAdminpage.Speichern(request, response);
+})
+
 app.get('/', function(request, response) {
 	response.sendFile(path.join(__dirname + '/public/login.html'));
 });

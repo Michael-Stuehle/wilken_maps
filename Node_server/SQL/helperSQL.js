@@ -123,7 +123,6 @@ module.exports = {
                     return;
                 }
                 let raumliste = [];
-                raumliste.push({id: "", name: "", mitarbeiter: []}); // leerer raum
                 for (let index = 0; index < result.length; index++) {
                     if (raumliste.find(raum => raum.id == result[index]['raum_id']) == null) {
                         raumliste.push({

@@ -40,12 +40,19 @@ select{
     width: 100%;
     background: var(--backgroundColor);
     color: var(--textColor);
+    animation: selectAnimReverse 0.1s linear;
 }
 
 .item.selected{
     background-color: var(--btnHoverColor);
     animation: selectAnim 0.1s linear;
 }
+
+@keyframes selectAnimReverse {
+    from {background-color: var(--btnHoverColor);}
+    to {background-color: var(--backgroundColor);}
+}
+
 
 @keyframes selectAnim {
     from {background-color: var(--backgroundColor);}
@@ -70,7 +77,7 @@ div{
 
 
 button {
-    margin: auto;
+    margin: 10px;
     padding: 15px;
     background-color: var(--btnBackgroundColor);
     border: 0;
@@ -80,12 +87,18 @@ button {
     color: var(--btnColor);
 }
 
+button:disabled{
+    cursor: not-allowed;
+    pointer-events:none; /*This makes it not clickable*/
+    opacity:0.6;         /*This grays it out to look disabled*/
+}
+
 button:hover {
     background-color: var(--btnHoverColor);
 }
 
 .menu {
-    width: 120px;
+    width: 170px;
     box-shadow: 0 4px 5px 3px rgba(0, 0, 0, 0.2);
     position: absolute;
     display: none;
@@ -95,7 +108,7 @@ button:hover {
     display: flex; 
     flex-direction: column; 
     justify-content: space-between; 
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     list-style: none;
     padding: 0px;
     margin: 0px;
@@ -106,6 +119,14 @@ button:hover {
     padding: 10px 40px 10px 20px;
     cursor: pointer;
 }
+
+.disabled {
+    pointer-events:none; /*This makes it not clickable*/
+    opacity:0.6;         /*This grays it out to look disabled*/
+}
+
 .menu .menu-options .menu-option:hover {
     background: rgba(0, 0, 0, 0.2);
 }
+
+
