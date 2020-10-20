@@ -4,49 +4,23 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css">	
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="/script.js"></script>	
     <title>Wilken Maps Homepage</title>
     <style>
       button{
         width: 45%;
         height: 40px;
-      }
-
-     .sqlButton {
-        margin-top: 5%;
-        float: none;
-      }
-
-      .startButton {
-        margin-top: 30px;
-        margin-left: 10%;
-        float: left;
-        background-color: var(--btnBackgroundColor);
-      }
-
-      .centerButton{
-        float: left;
-        margin-top: 30px;
-      }
-
-      @media only screen and (max-width: 620px) {
-        /* For mobile phones: */
-        .startButton,
-        .centerButton,
-        .sqlButton {
-          width: 70%;
-          float: none;
-        }
-
-        .startButton {
-          margin-left: 0px;
-        }
+        margin: auto;
+        margin-top: 10px;
+        min-width: 200px;
       }
     </style>
   </head>
   <body style="text-align: center">
     <h1>Homepage</h1>
-    <div>
+    <i class="fa fa-cog fa-3x rotate settingsIcon" aria-hidden="true"  onclick="openSettings(this)" style="color: var(--settingIconColor);"></i>
+    <div style="display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap;">
       <button onclick="start2dKarte()" class="centerButton">
         2d Karte Starten
       </button>
@@ -54,14 +28,21 @@
         Wilken Maps Starten
       </button>
       <button onclick="gotoSql()" class="sqlButton">SQL Interface</button>
+      <button onclick="gotoAdminpage()">
+        Adminseite
+      </button>
     </div>
 
     <div>
       <a href="/changePassword.html" style="position: absolute; bottom: 10px; right: 10px" >Passwort ändern</a>
       <a href="/logout" style="position: absolute; top: 10px; right: 10px" >Abmelden</a>
     </div>
-
     <script>
+      function openSettings(elem){
+        elem.classList.add('down');
+        window.location.href = getUrl() + "/einstellungen.html";
+      }
+
       function startWilkenMaps() {
         window.location.href = getUrl() + "/3d/index.html";
       }
@@ -72,6 +53,14 @@
 
       function gotoSql() {
         window.location.href = getUrl() + "/sql.html";
+      }
+
+      function gotoAdminpage(){
+        window.location.href = getUrl() + '/adminpage.html';
+      }
+
+      function checkPerms(){
+
       }
 
       function getUrl() {

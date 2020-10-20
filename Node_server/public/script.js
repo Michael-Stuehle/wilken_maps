@@ -5,13 +5,16 @@ function setDarkMode(darkmode){
         root.style.setProperty('--btnColor', '#ffffff');
         root.style.setProperty('--btnHoverColor',  '#70b6e7');
         root.style.setProperty('--textColor', '#ffffff')
-        root.style.setProperty('--backgroundColor', '#202020')      
+        root.style.setProperty('--backgroundColor', '#202020');
+        root.style.setProperty('--settingIconColor', '#757575');    
+        
     }else {
         root.style.setProperty('--btnBackgroundColor', '#0069b4');
         root.style.setProperty('--btnColor', '#ffffff');
         root.style.setProperty('--btnHoverColor',  '#70b6e7');
-        root.style.setProperty('--textColor', '#4d4d4d')
-        root.style.setProperty('--backgroundColor', '#ffffff')    
+        root.style.setProperty('--textColor', '#4d4d4d');
+        root.style.setProperty('--backgroundColor', '#ffffff');
+        root.style.setProperty('--settingIconColor', '#141414');
     }
 }
 

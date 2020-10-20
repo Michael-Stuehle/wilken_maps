@@ -10,10 +10,11 @@ module.exports = {
         getEinstellungenForUserFunc(user, function(einstellungen){
             for (let index = 0; index < einstellungen.length; index++) {
                 const element = einstellungen[index];
+
                 if (element.name == undefined) {
                     continue;
-                }               
-                if (element.name = einstellungName) {
+                }            
+                if (element.name == einstellungName) {
                     return callback(element);
                 }
             }

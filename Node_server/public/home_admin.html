@@ -2,13 +2,13 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet" href="style.css">		
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css">	
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="/script.js"></script>
+    <script src="/script.js"></script>	
     <title>Wilken Maps Homepage</title>
     <style>
-      button{
+    button{
         width: 45%;
         height: 40px;
         margin: auto;
@@ -20,17 +20,21 @@
   <body style="text-align: center">
     <h1>Homepage</h1>
     <i class="fa fa-cog fa-3x rotate settingsIcon" aria-hidden="true" onclick="openSettings(this)" style="color: var(--settingIconColor);"></i>
-    <div>
-      <a href="/changePassword.html" style="position: absolute; bottom: 10px; right: 10px">Passwort ändern</a>
-      <a href="/logout" style="position: absolute; top: 10px; right: 10px">Abmelden</a>
-    </div>
-    <div  style="display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap;">
+    <div style="display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap;">
       <button onclick="start2dKarte()" class="centerButton">
         2d Karte Starten
       </button>
-      <button onclick="startWilkenMaps()" class="startButton">
+      <button onclick="startWilkenMaps()" class="startButton" >
         Wilken Maps Starten
       </button>
+      <button onclick="gotoAdminpage()">
+        Adminseite
+      </button>
+    </div>
+
+    <div>
+      <a href="/changePassword.html" style="position: absolute; bottom: 10px; right: 10px" >Passwort ändern</a>
+      <a href="/logout" style="position: absolute; top: 10px; right: 10px" >Abmelden</a>
     </div>
 
     <script>
@@ -41,6 +45,14 @@
 
       function startWilkenMaps() {
         window.location.href = getUrl() + "/3d/index.html";
+      }
+
+      function start2dKarte(){
+        window.location.href = getUrl() + "/2d/index.html";
+      }
+
+      function gotoAdminpage(){
+        window.location.href = getUrl() + '/adminpage.html';
       }
 
       function getUrl() {

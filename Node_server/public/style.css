@@ -6,6 +6,7 @@
   --textColor: #4d4d4d;
   --backgroundColor: #ffffff;
   --bodercolor: #dddddd;
+  --settingIconColor: #141414;
 }
 
 body {
@@ -16,6 +17,13 @@ body {
     max-width: 650px;
     font-family: var(--mainFont);
     background-color: var(--backgroundColor);
+}
+
+.settingsIcon{
+  position: absolute; 
+  top: 20px; 
+  left: 30px;
+  color: var(--settingIconColor);
 }
 
 button{
@@ -31,6 +39,20 @@ button{
 button:hover {
     background-color: var(--btnHoverColor);
 }
+
+.rotate{
+  -moz-transition: all 0.2s linear;
+  -webkit-transition: all 0.2s linear;
+  transition: all 0.2s linear;
+}
+
+.rotate.down{
+  -ms-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
 
 .vertical-center {
     margin: 0;

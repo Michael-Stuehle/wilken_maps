@@ -66,7 +66,8 @@ var buildClientJS = function(){
                 ' if (resultText === "") {'+
                   // do nothing
                 '} else {'+
-                    'window.alert(resultText);'+
+                    'location.reload();' +
+                    'setTimeout(function(){ window.alert(resultText); }, 100);'+
                 '}'+
             '}, 10);'+
         '}'+

@@ -100,7 +100,7 @@ app.post('/raumliste', function(request, response){
 })
 
 app.get('/', function(request, response) {
-	response.sendFile(path.join(__dirname + '/public/login.html'));
+	response.redirect('/home');
 });
 
 app.get('/style.css', function(request, response){
@@ -119,9 +119,15 @@ app.get('/home', function(request, response) {
 	mysqlConnection.hasPermissionForSQL(request, function(result){
 		if (result) {
 			response.sendFile(path.join(__dirname + '/public/home_sql.html'));
-		}else{
-			response.sendFile(path.join(__dirname + '/public/home.html'));
 		}
+		mysqlConnection.hasPermissionForAdminPage(request.session.username, function(hasPerm){
+			if (hasPerm) {
+				response.sendFile(path.join(__dirname + '/public/home_admin.html'));
+			}else{
+				response.sendFile(path.join(__dirname + '/public/home.html'));
+			}
+		})
+		
 	});
 });
 
