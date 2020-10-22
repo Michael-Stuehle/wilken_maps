@@ -37,7 +37,7 @@ async function doRaumlisteSpeichern(connection, raumliste, callback){
         const raum = raumliste[index];
         for (let index_raum = 0; index_raum < raum.mitarbeiter.length && ok; index_raum++) {
             const mitarbeiter = raum.mitarbeiter[index_raum];
-            if (mitarbeiter.changed) {
+            if (mitarbeiter.edited) {
                 ok = await mitarbeiterChanged(connection, mitarbeiter);
             }else if(mitarbeiter.deleted){
                 ok = await mitarbeiterDeleted(connection, mitarbeiter);

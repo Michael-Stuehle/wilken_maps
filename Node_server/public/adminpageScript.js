@@ -1,7 +1,7 @@
 /*
 [
     {
-        changed: false;
+        edited: false;
         deleted: false;
         added: false;
         name: "", 
@@ -83,8 +83,18 @@ window.Aktualisieren = function(){
         const option = document.createElement('option');
         option.value = element.id;
         option.innerHTML = element.name;
+        const option2 = option.cloneNode(true);
+
+        if (selectA.getAttribute('_selected') == option.value) {
+            option.setAttribute('selected', true);
+        }
+
+        if (selectB.getAttribute('_selected') == option2.value) {
+            option2.setAttribute('selected', true);
+        }
+
         selectA.appendChild(option);
-        selectB.appendChild(option.cloneNode(true));
+        selectB.appendChild(option2);
     }
 
     listboxA.Aktualisieren();
@@ -111,6 +121,7 @@ function editRaum(raum_id, raum_name_neu){
         const element = raumliste[index];
         if (element.id == raum_id) {
             element.name = raum_name_neu;
+            element.edited = true;
             break;
         }       
     }
@@ -123,6 +134,7 @@ window.editMitarbeiter = function(id, name_neu){
             const element = raum.mitarbeiter[index_raum];
             if (element.id == id) {
                 element.name = name_neu;
+                element.edited = true;
                 return true;
             }   
         }       
@@ -158,7 +170,7 @@ window.moveMitarbeiterToRaum = function(mitarbeiter_id, raum_id){
             const mitarbeiter = raum.mitarbeiter[index_raum];
             if (mitarbeiter.id == mitarbeiter_id) {
                 mitarbeiter.raum_id = raum_id;
-                mitarbeiter.changed = true;
+                mitarbeiter.edited = true;
                 raum.mitarbeiter = raum.mitarbeiter.filter(el => el !== mitarbeiter);
                 window.getRaumById(raum_id).mitarbeiter.push(mitarbeiter);
                              

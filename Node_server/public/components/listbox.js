@@ -11,6 +11,7 @@ export class listbox{
         var self = this;
 
         this.select.onchange = function(){
+            this.setAttribute('_selected', this.value)
             self.Aktualisieren();
         }       
         
@@ -121,6 +122,7 @@ export class listbox{
             for (let index = 0; index < raumliste.length; index++) {
                 const raum = raumliste[index];
                 if (raum.id == mitarbeiterObj.raum_id) {
+                    mitarbeiterObj.added = true;
                     raum.mitarbeiter.push(mitarbeiterObj);
                     window.Aktualisieren();
                 }
