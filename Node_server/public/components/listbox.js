@@ -36,6 +36,11 @@ export class listbox{
             let wasSelected = item.classList.contains('selected');
             if (!event.ctrlKey && !event.shiftKey) {
                 self.deSelectAll(item.parentNode);
+            }else if(event.shiftKey){
+                if (self.lastSelectedItem != undefined && self.lastSelectedItem != null) { // falls 1. item zwischengespeichert
+                    self.selectAllItemsBetween(self.lastSelectedItem, item); // alles zwischen gespeichertem und item auswähelen
+                    self.lastSelectedItem = null; // zwischenspeicher zurücksetzen
+                }
             }
             if (wasSelected) {
                 item.classList.remove('selected');
@@ -43,7 +48,30 @@ export class listbox{
                 item.classList.add('selected');
                 self.lastSelectedItem = item;
             }
+            
             self.onselectItem(self.getSelectedItems())
+        }
+
+        this.selectAllItemsBetween = function(first, last){
+            let allItems = self.container.children;
+            for (let index = 0; index < allItems.length; index++) {
+                let element = allItems[index];
+                if (element === first) {
+                    do{
+                        if (!element.classList.contains('selected')) {
+                            element.classList.add('selected');
+                        }   
+                        element = allItems[++index];
+                    }while (element !== last);
+                }else if(element === last){
+                    do{
+                        if (!element.classList.contains('selected')) {
+                            element.classList.add('selected');
+                        }                        
+                        element = allItems[++index];
+                    }while (element !== first);
+                } 
+            }
         }
 
         this.scrollInView = function (element) {
@@ -204,7 +232,7 @@ export class listbox{
         }
 
         this.selectNext = function(event){
-            let items = self.container.childNodes;
+            let items = self.container.children;
             for (let index = 0; index < items.length-1; index++) {
                 const element = items[index];
                 if (element == self.lastSelectedItem) {
@@ -215,7 +243,7 @@ export class listbox{
         }
 
         this.selectPrev = function(event){
-            let items = self.container.childNodes;
+            let items = self.container.children;
             for (let index = items.length-1; index > 0; index--) {
                 const element = items[index];
                 if (element == self.lastSelectedItem) {
