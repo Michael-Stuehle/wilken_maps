@@ -3,7 +3,7 @@ import { popupForm } from "./components/popupForm.js";
 window.popupEditMitarbeiter = new popupForm(
     document.getElementById('editMitarbeiterPopup'), 
     document.getElementById('btnMitarbeiterPopupClose'), 
-    null, 
+    document.getElementById('btnMitarbeiterPopupOK'), 
     (popup, actionWasAdd) => mitarbeiterEditBeforeClose(popup, actionWasAdd), // actionWasAdd: true=add  | false=edit 
     (popup, item) => mitarbeiterEditBeforeShow(popup, item));
 
@@ -67,7 +67,7 @@ var mitarbeiterEditBeforeClose = function(popup, wasAdd){
     if (wasAdd) {
         listbox.addMitarbeiter(newMitarbeiter);
     }else{
-        listbox.editMitarbeiter(popup.itemValues.mitarbeiter_id);
+        listbox.editMitarbeiter(popup.itemValues.mitarbeiter_id, newMitarbeiter.raum_id);
     }
 }
 

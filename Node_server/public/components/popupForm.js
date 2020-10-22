@@ -15,7 +15,7 @@ export class popupForm{
     }
   
     this.hideModal = function(res){
-      if(res ||true){
+      if(res){
         self.onBeforeClose(self, self.addItem);
       }
       self.modal.style.display = "none"; 
@@ -26,10 +26,10 @@ export class popupForm{
       self.hideModal(false);
     }
 
-    /*this.okBtn.onclick = function(){
+    this.okBtn.onclick = function(){
       self.hideModal(true);
     }
-    */
+    
     // When the user clicks anywhere outside of the modal, close it
     window.addEventListener('click', function(event) {
       if (event.target == self.modal) { // modal heist ausgegrauter bereich

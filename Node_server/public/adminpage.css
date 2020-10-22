@@ -121,6 +121,7 @@ div{
     padding: 20px;
     border: 1px solid var(--borderColor);
     width: 60%;
+    height: 30%;
 }
 
 .modal input{
@@ -129,7 +130,7 @@ div{
 
 /* The Close Button */
 .close {
-    color: #aaaaaa;
+    color: #ff0000;
     float: right;
     font-size: 28px;
     font-weight: bold;
@@ -137,9 +138,23 @@ div{
 
 .close:hover,
 .close:focus {
-    color: #000;
+    color: rgb(155, 0, 0);
     text-decoration: none;
     cursor: pointer;
+}
+
+.ok{
+    color: #00ff00;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;  
+}
+
+.ok:hover,
+.ok:focus{
+    color: rgb(0, 151, 8);
+    text-decoration: none;
+    cursor: pointer; 
 }
 
 .modal-content-flexbox{
