@@ -32,6 +32,8 @@
 import { listbox } from "./components/listbox.js";
 import { contextmenu } from "./components/contextmenu.js";
 
+window.saved = true;
+
 window.raumliste = []; // alle räume mit mitarbeitern zugeteilt
 
 window.listboxA = new listbox(document.getElementById('A'), document.getElementById('raumSelectA'), true, function(items){
@@ -56,6 +58,11 @@ window.addEventListener("load", function(){
     DatenNeuLaden();
 });
 
+
+window.checkAnythingChanged = function(){
+    return !saved;
+}
+
 function DatenNeuLaden(){
     fetch("/raumliste.txt", {
         method: "GET",
@@ -66,7 +73,7 @@ function DatenNeuLaden(){
         })
         .then(function (text) {
             raumliste = JSON.parse(text);
-            
+            saved = true;  
             Aktualisieren();
         })
 }
@@ -122,6 +129,7 @@ function editRaum(raum_id, raum_name_neu){
         if (element.id == raum_id) {
             element.name = raum_name_neu;
             element.edited = true;
+            saved = false;
             break;
         }       
     }
@@ -135,6 +143,7 @@ window.editMitarbeiter = function(id, name_neu){
             if (element.id == id) {
                 element.name = name_neu;
                 element.edited = true;
+                saved = false;
                 return true;
             }   
         }       
@@ -171,6 +180,7 @@ window.moveMitarbeiterToRaum = function(mitarbeiter_id, raum_id){
             if (mitarbeiter.id == mitarbeiter_id) {
                 mitarbeiter.raum_id = raum_id;
                 mitarbeiter.edited = true;
+                saved = false;
                 raum.mitarbeiter = raum.mitarbeiter.filter(el => el !== mitarbeiter);
                 window.getRaumById(raum_id).mitarbeiter.push(mitarbeiter);
                              

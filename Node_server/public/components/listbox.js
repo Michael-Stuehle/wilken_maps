@@ -114,6 +114,7 @@ export class listbox{
                             const element = raum.mitarbeiter[index_raum];
                             if (element.id == itemValues.mitarbeiter_id) {
                                 element.deleted = true;
+                                window.saved = false;
                             }
                         }
                     }
@@ -151,6 +152,7 @@ export class listbox{
                 const raum = raumliste[index];
                 if (raum.id == mitarbeiterObj.raum_id) {
                     mitarbeiterObj.added = true;
+                    window.saved = false;
                     raum.mitarbeiter.push(mitarbeiterObj);
                     window.Aktualisieren();
                 }
@@ -258,7 +260,6 @@ export class listbox{
         }
 
         this.HookupEvents = function(){
-            console.log('events');
             document.addEventListener("keydown", self.containerKeyDown, true);
         }
         

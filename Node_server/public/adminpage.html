@@ -13,6 +13,23 @@
         <script src="/mitarbeiterEdit.js" type="module"></script>
         <title>Wilken Maps Admin Seite</title>
     </head>
+    <script>
+        window.onbeforeunload = function(e) {
+        
+            if (window.checkAnythingChanged()){
+                e.returnValue = 'onbeforeunload';
+                return 'onbeforeunload';
+            }
+        
+        };
+
+        window.addEventListener('keydown', function(e){
+            if (e.keyCode == 116){
+                e.preventDefault();
+                location = location;          
+            }
+        })
+    </script>
     <body>
         <h1>Administrations- Seite</h1>
            
