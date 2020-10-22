@@ -9,6 +9,8 @@
         <script defer src="/adminpageScript.js" type="module"></script>      
         <script defer src="/components/listbox.js" type="module"></script>  
         <script defer src="/components/contextmenu.js" type="module"></script>
+        <script defer src="/components/popupForm.js" type="module"></script>
+        <script src="/mitarbeiterEdit.js" type="module"></script>
         <title>Wilken Maps Admin Seite</title>
     </head>
     <body>
@@ -55,7 +57,41 @@
                         Speichern
                     </span> 
                 </li>
+                <li class="menu-option" onclick="window.showMitarbeiterEditPopup()" id="li-edit"> 
+                    <span>
+                        <i class="fa fa-pencil" aria-hidden="true" style="font-size:20px;margin-right: 5px;"></i>
+                        Bearbeiten
+                    </span> 
+                </li>
+                <li class="menu-option" onclick="window.deleteMitarbeiter()" id="li-delete"> 
+                    <span>
+                        <i class="fa fa-trash" aria-hidden="true" style="font-size:20px;margin-right: 5px;"></i>
+                        Löschen
+                    </span> 
+                </li>
+                <li class="menu-option" onclick="window.showMitarbeiterAddPopup()" id="li-add"> 
+                    <span>
+                        <i class="fa fa-plus" aria-hidden="true" style="font-size:20px;margin-right: 5px;"></i>
+                        Hinzufügen
+                    </span> 
+                </li>
             </ul>
+        </div>
+            
+        <div class="modal" id="editMitarbeiterPopup">
+            <div class="modal-content">
+                <span class="close" id="btnMitarbeiterPopupClose">&times;</span>
+                <div class="modal-content-flexbox">
+                    <div class="modal-content-flexbox modal-content-item">
+                        <label style="width: 100px;" for="Name">Name: </label>
+                        <input name="Name" id="edtName">
+                    </div>
+                    <div class="modal-content-flexbox modal-content-item">
+                        <label style="width: 100px;" for="raum">Raum: </label>
+                        <select name="raum" id="selRaum"></select>
+                    </div>
+                </div>                
+            </div>
         </div>
         
     </body>

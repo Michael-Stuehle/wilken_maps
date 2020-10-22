@@ -201,6 +201,9 @@ app.get('/adminpageScript.js', function(request, response){
 	response.sendFile(path.join(__dirname + '/public/adminpageScript.js'))
 })
 
+app.get('/mitarbeiterEdit.js', function(request, response){
+	response.sendFile(path.join(__dirname + '/public/mitarbeiterEdit.js'))
+})
 
 app.get('/angemeldetAls', function(request, response){
 	response.send(request.session.username);

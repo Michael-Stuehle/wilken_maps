@@ -56,8 +56,6 @@ window.addEventListener("load", function(){
     DatenNeuLaden();
 });
 
-
-
 function DatenNeuLaden(){
     fetch("/raumliste.txt", {
         method: "GET",
@@ -76,6 +74,9 @@ function DatenNeuLaden(){
 window.Aktualisieren = function(){
     let selectA = document.getElementById("raumSelectA");
     let selectB = document.getElementById("raumSelectB");
+
+    selectA.textContent = "";
+    selectB.textContent = "";
 
     for (let index = 0; index < raumliste.length; index++) {
         const element = raumliste[index];
@@ -105,7 +106,6 @@ window.Speichern = function(){
         })
 }
 
-
 function editRaum(raum_id, raum_name_neu){
     for (let index = 0; index < raumliste.length; index++) {
         const element = raumliste[index];
@@ -116,14 +116,18 @@ function editRaum(raum_id, raum_name_neu){
     }
 }
 
-function editMitarbeiter(id, name_neu){
+window.editMitarbeiter = function(id, name_neu){
     for (let index = 0; index < raumliste.length; index++) {
-        const element = raumliste[index];
-        if (element.id == id) {
-            element.name = name_neu;
-            break;
+        const raum = raumliste[index];
+        for (let index_raum = 0; index_raum < raum.mitarbeiter.length; index_raum++) {
+            const element = raum.mitarbeiter[index_raum];
+            if (element.id == id) {
+                element.name = name_neu;
+                return true;
+            }   
         }       
     }
+    return false
 }
 
 window.moveItemsRechts = function(){

@@ -61,6 +61,72 @@ export class listbox{
             }
         }
 
+        this.deleteSelectedMitarbeiter = function(){
+            let allSelectedItems = self.getSelectedItems();
+            
+            let confirmed = // keine user betroffen ODER löschen ist confirmed
+                !self.checkSelectedItemsHaveUsers() ||  
+                confirm('mindestens einer der ausgewählten Mitarbeiter hat einen zugehörigen user, diese müssen ebenfalls gelöscht werden. Fortfahren?');
+
+            for (let index = 0; index < allSelectedItems.length; index++) {
+                const currentlySelected = allSelectedItems[index];
+            
+                let itemValues = {
+                    mitarbeiter: currentlySelected.getAttribute('mitarbeiter'),
+                    mitarbeiter_id: currentlySelected.getAttribute('mitarbeiter_id'),
+                    raum_id: currentlySelected.getAttribute('raum_id'),        
+                    user: currentlySelected.getAttribute('user')
+                }
+
+                if (confirmed) {
+                    for (let index = 0; index < raumliste.length; index++) {
+                        const raum = raumliste[index];
+                        for (let index_raum = 0; index_raum < raum.mitarbeiter.length; index_raum++) {
+                            const element = raum.mitarbeiter[index_raum];
+                            if (element.id == itemValues.mitarbeiter_id) {
+                                element.deleted = true;
+                            }
+                        }
+                    }
+                }
+            } 
+            window.Aktualisieren();
+        }
+
+        this.checkSelectedItemsHaveUsers = function(){
+            let selectedItems = self.getSelectedItems();
+            for (let index = 0; index < selectedItems.length; index++) {
+                const element = selectedItems[index];
+                let itemValues = {
+                    mitarbeiter: element.getAttribute('mitarbeiter'),
+                    mitarbeiter_id: element.getAttribute('mitarbeiter_id'),
+                    raum_id: element.getAttribute('raum_id'),        
+                    user: element.getAttribute('user')
+                }
+                if (itemValues.user != "") {
+                    return true;
+                }
+            }
+            return false;
+
+        }
+
+        this.editMitarbeiter = function(mitarbeiter_id, raum_neu, name_neu){
+            if (window.moveMitarbeiterToRaum(mitarbeiter_id, raum_neu) && window.editMitarbeiter(mitarbeiter_id, name_neu)){
+                window.Aktualisieren();
+            }
+        }
+
+        this.addMitarbeiter = function(mitarbeiterObj){
+            for (let index = 0; index < raumliste.length; index++) {
+                const raum = raumliste[index];
+                if (raum.id == mitarbeiterObj.raum_id) {
+                    raum.mitarbeiter.push(mitarbeiterObj);
+                    window.Aktualisieren();
+                }
+            }
+        }
+
         this.Aktualisieren = function(){
             self.clear();
             self.setAktuellerRaum();
@@ -103,8 +169,11 @@ export class listbox{
         this.createSelectableItem = function(text, mitarbeiter_id, raum_id, user_email){
             let item = document.createElement('div');
             item.classList.add('item');
-            item.innerHTML = text;
+            item.innerHTML = 
+                '<p class="item-text">' +text + '</p>'+
+                '<p class="item-text">' +user_email + '</p>';
             item.setAttribute('mitarbeiter_id', mitarbeiter_id);
+            item.setAttribute('mitarbeiter', text);
             item.setAttribute('raum_id', raum_id);
             item.setAttribute('draggable', true);
             item.setAttribute('user', user_email);
