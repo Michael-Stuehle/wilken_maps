@@ -180,6 +180,10 @@ export class listbox{
                 element.onclick = function(event){
                     self.setItemSelected(element, event);
                 } 
+                element.ondblclick = function(event){
+                    self.setItemSelected(element, {});
+                    window._showMitarbeiterEditPopup(element);
+                }
                 self.container.appendChild(element);
             }
             self.onselectItem(self.getSelectedItems());

@@ -27,6 +27,19 @@ window.showMitarbeiterEditPopup = function(){
     window.popupEditMitarbeiter.showModal(itemValues, false);
 }
 
+window._showMitarbeiterEditPopup = function(selectedElement){
+    let currentlySelected = selectedElement;
+    
+    let itemValues = {
+        mitarbeiter: currentlySelected.getAttribute('mitarbeiter'),
+        mitarbeiter_id: currentlySelected.getAttribute('mitarbeiter_id'),
+        raum_id: currentlySelected.getAttribute('raum_id'),        
+        user: currentlySelected.getAttribute('user'),
+        raumliste: window.raumliste
+    }
+    window.popupEditMitarbeiter.showModal(itemValues, false);
+}
+
 window.deleteMitarbeiter = function(){
     let listbox = {};
     if (window.contextMenuListboxA.isVisible()) {
@@ -74,6 +87,7 @@ var mitarbeiterEditBeforeClose = function(popup, wasAdd){
 var mitarbeiterEditBeforeShow = function(popup, values){
     document.getElementById('edtName').value = values.mitarbeiter;
     let raumselect = document.getElementById('selRaum');
+    raumselect.textContent = "";
     for (let index = 0; index < values.raumliste.length; index++) {
         const raum = values.raumliste[index];
         const option = document.createElement('option');
