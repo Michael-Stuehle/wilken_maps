@@ -63,12 +63,7 @@ window.showMitarbeiterAddPopup = function(){
 }
 
 var mitarbeiterEditBeforeClose = function(popup, wasAdd){
-    let listbox = {};
-    if (window.contextMenuListboxA.isVisible()) {
-        listbox = window.contextMenuListboxA.listbox;
-    }else {
-        listbox = window.contextMenuListboxB.listbox;
-    }
+    let listbox = window.listboxA; // nircht relevant welche listbox
 
     let newMitarbeiter = {
         name: document.getElementById("edtName").value,
@@ -80,7 +75,7 @@ var mitarbeiterEditBeforeClose = function(popup, wasAdd){
     if (wasAdd) {
         listbox.addMitarbeiter(newMitarbeiter);
     }else{
-        listbox.editMitarbeiter(popup.itemValues.mitarbeiter_id, newMitarbeiter.raum_id);
+        listbox.editMitarbeiter(popup.itemValues.mitarbeiter_id, newMitarbeiter.raum_id, newMitarbeiter.name);
     }
 }
 
