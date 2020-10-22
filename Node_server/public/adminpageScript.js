@@ -60,7 +60,7 @@ window.addEventListener("load", function(){
 
 
 window.checkAnythingChanged = function(){
-    return !saved;
+    return !window.saved;
 }
 
 function DatenNeuLaden(){
@@ -119,6 +119,7 @@ window.Speichern = function(){
           return response.text();
         })
         .then(function (text) {
+            window.saved = true;
             window.alert(text);
         })
 }
