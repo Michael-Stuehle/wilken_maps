@@ -82,7 +82,6 @@ app.post('/sql', function(request, response){
 				}else if (result.fieldCount == 0){
 					response.send(formatSql.formatAsNormalResult(JSON.stringify(result)));
 				}else{
-					console.log(result);
 					response.send(formatSql.formatAsHtmlTable(result, fields));
 				}
 			});
