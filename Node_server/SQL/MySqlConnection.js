@@ -70,8 +70,8 @@ module.exports = {
         adminpageSQL.userHasAdminpagePermission(email, callback);
     },
     
-    raumListeSpeichern: function(raumliste, callback){
-        adminpageSQL.raumlisteSpeichern(raumliste, callback);
+    raumListeSpeichern: function(raumliste, callback, ip){
+        adminpageSQL.raumlisteSpeichern(raumliste, callback, ip);
     },
 
     getallProceduresAndFunctions: function(callback){

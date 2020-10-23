@@ -16,7 +16,7 @@ module.exports = {
         })
     },
 
-    raumlisteSpeichern: function(raumliste, callback){
+    raumlisteSpeichern: function(raumliste, callback, ip){
         globalconnection.checkIsConnected(function(){
             globalconnection.con.getConnection(function(err, connection){
                 if (err) logger.logError(err);
@@ -24,7 +24,7 @@ module.exports = {
                     if (err) {
                         logger.logError(err)
                     }else{
-                        doRaumlisteSpeichern(connection, raumliste, callback);
+                        doRaumlisteSpeichern(connection, raumliste, callback, ip);
                     }
                 })
             })
@@ -32,22 +32,22 @@ module.exports = {
     }
 }
 
-async function doRaumlisteSpeichern(connection, raumliste, callback){
+async function doRaumlisteSpeichern(connection, raumliste, callback, ip){
     let ok = true;
-    ok = await doMitarbeiterDelete(connection, raumliste);
+    ok = await doMitarbeiterDelete(connection, raumliste, ip);
     if (ok) {
-        ok = await doRaumAdded_And_Edited(connection, raumliste);
+        ok = await doRaumAdded_And_Edited(connection, raumliste, ip);
     }
     if (ok) {
-        ok = await doMitarbeiterAdded_And_Edited(connection, raumliste);
+        ok = await doMitarbeiterAdded_And_Edited(connection, raumliste, ip);
     }
     if (ok) {
-        ok = await doRaumDelete(connection, raumliste);
+        ok = await doRaumDelete(connection, raumliste, ip);
     }
     if (ok) {
         connection.commit(function(err){
             if (err) {
-                logger.logError(err);
+                logger.logError(err, ip);
                 return callback(false);
             }else{
                 return callback(true);   
@@ -58,7 +58,7 @@ async function doRaumlisteSpeichern(connection, raumliste, callback){
     }                  
 }
 
-async function doMitarbeiterDelete(connection, raumliste){
+async function doMitarbeiterDelete(connection, raumliste, ip){
     let ok = true;
     for (let index = 0; index < raumliste.length && ok; index++) {
         let raum = raumliste[index];
@@ -68,29 +68,29 @@ async function doMitarbeiterDelete(connection, raumliste){
                 if (mitarbeiter.added) {// falls added und deleted einfach nichts machen
                     continue;
                 }
-                ok = await mitarbeiterDeleted(connection, mitarbeiter);
+                ok = await mitarbeiterDeleted(connection, mitarbeiter, ip);
             }                     
         }
     } 
     return ok;
 }
 
-async function doRaumAdded_And_Edited(connection, raumliste){
+async function doRaumAdded_And_Edited(connection, raumliste, ip){
     let ok = true;
     for (let index = 0; index < raumliste.length && ok; index++) {
         let raum = raumliste[index];
         if (raum.added){
-            raum = await raumAdded(connection, raum);
+            raum = await raumAdded(connection, raum, ip);
             ok = raum != null;
         }else if(raum.edited){
-            ok = await raumChanged(connection, raum);
+            ok = await raumChanged(connection, raum, ip);
         }      
     } 
     return ok;
 }
 
 
-async function doMitarbeiterAdded_And_Edited(connection, raumliste){
+async function doMitarbeiterAdded_And_Edited(connection, raumliste, ip){
     let ok = true;
     for (let index = 0; index < raumliste.length && ok; index++) {
         let raum = raumliste[index];
@@ -100,16 +100,16 @@ async function doMitarbeiterAdded_And_Edited(connection, raumliste){
                 if (mitarbeiter.deleted) {
                     continue;
                 }
-                ok = await mitarbeiterAdded(connection, mitarbeiter);
+                ok = await mitarbeiterAdded(connection, mitarbeiter, ip);
             }else if(mitarbeiter.edited){
-                ok = await mitarbeiterChanged(connection, mitarbeiter);
+                ok = await mitarbeiterChanged(connection, mitarbeiter, ip);
             }                       
         }
     }   
     return ok;   
 }
 
-async function doRaumDelete(connection, raumliste){
+async function doRaumDelete(connection, raumliste, ip){
     let ok = true;
     for (let index = 0; index < raumliste.length && ok; index++) {
         let raum = raumliste[index];
@@ -117,14 +117,14 @@ async function doRaumDelete(connection, raumliste){
             if (raum.added) {// falls added und deleted einfach nichts machen
                 continue;
             }
-            ok = await raumDeleted(connection, raum);
+            ok = await raumDeleted(connection, raum, ip);
         }
     }
     return ok;
 }
 
 
-function mitarbeiterChanged(connection, mitarbeiter){
+function mitarbeiterChanged(connection, mitarbeiter, ip){
     return new Promise(resolve => {
         // TODO:
         // set mitarbeiter.raum_id
@@ -139,13 +139,13 @@ function mitarbeiterChanged(connection, mitarbeiter){
                 resolve(false);
             }
         }).then(function(){
-            console.log(JSON.stringify(mitarbeiter) + 'geändert');
+            logger.log(JSON.stringify(mitarbeiter) + ' geändert', ip);
             resolve(true);
         })
     })
 }
 
-async function mitarbeiterDeleted(connection, mitarbeiter){
+async function mitarbeiterDeleted(connection, mitarbeiter, ip){
     return new Promise(resolve => {
         // set ?user.mitarbeiter_id = NULL
         // remove mitarbeiter
@@ -168,31 +168,31 @@ async function mitarbeiterDeleted(connection, mitarbeiter){
                 } 
             })
         }).then(function(){
-            console.log(JSON.stringify(mitarbeiter) + 'gelöscht');
+            logger.log(JSON.stringify(mitarbeiter) + 'gelöscht', ip);
             resolve(true);
         })
     })
 }
 
-async function  mitarbeiterAdded(connection, mitarbeiter){
+async function  mitarbeiterAdded(connection, mitarbeiter, ip){
     return new Promise(resolve => {
         // add mitarbeiter (id, name, raum_id)
         execSQL(connection, 'insert into mitarbeiter (id, name, raum_id) values (NULL, ?, ?)', [mitarbeiter.name, mitarbeiter.raum_id]).then(function(resolved){
             if (resolved.err) {
-                logger.logError(resolved.err);
+                logger.logError(resolved.err, ip);
                 connection.rollback(function(err){
                     if (err) throw err;
                 });
                 resolve(false);
             }
         }).then(function(){
-            console.log(JSON.stringify(mitarbeiter) + 'hinzugefügt');
+            logger.log(JSON.stringify(mitarbeiter) + 'hinzugefügt', ip);
             resolve(true);
         })
     })
 }
 
-function raumChanged(connection, raum){
+function raumChanged(connection, raum, ip){
     return new Promise(resolve => {
         // TODO:
         // set raum.name
@@ -206,13 +206,13 @@ function raumChanged(connection, raum){
                 resolve(false);
             }
         }).then(function(){
-            console.log(JSON.stringify(raum) + 'geändert');
+            logger.log(JSON.stringify(raum) + 'geändert', ip);
             resolve(true);
         })
     })
 }
 
-async function raumAdded(connection, raum){
+async function raumAdded(connection, raum, ip){
     return new Promise(resolve => {
         // add raum (id, name)
         execSQL(connection, 'insert into raum (id, name) values (NULL, ?)', [raum.name]).then(function(resolved){
@@ -239,14 +239,14 @@ async function raumAdded(connection, raum){
                     }
                 }
             }).then(function(){
-                console.log(JSON.stringify(raum) + 'hinzugefügt');
+                logger.log(JSON.stringify(raum) + 'hinzugefügt', ip);
                 resolve(raum);
             })
         })
     })
 }
 
-async function raumDeleted(connection, raum){
+async function raumDeleted(connection, raum, ip){
     return new Promise(resolve => {
         execSQL(connection, 'delete from raum where id = ?', [raum.id]).then(function(resolved){
             if (resolved.err) {
@@ -257,7 +257,7 @@ async function raumDeleted(connection, raum){
                 resolve(false);
             }
         }).then(function(){
-            console.log(JSON.stringify(raum) + 'gelöscht');
+            logger.log( JSON.stringify(raum) + 'gelöscht', ip);
             resolve(true);
         })
     })

@@ -33,8 +33,10 @@ var getAktionstypFromMessage = function(message){
         return AktionsTyp.verify;
     }else if (message.includes("error")){
         return AktionsTyp.error;
-    }else if (message.includes("geändert")) {
+    }else if (message.includes("geändert") && message.includes("passwort")) {
         return AktionsTyp.changePwd;
+    }else if(message.includes("geändert") || message.includes('gelöscht') || message.includes('hinzugefügt')){
+        return AktionsTyp.StammdatenÄnderung;
     }else{
         return AktionsTyp.unbekannt;
     }

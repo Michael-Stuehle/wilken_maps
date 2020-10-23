@@ -31,6 +31,7 @@ module.exports = {
         verify : 'verifizierung',
         error : 'fehler',
         changePwd: 'passwort änderung',
+        StammdatenÄnderung: 'Stammdaten änderung',
         unbekannt: '???'
     }
 }

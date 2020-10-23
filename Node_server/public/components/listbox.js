@@ -161,7 +161,7 @@ export class listbox{
         }
 
         this.addMitarbeiter = function(mitarbeiterObj){
-            let mitarbeiterExists = getMitarbeiterByName(mitarbeiterObj.name)
+            let mitarbeiterExists = self.getMitarbeiterByName(mitarbeiterObj.name)
             if (mitarbeiterExists != null) {
                 if (mitarbeiterExists.deleted) {
                     mitarbeiterExists.deleted = false;
