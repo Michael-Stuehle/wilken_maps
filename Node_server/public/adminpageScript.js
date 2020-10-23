@@ -90,10 +90,13 @@ window.Aktualisieren = function(){
     selectB.textContent = "";
 
     for (let index = 0; index < raumliste.length; index++) {
-        const element = raumliste[index];
+        const raum = raumliste[index];
+        if (raum.deleted) {
+            continue;
+        }
         const option = document.createElement('option');
-        option.value = element.id;
-        option.innerHTML = element.name;
+        option.value = raum.id;
+        option.innerHTML = raum.name;
         const option2 = option.cloneNode(true);
 
         if (selectA.getAttribute('_selected') == option.value) {
@@ -128,7 +131,7 @@ window.Speichern = function(){
         })
 }
 
-function editRaum(raum_id, raum_name_neu){
+window.editRaum = function(raum_id, raum_name_neu){
     for (let index = 0; index < raumliste.length; index++) {
         const element = raumliste[index];
         if (element.id == raum_id) {

@@ -147,7 +147,31 @@ export class listbox{
             }
         }
 
+        this.getMitarbeiterByName = function(mitarbeiterName){
+            for (let index = 0; index < window.raumliste.length; index++) {
+                const raum = window.raumliste[index];
+                for (let raum_index = 0; raum_index < raum.mitarbeiter.length; raum_index++) {
+                    const mitarbeiter = raum.mitarbeiter[raum_index];
+                    if (mitarbeiter.name == mitarbeiterName) {
+                        return mitarbeiter;
+                    }
+                }
+            }
+            return null;
+        }
+
         this.addMitarbeiter = function(mitarbeiterObj){
+            let mitarbeiterExists = getMitarbeiterByName(mitarbeiterObj.name)
+            if (mitarbeiterExists != null) {
+                if (mitarbeiterExists.deleted) {
+                    mitarbeiterExists.deleted = false;
+                    return true;
+                }else{
+                    alert('dieser mitarbeiter existiert bereits!');
+                    return false;
+                }
+            }
+
             for (let index = 0; index < raumliste.length; index++) {
                 const raum = raumliste[index];
                 if (raum.id == mitarbeiterObj.raum_id) {

@@ -1,17 +1,19 @@
 export class popupForm{
-  constructor(htmlForm, closeBtn, okBtn, onBeforeClose, onBeforeShow){
+  constructor(htmlForm, closeBtn, okBtn, titleElement, onBeforeClose, onBeforeShow){
     var self = this;
     this.modal = htmlForm;
     this.btnClose = closeBtn;
     this.okBtn = okBtn;
     this.onBeforeClose = onBeforeClose;
     this.onBeforeShow = onBeforeShow;
+    this.titleElement = titleElement;
 
-    this.showModal = function(itemValues, addItem){
+    this.showModal = function(itemValues, addItem, titleText){
       self.itemValues = itemValues;
       self.addItem = addItem;
       self.onBeforeShow(self, itemValues);
       self.modal.style.display = "block";
+      self.titleElement.innerHTML = titleText;
     }
   
     this.hideModal = function(res){

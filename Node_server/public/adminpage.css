@@ -167,6 +167,7 @@ div{
     font-weight: bold;
     padding: 10px;
     margin: 10px;
+    margin-left: 0px;
 }
 
 .closeBtn:hover,

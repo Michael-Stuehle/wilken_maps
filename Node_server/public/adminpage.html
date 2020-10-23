@@ -11,6 +11,7 @@
         <script defer src="/components/contextmenu.js" type="module"></script>
         <script defer src="/components/popupForm.js" type="module"></script>
         <script src="/mitarbeiterEdit.js" type="module"></script>
+        <script src="/raumEdit.js" type="module"></script>
         <title>Wilken Maps Admin Seite</title>
     </head>
     <script>
@@ -34,12 +35,12 @@
         <h1>Administrations- Seite</h1>
         <br><br><br>
         <div class="buttonsLeiste">
-            <div class="customButton reloadBtn" onclick="window.ReloadAll()" >
+            <div class="customButton reloadBtn" title="Aktualisieren" onclick="window.ReloadAll()" >
                 <span>
                     <i class="fa fa-refresh refreshIcon" aria-hidden="true" style="font-size: 28px;"></i>
                 </span>
             </div>
-            <div class="customButton saveBtn" onclick="window.Speichern()" >
+            <div class="customButton saveBtn" title="Speichern" onclick="window.Speichern()" >
                 <span>
                     <i class="fa fa-floppy-o saveIcon" aria-hidden="true" style="font-size: 28px;"></i>
                 </span>
@@ -47,19 +48,53 @@
         </div>
         <div style="display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap;">  
             <div style="margin: auto; width: 43%;">
+                <div style="display: flex; flex-direction: row; justify-content: left; flex-wrap: wrap;">  
+                    <div class="customButton" title="Raum Bearbeiten" onclick="window.showRaumEditPopup('raumSelectA')" >
+                        <span>
+                            <i class="fa fa-pencil" aria-hidden="true" style="font-size: 20px;"></i>
+                        </span>
+                    </div>
+                    <div class="customButton" title="Raum Hinzufügen" onclick="window.showRaumAddPopup('raumSelectA')" >
+                        <span>
+                            <i class="fa fa-plus" aria-hidden="true" style="font-size: 20px;"></i>
+                        </span>
+                    </div>
+                    <div class="customButton" title="Raum Löschen" onclick="window.deleteRaum('raumSelectA')" >
+                        <span>
+                            <i class="fa fa-trash" aria-hidden="true" style="font-size: 20px;"></i>
+                        </span>
+                    </div>
+                </div>
                 <label for="Raum">Raum:</label>
                 <select id="raumSelectA" name="Raum" onchange="window.onSelectChange(this)"></select>
                 <div id="A" raum_id="" class="container"></div>
             </div>
-            <div style="display: flex; flex-direction: column; justify-content: space-between; flex-wrap: nowrap; margin: auto; width: 10%;">
-                <button id="btn-rechts" onclick="window.moveItemsRechts()">
+            <div style="display: flex; flex-direction: column; justify-content: space-between; flex-wrap: nowrap; margin: auto;">
+                <button id="btn-rechts" title="Mitarbeiter nach rechts" onclick="window.moveItemsRechts()">
                     <i class="fa fa-arrow-right" aria-hidden="true" style="font-size:20px;margin-right: 5px;"></i>
                 </button>
-                <button id="btn-links" onclick="window.moveItemsLeft()">
+                <button id="btn-links" title="Mitarbeiter nach links" onclick="window.moveItemsLeft()">
                     <i class="fa fa-arrow-left" aria-hidden="true" style="font-size:20px;margin-right: 5px;"></i>
                 </button>
             </div>
             <div style="margin: auto; width: 43%;">
+                <div style="display: flex; flex-direction: row; justify-content: left; flex-wrap: wrap;">  
+                    <div class="customButton" title="Raum Bearbeiten" onclick="window.showRaumEditPopup('raumSelectB')" >
+                        <span>
+                            <i class="fa fa-pencil" aria-hidden="true" style="font-size: 20px;"></i>
+                        </span>
+                    </div>
+                    <div class="customButton" title="Raum Hinzufügen" onclick="window.showRaumAddPopup('raumSelectB')" >
+                        <span>
+                            <i class="fa fa-plus" aria-hidden="true" style="font-size: 20px;"></i>
+                        </span>
+                    </div>
+                    <div class="customButton" title="Raum Löschen" onclick="window.deleteRaum('raumSelectB')" >
+                        <span>
+                            <i class="fa fa-trash" aria-hidden="true" style="font-size: 20px;"></i>
+                        </span>
+                    </div>
+                </div>
                 <label for="Raum">Raum:</label>
                 <select id="raumSelectB" name="Raum"></select>
                 <div id="B" raum_id="" class="container"></div>
@@ -109,6 +144,7 @@
             
         <div class="modal" id="editMitarbeiterPopup">
             <div class="modal-content">
+                <h1 id="editMitarbeiterPopupTitle"></h1>
                 <div class="modal-content-flexbox">
                     <div class="modal-content-flexbox modal-content-item">
                         <label style="width: 100px;" for="Name">Name: </label>
@@ -130,10 +166,33 @@
                         <i class="fa fa-check okIcon" aria-hidden="true" style="font-size: 20px;"></i>
                         Übernehmen
                     </span>
+                </div>                    
+            </div>
+        </div>
+        
+        <div class="modal" id="editRaumPopup">
+            <div class="modal-content">
+                <h1 id="editRaumPopupTitle"></h1>
+                <div class="modal-content-flexbox">
+                    <div class="modal-content-flexbox modal-content-item">
+                        <label style="width: 100px;" for="Name">Name: </label>
+                        <input name="Name" id="edtNameRaum">
+                    </div>
+                </div>    
+                <div class="customButton" id="btnRaumEditClose">
+                    <span>
+                        <i class="fa fa-times closeIcon" aria-hidden="true" style="font-size: 20px;"></i>
+                        Abbrechen
+                    </span>
+                </div>
+                <div class="customButton" id="btnRaumEditOk">
+                    <span>
+                        <i class="fa fa-check okIcon" aria-hidden="true" style="font-size: 20px;"></i>
+                        Übernehmen
+                    </span>
                 </div>
                                             
             </div>
         </div>
-        
     </body>
 </html>

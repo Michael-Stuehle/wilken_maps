@@ -34,33 +34,16 @@ module.exports = {
 
 async function doRaumlisteSpeichern(connection, raumliste, callback){
     let ok = true;
-    for (let index = 0; index < raumliste.length && ok; index++) {
-        let raum = raumliste[index];
-        if (raum.deleted) { 
-            if (raum.added) {// falls added und deleted einfach nichts machen
-                continue;
-            }
-            ok = await raumDeleted(connection, raum);
-        }else if (raum.added){
-            raum = await raumAdded(connection, raum);
-            ok = raum != null;
-        }else if(raum.edited){
-            ok = await raumChanged(connection, raum);
-        }      
-        for (let index_raum = 0; index_raum < raum.mitarbeiter.length && ok; index_raum++) {
-            const mitarbeiter = raum.mitarbeiter[index_raum];
-            if (mitarbeiter.deleted ) {
-                if (mitarbeiter.added) {// falls added und deleted einfach nichts machen
-                    continue;
-                }
-                ok = await mitarbeiterDeleted(connection, mitarbeiter);
-            }else if (mitarbeiter.added){
-                ok = await mitarbeiterAdded(connection, mitarbeiter);
-            }else if(mitarbeiter.edited){
-                ok = await mitarbeiterChanged(connection, mitarbeiter);
-            }                       
-        }
-    } 
+    ok = await doMitarbeiterDelete(connection, raumliste);
+    if (ok) {
+        ok = await doRaumAdded_And_Edited(connection, raumliste);
+    }
+    if (ok) {
+        ok = await doMitarbeiterAdded_And_Edited(connection, raumliste);
+    }
+    if (ok) {
+        ok = await doRaumDelete(connection, raumliste);
+    }
     if (ok) {
         connection.commit(function(err){
             if (err) {
@@ -76,76 +59,68 @@ async function doRaumlisteSpeichern(connection, raumliste, callback){
 }
 
 async function doMitarbeiterDelete(connection, raumliste){
-    return new Promise(resolve => {
-        let ok = true;
-        for (let index = 0; index < raumliste.length && ok; index++) {
-            let raum = raumliste[index];
-            for (let index_raum = 0; index_raum < raum.mitarbeiter.length && ok; index_raum++) {
-                const mitarbeiter = raum.mitarbeiter[index_raum];
-                if (mitarbeiter.deleted ) {
-                    if (mitarbeiter.added) {// falls added und deleted einfach nichts machen
-                        continue;
-                    }
-                    ok = await mitarbeiterDeleted(connection, mitarbeiter);
-                }                     
-            }
-        } 
-        resolve(ok);
-    })
+    let ok = true;
+    for (let index = 0; index < raumliste.length && ok; index++) {
+        let raum = raumliste[index];
+        for (let index_raum = 0; index_raum < raum.mitarbeiter.length && ok; index_raum++) {
+            const mitarbeiter = raum.mitarbeiter[index_raum];
+            if (mitarbeiter.deleted ) {
+                if (mitarbeiter.added) {// falls added und deleted einfach nichts machen
+                    continue;
+                }
+                ok = await mitarbeiterDeleted(connection, mitarbeiter);
+            }                     
+        }
+    } 
+    return ok;
 }
 
 async function doRaumAdded_And_Edited(connection, raumliste){
-    return new Promise(resolve => {
-        let ok = true;
-        for (let index = 0; index < raumliste.length && ok; index++) {
-            let raum = raumliste[index];
-           if (raum.added){
-                raum = await raumAdded(connection, raum);
-                ok = raum != null;
-            }else if(raum.edited){
-                ok = await raumChanged(connection, raum);
-            }      
-        } 
-        resolve(ok);
-    })
+    let ok = true;
+    for (let index = 0; index < raumliste.length && ok; index++) {
+        let raum = raumliste[index];
+        if (raum.added){
+            raum = await raumAdded(connection, raum);
+            ok = raum != null;
+        }else if(raum.edited){
+            ok = await raumChanged(connection, raum);
+        }      
+    } 
+    return ok;
 }
 
 
 async function doMitarbeiterAdded_And_Edited(connection, raumliste){
-    return new Promise(resolve => {
-        let ok = true;
-        for (let index = 0; index < raumliste.length && ok; index++) {
-            let raum = raumliste[index];
-            for (let index_raum = 0; index_raum < raum.mitarbeiter.length && ok; index_raum++) {
-                const mitarbeiter = raum.mitarbeiter[index_raum];
-                if (mitarbeiter.added ){
-                    if (mitarbeiter.deleted) {
-                        continue;
-                    }
-                    ok = await mitarbeiterAdded(connection, mitarbeiter);
-                }else if(mitarbeiter.edited){
-                    ok = await mitarbeiterChanged(connection, mitarbeiter);
-                }                       
-            }
-        }   
-        resolve(ok);
-    })               
+    let ok = true;
+    for (let index = 0; index < raumliste.length && ok; index++) {
+        let raum = raumliste[index];
+        for (let index_raum = 0; index_raum < raum.mitarbeiter.length && ok; index_raum++) {
+            const mitarbeiter = raum.mitarbeiter[index_raum];
+            if (mitarbeiter.added ){
+                if (mitarbeiter.deleted) {
+                    continue;
+                }
+                ok = await mitarbeiterAdded(connection, mitarbeiter);
+            }else if(mitarbeiter.edited){
+                ok = await mitarbeiterChanged(connection, mitarbeiter);
+            }                       
+        }
+    }   
+    return ok;   
 }
 
 async function doRaumDelete(connection, raumliste){
-    return new Promise(resolve => {
-        let ok = true;
-        for (let index = 0; index < raumliste.length && ok; index++) {
-            let raum = raumliste[index];
-            if (raum.deleted) { 
-                if (raum.added) {// falls added und deleted einfach nichts machen
-                    continue;
-                }
-                ok = await raumDeleted(connection, raum);
+    let ok = true;
+    for (let index = 0; index < raumliste.length && ok; index++) {
+        let raum = raumliste[index];
+        if (raum.deleted) { 
+            if (raum.added) {// falls added und deleted einfach nichts machen
+                continue;
             }
+            ok = await raumDeleted(connection, raum);
         }
-        resolve(ok)
-    })
+    }
+    return ok;
 }
 
 
@@ -264,7 +239,7 @@ async function raumAdded(connection, raum){
                     }
                 }
             }).then(function(){
-                console.log('2' + JSON.stringify(raum) + 'hinzugefügt');
+                console.log(JSON.stringify(raum) + 'hinzugefügt');
                 resolve(raum);
             })
         })

@@ -4,6 +4,7 @@ window.popupEditMitarbeiter = new popupForm(
     document.getElementById('editMitarbeiterPopup'), 
     document.getElementById('btnMitarbeiterPopupClose'), 
     document.getElementById('btnMitarbeiterPopupOK'), 
+    document.getElementById('editMitarbeiterPopupTitle'),
     (popup, actionWasAdd) => mitarbeiterEditBeforeClose(popup, actionWasAdd), // actionWasAdd: true=add  | false=edit 
     (popup, item) => mitarbeiterEditBeforeShow(popup, item));
 
@@ -24,7 +25,7 @@ window.showMitarbeiterEditPopup = function(){
         user: currentlySelected.getAttribute('user'),
         raumliste: window.raumliste
     }
-    window.popupEditMitarbeiter.showModal(itemValues, false);
+    window.popupEditMitarbeiter.showModal(itemValues, false, 'Mitarbeiter Bearbeiten');
 }
 
 window._showMitarbeiterEditPopup = function(selectedElement){
@@ -37,7 +38,7 @@ window._showMitarbeiterEditPopup = function(selectedElement){
         user: currentlySelected.getAttribute('user'),
         raumliste: window.raumliste
     }
-    window.popupEditMitarbeiter.showModal(itemValues, false);
+    window.popupEditMitarbeiter.showModal(itemValues, false, 'Mitarbeiter Bearbeiten');
 }
 
 window.deleteMitarbeiter = function(){
@@ -59,7 +60,7 @@ window.showMitarbeiterAddPopup = function(){
         user: "",
         raumliste: raumliste
     }
-    window.popupEditMitarbeiter.showModal(itemValues, true);
+    window.popupEditMitarbeiter.showModal(itemValues, true, 'Mitarbeiter Hinzufügen');
 }
 
 var mitarbeiterEditBeforeClose = function(popup, wasAdd){
