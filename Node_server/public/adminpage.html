@@ -16,13 +16,17 @@
     </head>
     <script>
         window.onbeforeunload = function(e) {
-        
             if (window.checkAnythingChanged()){
                 e.returnValue = 'onbeforeunload';
                 return 'onbeforeunload';
             }
-        
         };
+
+        function selectNextElementByIdOnTabKeyDown(event, nextId){
+            if (event.keyCode == 13) {
+                document.getElementById(nextId).focus();
+            }
+        }
 
         window.addEventListener('keydown', function(e){
             if (e.keyCode == 116){
@@ -148,11 +152,11 @@
                 <div class="modal-content-flexbox">
                     <div class="modal-content-flexbox modal-content-item">
                         <label style="width: 100px;" for="Name">Name: </label>
-                        <input name="Name" id="edtName">
+                        <input name="Name" id="edtName" onkeydown="(event) => selectNextElementByIdOnTabKeyDown(event, 'selRaum')">
                     </div>
                     <div class="modal-content-flexbox modal-content-item">
                         <label style="width: 100px;" for="raum">Raum: </label>
-                        <select name="raum" id="selRaum"></select>
+                        <select name="raum" id="selRaum" onkeydown="(event) => selectNextElementByIdOnTabKeyDown(event, 'btnMitarbeiterPopupOK')"></select>
                     </div>
                 </div>    
                 <div class="customButton" id="btnMitarbeiterPopupClose">
@@ -176,7 +180,7 @@
                 <div class="modal-content-flexbox">
                     <div class="modal-content-flexbox modal-content-item">
                         <label style="width: 100px;" for="Name">Name: </label>
-                        <input name="Name" id="edtNameRaum">
+                        <input name="Name" id="edtNameRaum" onkeydown="(event) => selectNextElementByIdOnTabKeyDown(event, 'btnRaumEditOk')">
                     </div>
                 </div>    
                 <div class="customButton" id="btnRaumEditClose">

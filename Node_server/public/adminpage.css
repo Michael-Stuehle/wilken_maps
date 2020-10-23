@@ -170,8 +170,8 @@ div{
     margin-left: 0px;
 }
 
-.closeBtn:hover,
-.okBtn:hover{
+.customButton:hover,
+.customButton:focus{
     background-color: var(--btnHoverColor);
     text-decoration: none;
     cursor: pointer; 
