@@ -101,7 +101,7 @@ input{
 
 div{
     background-color: var(--backgroundColor);
-    color: var(--textColor);
+    color: var(--btnColor);
 }
 
 /* The Modal (background) */
