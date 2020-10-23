@@ -78,8 +78,11 @@ app.post('/sql', function(request, response){
 		if (result) {
 			mysqlConnection.execSql(request.body.sql, function(err, result, fields){
 				if (err) {
-					response.send(err);
+					response.send(formatSql.formatAsNormalResult(err));
+				}else if (result.fieldCount == 0){
+					response.send(formatSql.formatAsNormalResult(JSON.stringify(result)));
 				}else{
+					console.log(result);
 					response.send(formatSql.formatAsHtmlTable(result, fields));
 				}
 			});

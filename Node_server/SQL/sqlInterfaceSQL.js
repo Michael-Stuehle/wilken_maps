@@ -1,3 +1,4 @@
+const constants = require('../constants');
 const logger = require('../logger');
 const globalconnection = require('./Globalconnection');
 const helperSQL = require('./helperSQL');
@@ -29,7 +30,7 @@ module.exports = {
         globalconnection.checkIsConnected(function(){
             var sql = "SHOW PROCEDURE STATUS where db = ?;";
                 
-            globalconnection.con.query(sql, [globalconnection.dbName], function (err, result, fields) {
+            globalconnection.con.query(sql, [constants.dbName], function (err, result, fields) {
                 if (err) {
                     logger.log(err);
                     return;

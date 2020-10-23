@@ -1,7 +1,10 @@
 module.exports = {
     formatAsHtmlTable : function(result, fields){
         return formatSqlHtml(result, fields);
-    }
+	},
+	formatAsNormalResult: function(result){
+		return tableSyle() + '<p>' + result + '</p>';
+	}
 }
 
 
@@ -37,39 +40,5 @@ var formatSqlHtml = function(result, fields){
 }
 
 var tableSyle = function(){
-	return '<link rel="stylesheet" href="/sqlInterface.css"><script src="/script.js"></script>	';	
-	
-	'<style>'+
-		'body {margin: 0}' +
-		'#result {'+
-			'font-family: "Open Sans", Helvetica, Arial, sans-serif;'+
-			'border-collapse: collapse;'+
-			'width: 100%;'+
-			'margin: 0px;' +
-  		'}'+
-
-  		'#result td, #result th {'+
-			'border: 1px solid #ddd;'+
-			'padding: 8px;'+
-		'}'+
-
-		'#result tr:nth-child(even){background-color: #f2f2f2;}'+
-
-		'#result tr:hover {background-color: #ddd;}'+
-
-		'#result td{' +
-			'max-width: 0;' + 
-			'overflow: hidden;'+
-			'text-overflow: ellipsis;'+
-			'white-space: nowrap;'+
-		'}'+
-
-		'#result th {'+
-			'padding-top: 12px;'+
-			'padding-bottom: 12px;'+
-			'text-align: left;'+
-			'background-color: #0069b4;'+
-			'color: white;'+
-		'}'+
-	'</style>';
+	return '<link rel="stylesheet" href="/sqlInterface.css"><script src="/script.js"></script>';	
 }
