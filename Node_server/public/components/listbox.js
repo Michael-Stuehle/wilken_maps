@@ -284,7 +284,7 @@ export class listbox{
 
             dragSrcListbox = self; 
             if (!this.classList.contains('selected')) {
-                this.classList.add('selected');
+                self.setItemSelected(this, {});
             }
 
             e.dataTransfer.effectAllowed = 'move';

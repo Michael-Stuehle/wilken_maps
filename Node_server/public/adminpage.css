@@ -60,7 +60,7 @@ input{
     width: 100%;
     background: var(--backgroundColor);
     color: var(--textColor);
-    animation: selectAnimReverse 0.1s linear;
+    animation: selectAnimReverse 0.2s linear;
 }
 .item-text{
     width: 45%; 
@@ -68,16 +68,20 @@ input{
     margin: 0;
 }
 
+.item:hover,
+.item:focus{
+    background-color: #81818149;
+}
+
 .item.selected{
     background-color: var(--btnHoverColor);
-    animation: selectAnim 0.1s linear;
+    animation: selectAnim 0.2s linear;
 }
 
 @keyframes selectAnimReverse {
     from {background-color: var(--btnHoverColor);}
     to {background-color: var(--backgroundColor);}
 }
-
 
 @keyframes selectAnim {
     from {background-color: var(--backgroundColor);}
@@ -121,40 +125,68 @@ div{
     padding: 20px;
     border: 1px solid var(--borderColor);
     width: 60%;
-    height: 30%;
+    height: auto;
+    display: block;
+    overflow: auto;
 }
 
 .modal input{
     width: 85%;
 }
 
-/* The Close Button */
-.close {
-    color: #ff0000;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+.saveIcon{
+    color: lightblue;
 }
 
-.close:hover,
-.close:focus {
-    color: rgb(155, 0, 0);
-    text-decoration: none;
+.refreshIcon{
+    color: lightgreen;
+}
+
+.buttonsLeiste{
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.saveBtn{
+    display: flex; 
+    flex-direction: row; 
+    justify-content: space-evenly; 
+    flex-wrap: nowrap;
+}
+
+.customButton{
+    height: auto;
+    float: right;
+    margin-left: auto;
+    background-color: var(--btnBackgroundColor);
+    border: 1px solid var(--borderColor);
+    box-sizing: border-box;
     cursor: pointer;
+    font-weight: bold;
+    padding: 10px;
+    margin: 10px;
 }
 
-.ok{
-    color: #00ff00;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;  
-}
-
-.ok:hover,
-.ok:focus{
-    color: rgb(0, 151, 8);
+.closeBtn:hover,
+.okBtn:hover{
+    background-color: var(--btnHoverColor);
     text-decoration: none;
     cursor: pointer; 
+}
+
+.closeIcon {
+    float: left;
+    font-weight: bold;
+    margin-right: 5px;
+    color: #ff0000;  
+}
+
+.okIcon{
+    color: #00ff00;
+    float: left;
+    font-weight: bold;
+    margin-right: 5px
 }
 
 .modal-content-flexbox{

@@ -63,6 +63,10 @@ window.checkAnythingChanged = function(){
     return !window.saved;
 }
 
+window.ReloadAll = function(){
+    location = location;
+}
+
 function DatenNeuLaden(){
     fetch("/raumliste.txt", {
         method: "GET",
