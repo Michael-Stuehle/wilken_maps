@@ -177,6 +177,14 @@ app.get('/sql.html', function(request, response){
 			response.sendFile(path.join(__dirname + '/public/sql.html'));
 		}
 	})
+});
+
+app.get('/sqlInterface.css', function(request, response){
+	mysqlConnection.hasPermissionForSQL(request, function(result){
+		if (result) {
+			response.sendFile(path.join(__dirname + '/public/sqlInterface.css'));
+		}
+	})
 })
 
 app.get('/getProceduresAndFunctions', function(request, response){

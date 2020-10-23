@@ -1,5 +1,7 @@
 const mySqlConnection = require('../SQL/MySqlConnection');
 
+const linebreak = '\n';
+
 module.exports = {
     buildEinstellungenSeite: function(einstellungen){
         let inputs = ''
@@ -53,24 +55,24 @@ module.exports = {
 
 var buildClientJS = function(){
     let retVal =
-     '<script src="/script.js"></script>'+
-     '<script>'+
-        'function DoSubmit(){'+
-            'document.getElementById("form").submit();'+
-        '}'+
+     '<script src="/script.js"></script>'+linebreak+
+     '<script>'+linebreak+
+        'function DoSubmit(){'+linebreak+
+            'document.getElementById("form").submit();'+linebreak+
+        '}'+linebreak+
         
-        'function saveResult(){'+
-            'setTimeout(function () {'+
-                'var iframe = document.getElementById("resultFrame");'+
-                'var resultText = iframe.contentWindow.document.body.innerHTML;'+
-                ' if (resultText === "") {'+
+        'function saveResult(){'+linebreak+
+            'setTimeout(function () {'+linebreak+
+                'var iframe = document.getElementById("resultFrame");'+linebreak+
+                'var resultText = iframe.contentWindow.document.body.innerHTML;'+linebreak+
+                ' if (resultText === "") {'+linebreak+
                   // do nothing
-                '} else {'+
-                    'location.reload();' +
-                    'setTimeout(function(){ window.alert(resultText); }, 100);'+
-                '}'+
-            '}, 10);'+
-        '}'+
+                '} else {'+linebreak+
+                    'location.reload();' +linebreak+
+                    'setTimeout(function(){ window.alert(resultText); }, 100);'+linebreak+
+                '}'+linebreak+
+            '}, 10);'+linebreak+
+        '}'+linebreak+
     '</script>';
     return retVal;
 }
@@ -135,15 +137,18 @@ var bulidHeader = function(){
                         buildClientJS() +
                     '</head>'+
                     '<body>'+
+                        '<h1>Einstellungen</h1> <br><br>'+
                         '<iframe id="resultFrame" name="formDestination"  style="visibility: hidden; width: 0px; height: 0px" onload="saveResult()"></iframe>'+
-                        '<form id="form" class="form" action="einstellungen" method="POST" target="formDestination">';
+                        '<div style="display: block;overflow: auto;"><form id="form" class="form" action="einstellungen" method="POST" target="formDestination">';
     return result;
 }
 
 
 var buildFooter = function(){
     let result = 
-                '</form>'+
+                '</form></div>'+
+                '<br>'+
+                '<a style="float: left;margin: 0 auto" href="/home">zurück</a>'+
             '</body>'+
         '</html>';
     return result;

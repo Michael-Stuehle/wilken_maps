@@ -1,0 +1,94 @@
+:root{
+    --btnBackgroundColor: #0069b4;
+    --btnColor: #ffffff;
+    --btnHoverColor:  #70b6e7;
+    --mainFont: "Open Sans", Helvetica, Arial, sans-serif;
+    --textColor: #4d4d4d;
+    --backgroundColor: #ffffff;
+    --borderColor: #dddddd;
+    --linkColor: #0000ee;
+}
+body {
+    width: 100%;
+    margin: 0 auto;
+    font-family: var(--mainFont);
+    background-color: var(--backgroundColor);
+}
+h1 {
+    text-align: center;
+    color: var(--textColor);
+    font-size: 24px;
+    padding: 20px 0 20px 0;
+}
+
+button{
+    width: 100%;
+    padding: 15px;
+    background-color: var(--btnBackgroundColor);
+    border: 0;
+    box-sizing: border-box;
+    cursor: pointer;
+    font-weight: bold;
+    color: var(--backgroundColor)
+}
+
+a{
+    color: var(--linkColor);
+}
+
+textarea,
+iframe{
+    border: 1px solid var(--borderColor);
+    background-color: var(--backgroundColor);
+    color: var(--textColor);
+}
+
+.startButton{
+    padding: 15px;
+    background-color: var(--btnBackgroundColor);
+    border: 0;
+    cursor: pointer;
+    font-weight: bold;
+    color: var(--btnColor);
+    float: right;
+}
+
+#result {
+    font-family: var(--mainFont);
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0px;
+    color: var(--textColor);
+}
+
+#result td, #result th {
+    border: 1px solid var(--borderColor);
+    padding: 8px;
+}
+
+#result tr:nth-child(even){
+    background-color: #a8a8a891;
+}
+
+#result tr:nth-child(odd){
+    background-color: #61616183;
+}
+
+#result tr:hover {
+    background-color: var(--backgroundColor);
+}
+
+#result td{
+    max-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#result th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: var(--btnBackgroundColor);
+    color: #cecece
+}

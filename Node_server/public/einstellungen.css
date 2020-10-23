@@ -33,6 +33,13 @@ label{
     color: var(--textColor);
 }
 
+h1{
+    text-align: center;
+    color: var(--textColor);
+    font-size: 2em;
+    padding: 10px 0 10px 0;
+}
+
 input{
     padding: 15px; 
     border: 1px solid var(--borderColor);
@@ -42,6 +49,10 @@ input{
     height: 100%;
     background-color: var(--backgroundColor);
     color: var(--textColor);
+}
+
+a{
+    color: var(--linkColor);
 }
 
 .item{

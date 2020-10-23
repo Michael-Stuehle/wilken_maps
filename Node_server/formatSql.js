@@ -37,7 +37,9 @@ var formatSqlHtml = function(result, fields){
 }
 
 var tableSyle = function(){
-	return '<style>'+
+	return '<link rel="stylesheet" href="/sqlInterface.css"><script src="/script.js"></script>	';	
+	
+	'<style>'+
 		'body {margin: 0}' +
 		'#result {'+
 			'font-family: "Open Sans", Helvetica, Arial, sans-serif;'+
