@@ -16,7 +16,7 @@ const { con } = require('./SQL/Globalconnection');
 // zugriff auf diese urls auch ohne angemeldet zu sein
 // ???.html = html seite 
 // ??? 		= post an server (gesendet von ???.html)
-var allowedUrls = ['/auth', '/register', '/register.html', '/salt', '/passwordVergessen.html', '/passwordVergessen', '/verify', '/verify.html', '/style.css', '/script.js'];
+var allowedUrls = ['/auth', '/register', '/register.html', '/salt', '/passwordVergessen.html', '/passwordVergessen', '/verify', '/verify.html', '/style.css', '/script.js', '/raumliste.txt'];
 
 var app = express();
 
@@ -236,6 +236,7 @@ app.get('/passwordVergessen.html', function(request, response){
 });
 
 app.get('/raumliste.txt', function(request, response){
+	console.log('raumliste gefragt');
 	mysqlConnection.getRaumListe(function(resultJSON){
 		response.send(JSON.stringify(resultJSON));
 	})
