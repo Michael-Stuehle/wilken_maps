@@ -68,6 +68,7 @@
     <Compile Include="Assets\Scripts\Helper\HelperMethods.cs" />
     <Compile Include="Assets\Scripts\Helper\Map.cs" />
     <Compile Include="Assets\Scripts\Helper\MapEnum.cs" />
+    <Compile Include="Assets\Scripts\Helper\Raumliste.cs" />
     <Compile Include="Assets\Scripts\Listbox.cs" />
     <Compile Include="Assets\Scripts\Main.cs" />
     <Compile Include="Assets\Scripts\MitarbeiterRaumListe.cs" />
@@ -250,6 +251,9 @@
     </Reference>
     <Reference Include="UnityEditor">
       <HintPath>D:/Programme/2019.4.2f1/Editor/Data/Managed/UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>D:/GitHub/wilken_maps/trunk/2d karte/Assets/Plugins/Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>D:/Programme/2019.4.2f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

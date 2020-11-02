@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Scripts.Helper;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,12 +7,26 @@ namespace Assets
 {
     class Zielpunkt : MonoBehaviour
     {
-        public string Name;
+        public int Raum_id;
+        private string name;
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+        }
 
         // Awake ist vor mitarbeiterlisteLoad
         void Awake()
         {
-            MitarbeiterRaumListe.RaumListe.Add(Name, transform.position);
+            name = lookupName(Raum_id);
+            MitarbeiterRaumListe.RaumListe.Add(name, transform.position);
+        }
+
+        string lookupName(int raum_id)
+        {
+            return Raumliste.getRaumNameById(raum_id);
         }
     }
 }
