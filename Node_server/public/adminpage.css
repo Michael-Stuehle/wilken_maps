@@ -239,6 +239,7 @@ button:hover {
     margin: 0px;
 }
 .menu .menu-options .menu-option {
+    color: var(--textColor);
     font-weight: 500;
     font-size: 14px;
     padding: 10px 40px 10px 20px;
