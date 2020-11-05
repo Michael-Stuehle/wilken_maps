@@ -14,6 +14,11 @@ public class ClientScript : MonoBehaviour
         MitarbeiterListeLoadEvent?.Invoke(liste);
     }
 
+    private void Start()
+    {
+        LoadMitarbeiterStart();
+    }
+
 #if UNITY_WEBGL && !UNITY_EDITOR
     [DllImport("__Internal")]
     private static extern void LoadMitarbeiter();
@@ -21,8 +26,6 @@ public class ClientScript : MonoBehaviour
     private void LoadMitarbeiter()
     {
         string text = File.ReadAllText("Assets/mitarbeiter.txt");
-
-        Debug.Log("Methode: 'Clientscript.LoadMitarbeiter()' ist im editor nicht verfügbar");
         OnMitarbeiterListeLoad(text);
     }
 #endif

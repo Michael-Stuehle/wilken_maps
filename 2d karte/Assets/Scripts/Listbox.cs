@@ -22,14 +22,6 @@ public class Listbox : MonoBehaviour
     private float defaultFilterTimeout = 1.0f;
 
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        dropDown = GetComponent<Dropdown>();
-        MitarbeiterRaumListe.MitarbeiterListeReadyEvent += setDropDownValues;
-        client.LoadMitarbeiterStart();
-    }
-
     void setDropDownValues()
     {
         List<string> tmp = MitarbeiterRaumListe.Items.Keys.FindAll(
@@ -128,6 +120,8 @@ public class Listbox : MonoBehaviour
         }
 
         KeyDownEvent += setFilter;
+        dropDown = GetComponent<Dropdown>();
+        MitarbeiterRaumListe.MitarbeiterListeReadyEvent += setDropDownValues;
     }
 
     void Update()
