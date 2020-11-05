@@ -66,6 +66,29 @@ namespace Assets.Scripts.Helper
             }
         }
 
+        public static Raum getRaumByName(string name)
+        {
+            for (int i = 0; i < Items.Length; i++)
+            {
+                if (Items[i].name == name)
+                {
+                    return Items[i];
+                }
+            }
+            return new Raum();
+        }
+
+        public static Raum getRaumbyId(int id)
+        {
+            for (int i = 0; i < Items.Length; i++)
+            {
+                if (Items[i].id == id)
+                {
+                    return Items[i];
+                }
+            }
+            return new Raum();
+        }
 
         public static void Init(string jsonUrl, string user, string password)
         {
