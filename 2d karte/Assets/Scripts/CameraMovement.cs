@@ -43,33 +43,48 @@ namespace Assets
 
             main.EtageChangedEvent += (aInt) =>
             {
-                mainCamera.transform.position = main.Stockwerke[aInt].transform.position + cameraPosRelativZuEtage;
+                mainCamera.transform.position = main.Etage[aInt].transform.position + cameraPosRelativZuEtage;
                 main.nav.ReDraw();
             };
 
             ZoomEvent += (zoom) =>
             {
-                // Allows zooming in and out via the mouse wheel
-                if (zoom > 0)
+                if (canZoom(zoom))
                 {
-                    Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-                    RaycastHit hit;
-                    Physics.Raycast(ray, out hit);
-                    mainCamera.transform.position = Vector3.MoveTowards(
-                        mainCamera.transform.position,
-                        hit.point + new Vector3(0, 5, 0),
-                        zoomSpeed * Time.deltaTime);
-                }
-                if (zoom < 0)
-                {
-                    mainCamera.transform.position = Vector3.MoveTowards(
-                        mainCamera.transform.position,
-                         main.AktuelleEtage.transform.position + cameraPosRelativZuEtage + new Vector3(0, 10, 0),
-                        zoomSpeed * Time.deltaTime);
+                    // Allows zooming in and out via the mouse wheel
+                    if (zoom > 0)
+                    {
+                        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+                        RaycastHit hit;
+                        Physics.Raycast(ray, out hit);
+                        mainCamera.transform.position = Vector3.MoveTowards(
+                            mainCamera.transform.position,
+                            hit.point + new Vector3(0, 5, 0),
+                            zoomSpeed * Time.deltaTime);
+                    }
+                    if (zoom < 0)
+                    {
+                        mainCamera.transform.position = Vector3.MoveTowards(
+                            mainCamera.transform.position,
+                             main.Etage[main.AktuelleEtageIndex].transform.position + new Vector3(0, Constants.ETAGE_Y_DIFF-5, 0),
+                            zoomSpeed * Time.deltaTime);
+                    }
                 }
             };
 
             cameraPosRelativZuEtage = mainCamera.transform.position;
+        }
+
+        bool canZoom(float direction)
+        {
+            if (direction < 0) // hoch
+            {
+                return mainCamera.transform.position.y < main.Etage[main.AktuelleEtageIndex].transform.position.y + Constants.ETAGE_Y_DIFF-5;
+            }
+            else // runter
+            {
+                return mainCamera.transform.position.y > main.Etage[main.AktuelleEtageIndex].transform.position.y + 5;
+            }            
         }
 
 
@@ -225,7 +240,7 @@ namespace Assets
             }
             else if (main.eventSystem.currentSelectedGameObject == null || main.eventSystem.currentSelectedGameObject.GetComponent<RectTransform>() == null)
             {
-            
+               
                 HandleCameraZoom();
 
                 HandleCameraPan();

@@ -30,5 +30,18 @@ namespace Assets
             MitarbeiterRaumListe.Items.TryGetValue(name, out result);
             return result;
         }
+
+        public static void Label(Vector3 pos, string text, GUIStyle style = null)
+        {
+            if (style == null)
+            {
+                style = new GUIStyle(); 
+            }
+            Vector3 screenPos = Camera.main.WorldToScreenPoint(pos);
+            Vector2 size = style.CalcSize(new GUIContent(text));
+
+            Rect r = new Rect(screenPos.x, Screen.height - screenPos.y, size.x, size.y);
+            GUI.Label(r, text, style);
+        }
     }
 }

@@ -51,6 +51,11 @@ namespace Assets
         void Start()
         {
             wegPunkte.Clear();
+
+            main.EtageChangedEvent += (etage) =>
+            {
+
+            };
             EndPointReachedEvent += () =>
             {
                 DrawLine();
@@ -121,12 +126,12 @@ namespace Assets
                 int i = 0;
                 while (i < positions.Count)
                 {
-                    if (positions[i].y - main.AktuelleEtageIndex * 50 < -0.5f) // unter aktueller etage
+                    if (positions[i].y - main.AktuelleEtageIndex * Constants.ETAGE_Y_DIFF < -0.5f) // unter aktueller etage
                     {
                         positions.RemoveAt(i);
                         continue;
                     }
-                    else if (positions[i].y - main.AktuelleEtageIndex * 50 > 0.5f)// über aktueller etage
+                    else if (positions[i].y - main.AktuelleEtageIndex * Constants.ETAGE_Y_DIFF > 0.5f)// über aktueller etage
                     {
                         positions.RemoveAt(i);
                         continue;

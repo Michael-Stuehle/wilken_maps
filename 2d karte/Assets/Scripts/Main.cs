@@ -17,7 +17,7 @@ namespace Assets
 
         public CameraMovement cam;
         public EventSystem eventSystem;
-        public GameObject[] Stockwerke;
+        public GameObject[] Etage;
         public navigation nav;
         
 
@@ -26,11 +26,11 @@ namespace Assets
         {
             get
             {
-                return Stockwerke[currStockIndex];
+                return Etage[currStockIndex];
             }
             set
             {
-                currStockIndex = Stockwerke.IndexOf(value);
+                currStockIndex = Etage.IndexOf(value);
             }
         }
 
@@ -42,7 +42,7 @@ namespace Assets
             }
             set
             {
-                if (value >= 0 && value < Stockwerke.Length && value != currStockIndex)
+                if (value >= 0 && value < Etage.Length && value != currStockIndex)
                 {
                     currStockIndex = value;
                     OnEtageChanged(value);

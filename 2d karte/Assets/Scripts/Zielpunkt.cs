@@ -1,7 +1,9 @@
 ﻿using Assets.Scripts.Helper;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets
 {
@@ -17,10 +19,20 @@ namespace Assets
             }
         }
 
+        private Main main;
+        private Camera cam;
+
+        private void Start()
+        {
+            main = GameObject.Find("Main").GetComponent<Main>();
+            cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        }
+
         // Awake ist vor mitarbeiterlisteLoad
         void Awake()
         {
             name = lookupName(Raum_id);
+            GetComponentInChildren<TextMeshPro>().text = name;
             MitarbeiterRaumListe.RaumListe.Add(name, transform.position);
         }
 
