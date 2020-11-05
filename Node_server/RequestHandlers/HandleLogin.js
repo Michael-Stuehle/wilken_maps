@@ -4,6 +4,9 @@ var mysqlConnection = require('../SQL/MySqlConnection');
 const logger = require("../logger");
 var path = require('path');
 const { exec } = require("child_process");
+const verschluesselung = require("../verschluesselung");
+const helperSQL = require("../SQL/helperSQL");
+const { getSaltForUser } = require("../SQL/MySqlConnection");
 
 module.exports = {
 
@@ -18,15 +21,8 @@ module.exports = {
                         if (results) {
                             authErfolgreich(request, response, username);
                         } else {
-                            // auf 1mal passwort prüfen
-                            mysqlConnection.checkPasswordForUserPasswordVergessen(username, password, function(result){
-                                if (result) {
-                                    authErfolgreich(request, response, username);
-                                }else{
-                                    response.send('Incorrect Username and/or Password!');
-                                    response.end();
-                                }
-                            })
+                            response.send('Incorrect Username and/or Password!');
+                            response.end();
                         }			
                     })
                 }else{
@@ -68,30 +64,33 @@ module.exports = {
     passwortVergessen: function(request, response){
         let username = request.body.username;
         let password = Helper.generateRandomStringSafe(6);	
-        mysqlConnection.checkUserExists(username, function(result){
-            if (result) {
-                mysqlConnection.set1malPasswort(username, password, function(result){
-                    if (result) {
-                        sendPasswordVergessenMail(username, password, function(result){
-                            if (result) {
-                                response.send('mail wurde gesendet');
-                                logger.log('user: ' + username + ' hat sein passwort zurückgesetzt',  request.connection.remoteAddress);
-                            }
-                        })
-                    }	
-                });
-            }else{
-                response.send('der benuezter: "' + username + '" existiert nicht');
-            }
-        })
-        
+        helperSQL.getSalt(username, function(salt){
+            var hash1 = verschluesselung.md5(password);
+            var hash2 = verschluesselung.md5(hash1 + salt);
+            var final = verschluesselung.PBKDF2(hash2, salt);
+            mysqlConnection.checkUserExists(username, function(result){
+                if (result) {
+                    mysqlConnection.set1malPasswort(username, final, function(result){
+                        if (result) {
+                            sendPasswordVergessenMail(username, password, function(result){
+                                if (result) {
+                                    response.send('mail wurde gesendet');
+                                    logger.log('user: ' + username + ' hat sein passwort zurückgesetzt',  request.connection.remoteAddress);
+                                }
+                            })
+                        }	
+                    });
+                }else{
+                    response.send('der benuezter: "' + username + '" existiert nicht');
+                }
+            })
+        })       
     },
 
     changePassword: function(request, response){
-        let username = request.session.username;
+        let username = request.body.username;
         let password = request.body.password;
         let newPassword = request.body.newPassword;
-    
         mysqlConnection.checkPasswordForUser(username, password, function(result){
             if (result) {
                 mysqlConnection.changePassword(username, newPassword, function(result){
@@ -116,6 +115,31 @@ module.exports = {
             }
         })
     }
+}
+
+module.exports.checkloginEinmalPasswort = checkloginEinmalPasswort;
+
+async function checkloginEinmalPasswort(request){
+    return new Promise(resolve => {
+        let username = request.query.username;
+        let password = request.query.password; // plain text passwort
+        if (username && password) {
+            helperSQL.getSalt(username, function(salt){
+                var hash1 = verschluesselung.md5(password);
+                var hash2 = verschluesselung.md5(hash1 + salt);
+                 // 1 mal passwort prüfen
+                mysqlConnection.checkPasswordForUserPasswordVergessen(username, hash2, function(results){
+                    if (results) {
+                        resolve(true);
+                    } else {
+                        resolve(false);
+                    }			
+                })           
+            })       
+        }else{
+            resolve(false);
+        }  
+    })
 }
 
 

@@ -16,7 +16,6 @@ module.exports = {
                         return;
                     }
                     var resultValue = false;
-    
                     if (result.length > 0) {
                         // passwort auf datenbank = pbkdf2(sha512(sha512(passwort) + salt), salt)
                         resultValue = result[0]["password"] === verschluesselung.PBKDF2(enteredPassword, result[0]['salt']);
@@ -40,7 +39,7 @@ module.exports = {
 
                     var resultValue = false;
 
-                    if (result.length > 0) {                       
+                    if (result.length > 0) {                     
                         resultValue = result[0]["password"] === verschluesselung.PBKDF2(enteredPassword, result[0]['salt']);
                     }               
                     return callback(resultValue)
@@ -54,20 +53,17 @@ module.exports = {
     // passwort ist ein zufälliges 6 stelliges passwort aus buchstaben (keine zahlen/zeichen)
     set1malPasswort: function(email, password, callback){
         globalconnection.checkIsConnected(function(){
-            helperSQL.getSalt(email, function(salt){
-                var hash1 = verschluesselung.md5(password);
-                var hash2 = verschluesselung.md5(hash1 + salt);
-                var final = verschluesselung.PBKDF2(hash2, salt);
+            
                 var sql = "Update user set user.1malPasswort = ?, 1malPasswortAblauf = DATE_ADD(NOW(), INTERVAL 1 HOUR) where user.email = ?";
                 
-                globalconnection.con.query(sql, [final, email], function (err) {
+                globalconnection.con.query(sql, [password, email], function (err) {
                     if (err) {
                         return callback(false);
                     }else{
                         return callback(true);
                     }                         
                 })
-            })
+
         });
     },
 

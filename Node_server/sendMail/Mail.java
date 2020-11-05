@@ -14,8 +14,9 @@ public class Mail {
 		if (args.length == 2) {
 			sendMail(
 					args[0],
-					"Wilken Maps Passwort Vergessen",
-					args[1]
+					"Wilken Maps Passwort Ändern",
+					"auf link clicken um das passwort zu ändern: http://ul-ws-mistueh/changePassword.html"+
+					"?username=" + args[0] + "&password="+args[1] 
 				);
 		}else{
 			//args[1] == http://ul-ws-mistueh:80

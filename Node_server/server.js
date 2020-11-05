@@ -16,7 +16,7 @@ const { con } = require('./SQL/Globalconnection');
 // zugriff auf diese urls auch ohne angemeldet zu sein
 // ???.html = html seite 
 // ??? 		= post an server (gesendet von ???.html)
-var allowedUrls = ['/auth', '/register', '/register.html', '/salt', '/passwordVergessen.html', '/passwordVergessen', '/verify', '/verify.html', '/style.css', '/script.js', '/raumliste.txt'];
+var allowedUrls = ['/auth', '/login.html', '/register', '/register.html', '/changePassword.html', '/changePassword', '/salt', '/passwordVergessen.html', '/passwordVergessen', '/verify', '/verify.html', '/style.css', '/script.js', '/raumliste.txt'];
 
 var app = express();
 
@@ -33,7 +33,7 @@ app.use(function (req, res, next) {
 		next()
 	}else{
 		// falls nicht wird auf login seite weitergeleitet
-		res.sendFile(path.join(__dirname + '/public/login.html'));
+		res.redirect('/login.html');
 	}
 })
 
@@ -64,7 +64,7 @@ app.post('/passwordVergessen', function(request, response){
 	HandleLogin.passwortVergessen(request, response);	
 });
 
-app.post('/changePassword', function(request, response){
+app.post('/changePassword', async function(request, response){
 	HandleLogin.changePassword(request, response);
 });
 
@@ -132,6 +132,10 @@ app.get('/home', function(request, response) {
 		
 	});
 });
+
+app.get('/login.html', function(request, response){
+	response.sendFile(path.join(__dirname + '/public/login.html'));
+})
 
 // beendet die sesssion und leitet zu loggin-seite weiter
 app.get('/logout', function(request, response){
@@ -227,8 +231,12 @@ app.get('/register.html', function(request, response){
 	response.sendFile(path.join(__dirname + "/public/register.html"));
 });
 
-app.get('/changePassword.html', function(request, response){
-	response.sendFile(path.join(__dirname + "/public/changePassword.html"));
+app.get('/changePassword.html', async function(request, response){
+	if (request.session.loggedin || await HandleLogin.checkloginEinmalPasswort(request)) {
+		response.sendFile(path.join(__dirname + "/public/changePassword.html"));
+	}else{
+		response.redirect('/login.html')
+	}
 });
 
 app.get('/passwordVergessen.html', function(request, response){
