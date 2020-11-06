@@ -16,7 +16,7 @@ const { con } = require('./SQL/Globalconnection');
 // zugriff auf diese urls auch ohne angemeldet zu sein
 // ???.html = html seite 
 // ??? 		= post an server (gesendet von ???.html)
-var allowedUrls = ['/auth', '/login.html', '/register', '/register.html', '/changePassword.html', '/changePassword', '/salt', '/passwordVergessen.html', '/passwordVergessen', '/verify', '/verify.html', '/style.css', '/script.js', '/raumliste.txt'];
+var allowedUrls = ['/auth', '/login.html', '/register', '/register.html', '/changePassword.html', '/changePassword', '/salt', '/passwordVergessen.html', '/passwordVergessen', '/verify', '/verify.html', '/style.css', '/script.js', '/raumliste.txt', '/mitarbeiter.txt'];
 
 var app = express();
 
@@ -252,7 +252,7 @@ app.get('/raumliste.txt', function(request, response){
 // erstellt mitarbeiter liste aus datenbank einträgen (verwendung für unity programm)
 app.get('/mitarbeiter.txt', function(request, response){
 	mysqlConnection.getMitarbeiter(function(result) {
-		response.send('<pre style="word-wrap: break-word; white-space: pre-wrap;">' + result + '</pre>');
+		response.send(result);
 	})
 }); 
 
