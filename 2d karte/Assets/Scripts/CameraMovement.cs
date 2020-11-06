@@ -23,6 +23,7 @@ namespace Assets
         private Vector3 cameraPosRelativZuEtage;
         private Vector3 lastPanPosition;
         private bool moveCamToStartPos = false;
+   
 
         private int panFingerId; // Touch mode only
 
@@ -43,7 +44,15 @@ namespace Assets
 
             main.EtageChangedEvent += (aInt) =>
             {
-                mainCamera.transform.position = main.Etage[aInt].transform.position + cameraPosRelativZuEtage;
+                if (mainCamera.transform.position.y < main.Etage[aInt].transform.position.y) // move up
+                {
+                    mainCamera.transform.position = main.Etage[aInt].transform.position;
+                }
+                else// move down
+                {
+                    mainCamera.transform.position = main.Etage[aInt+1].transform.position - new Vector3(0, 1, 0); // aktuelle etage pos -10
+                }
+                moveCamToStartPos = true;
                 main.nav.ReDraw();
             };
 
