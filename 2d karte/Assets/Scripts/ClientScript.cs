@@ -44,7 +44,6 @@ public class ClientScript : MonoBehaviour
             {
                 new WaitForSeconds(0.1f);
             }
-            Debug.Log(www.text);
             OnMitarbeiterListeLoad(www.text);
         }
     }

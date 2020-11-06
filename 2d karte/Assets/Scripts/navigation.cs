@@ -10,6 +10,7 @@ namespace Assets
     class navigation : MonoBehaviour
     {
         public Button btnSuchen;
+        public GameObject EtagePfeilPrefab;
         public GameObject Pfeil_prefab;
         public delegate void EndPointReachedEventHandler();
         public event EndPointReachedEventHandler EndPointReachedEvent;
@@ -113,12 +114,18 @@ namespace Assets
             return list;
         }
 
+        void checkNextPointForArrows(Vector3 curr, Vector3 next)
+        {
+
+        }
+
         void DrawLine()
         {
             LineRenderer lr = GetComponent<LineRenderer>();
             lr.positionCount = 0;
             for (int pathIndex = 0; pathIndex < paths.Length; pathIndex++)
             {
+                int lastYChange = 0;
                 var path = paths[pathIndex];
 
                 List<Vector3> positions = toList(path.corners);
@@ -126,6 +133,25 @@ namespace Assets
                 int i = 0;
                 while (i < positions.Count)
                 {
+                    if (i < positions.Count-1 && positions[i+1].y - positions[i].y < -0.5f) // nächste unter aktuelle
+                    {
+                        if (lastYChange != -1)
+                        {
+                            lastYChange = -1;
+                            setEtagePfeil(positions[i], lastYChange); // etage unten pfeil nach oben
+                            setEtagePfeil(positions[i+1], -lastYChange); // etage oben pfeil nach unten
+                        }
+                    }
+                    else if (i < positions.Count - 1 && positions[i+1].y - positions[i].y > 0.5f)// nächste über aktuelle
+                    {
+                        if (lastYChange != +1)
+                        {
+                            lastYChange = +1;
+                            setEtagePfeil(positions[i], lastYChange); // etage unten pfeil nach oben
+                            setEtagePfeil(positions[i + 1], -lastYChange); // etage oben pfeil nach unten
+                        }
+                    }
+
                     if (positions[i].y - main.AktuelleEtageIndex * Constants.ETAGE_Y_DIFF < -0.5f) // unter aktueller etage
                     {
                         positions.RemoveAt(i);
@@ -149,6 +175,17 @@ namespace Assets
             wegPfeileZeichnen(p);
         }
 
+        private void setEtagePfeil(Vector3 pos, int direction)
+        {
+            GameObject pfeil = Instantiate(EtagePfeilPrefab);
+            if (direction < 0)
+            {
+                pfeil.transform.rotation = new Quaternion(0, 180, 0, 0);
+            }
+            
+            pfeil.transform.position = pos + (new Vector3(1,0,-1)*direction);
+        }
+
         private void wegPfeileZeichnen(Vector3[] positions)
         {
             for (int i = 0; i < positions.Length-1; i++)
@@ -170,7 +207,7 @@ namespace Assets
         {
             GameObject pfeil = Instantiate(Pfeil_prefab);
             pfeil.transform.rotation = angle;
-            pfeil.transform.position = pos;            
+            pfeil.transform.position = pos + (new Vector3(1.5f, 0, 0));            
         }
 
         public void ReDraw()
