@@ -6,10 +6,31 @@ mergeInto(LibraryManager.library, {
 	},
 
 	LoadMitarbeiter: function(){
-		var oFrame = document.getElementById("frmFile");
-		var strRawContents = oFrame.contentWindow.document.body.childNodes[0].innerHTML;
-		unityInstance.SendMessage("ClientObject", "OnMitarbeiterListeLoad", strRawContents);
+		fetch("http://ul-ws-mistueh/mitarbeiter.txt", {
+			method: "GET",
+			headers: { "Content-type": "application/json" },
+		})
+        .then(function (response) {
+          return response.text();
+        })
+        .then(function (text) {
+			unityInstance.SendMessage("ClientObject", "OnMitarbeiterListeLoad", text);
+		})
 		
-	}	
+	},
+	
+	LoadRaumliste: function(url){
+		fetch(url, {
+			method: "GET",
+			headers: { "Content-type": "application/json" },
+		})
+        .then(function (response) {
+          return response.text();
+        })
+        .then(function (text) {
+            unityInstance.SendMessage("ClientObject", "OnRaumlisteLoad", text);
+        })
+	
+	}
  
 });

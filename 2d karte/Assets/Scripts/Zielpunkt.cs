@@ -32,9 +32,10 @@ namespace Assets
         // Awake ist vor mitarbeiterlisteLoad
         void Awake()
         {
-            name = lookupName(Raum_id);
-            mitarbeiterVonRaum = new Mitarbeiter[Raumliste.getRaumbyId(Raum_id).mitarbeiter.Count];
-            Raumliste.getRaumbyId(Raum_id).mitarbeiter.CopyTo(mitarbeiterVonRaum, 0);
+            Raum r = Raumliste.getRaumbyId(Raum_id);
+            name = r.name;
+            mitarbeiterVonRaum = new Mitarbeiter[r.mitarbeiter.Count];
+            r.mitarbeiter.CopyTo(mitarbeiterVonRaum, 0);
 
 
             GetComponentInChildren<TextMeshPro>().text = name;
@@ -57,18 +58,18 @@ namespace Assets
 
         private void OnMouseEnter()
         {
-            Debug.Log("enter");
+            transform.localScale *= Constants.MOUSEOVER_SCALE_MULTIPLIER;
+            transform.position += new Vector3(0, 5, 0);
             GetComponentInChildren<TextMeshPro>().text = name + mitarbeiterVonRaumAsString();
         }
 
+
         private void OnMouseExit()
         {
+            transform.localScale /= Constants.MOUSEOVER_SCALE_MULTIPLIER;
+            transform.position -= new Vector3(0, 5, 0);
             GetComponentInChildren<TextMeshPro>().text = name;
-        }
 
-        string lookupName(int raum_id)
-        {
-            return Raumliste.getRaumNameById(raum_id);
         }
     }
 }

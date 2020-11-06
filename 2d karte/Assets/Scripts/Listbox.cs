@@ -21,7 +21,6 @@ public class Listbox : MonoBehaviour
     private float filterTimeout = 0.0f;
     private float defaultFilterTimeout = 1.0f;
 
-
     void setDropDownValues()
     {
         List<string> tmp = MitarbeiterRaumListe.Items.Keys.FindAll(
