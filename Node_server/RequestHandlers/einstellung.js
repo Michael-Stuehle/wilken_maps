@@ -16,6 +16,8 @@ module.exports = {
                 inputs += buildStrInput(element);
             }else if(element.typ == 'raum'){
                 inputs += buildRaumEinstellung(element);
+            }else if(element.typ == 'name'){
+                inputs += buildStrInput(element);
             }
         }
         return bulidHeader() + inputs + buildSubmitBtn() + buildFooter();

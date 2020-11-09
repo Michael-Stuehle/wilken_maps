@@ -64,6 +64,16 @@ module.exports = {
                                     });  
                                 }
                             })
+                        }else if (oldElement.typ == 'name'){
+                            sql = 'update mitarbeiter set name = ? where id = (select mitarbeiter_id from user where email = ?)';
+                            connection.query(sql, [newElement.value, user], function(err){
+                                if (err) {
+                                    logger.logError(err);
+                                    connection.rollback(function (err){
+                                        logger.logError(err);
+                                    });  
+                                }
+                            })
                         }else{
                             getEinstellungIdFromUser(user, function(id){
                                 connection.query(sql, [newElement.value, id], function(err){
@@ -147,6 +157,29 @@ var getRaumEinstellung = function(user, callback){
     });
 }
 
+var getNameEinstellung = function(user){
+    return new Promise(resolve => {
+        var sql = 'select mitarbeiter.name as name, mitarbeiter.id as id from mitarbeiter, user where user.mitarbeiter_id = mitarbeiter.id and user.email = ?';
+        globalconnection.con.query(sql, [user], function (err, result, fields) {
+            if (err) {
+                logger.log(err);
+                return;
+            }
+            var resultValue = {};
+            if (result.length > 0) {
+                resultValue = {
+                    typ: 'name',
+                    name: 'name',
+                    value: result[0]['name'],
+                    id: result[0]['id']
+                }
+            }
+            return resolve(resultValue);
+
+        });
+    });
+}
+
 var getEinstellungenForUserFunc = function(user, callback){
     var sql = "select einstellungen.* from einstellungen, user where einstellungen.id = user.einstellungen_id and user.email = ? ";
                 
@@ -156,8 +189,9 @@ var getEinstellungenForUserFunc = function(user, callback){
             return;
         }
         var resultValue = []
-        getRaumEinstellung(user, function(raumeinst){
+        getRaumEinstellung(user, async function(raumeinst){
             resultValue.push(raumeinst);
+            resultValue.push(await getNameEinstellung(user));
             if (result.length > 0) {
                 for (let index = 0; index < fields.length; index++) {
                     if (fields[index].name == 'id' || fields[index].name == 'user_id') {

@@ -197,9 +197,6 @@ app.get('/einstellungen.html', function(request, response){
 });
 
 app.get('/einstellungen.css', function(request, response){
-	if (isGast()) {
-		
-	}
 	response.sendFile(path.join(__dirname + '/public/einstellungen.css'))
 })
 
