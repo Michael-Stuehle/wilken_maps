@@ -42,7 +42,7 @@ module.exports = {
 
     checkMitarbeiterExists : function(email, callback){
         globalconnection.checkIsConnected(function(){
-            var sql = "select * from mitarbeiter where name = ?";
+            var sql = "select * from mitarbeiter mit where name = ? and (select count(*) from user where mitarbeiter_id = mit.id) = 0";
                 
             globalconnection.con.query(sql, [Helper.getNameFromEmail(email)], function (err, result) {
                 if (err) {

@@ -99,6 +99,7 @@ module.exports = {
 }
 
 var checkMitarbeiter = function(connection, email, next){
+    // prüft ob der mitarbeiter vorhanden und nicht von anderem user verwendet
     helperSQL.checkMitarbeiterExists(email, function(exists){
         if (!exists && getNameFromEmail(email) != email) { // email besteht aus echtem namen
             connection.query("Insert INTO mitarbeiter (id, raum_id, name) values (NULL, (select id from raum LIMIT 1), ?)", 
