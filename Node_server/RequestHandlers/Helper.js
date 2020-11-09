@@ -34,5 +34,9 @@ module.exports = {
          result += characters.charAt(Math.floor(Math.random() * charactersLength));
       }
       return result;
+   },
+
+   isGast: function(username){
+      return username.toLowerCase() == 'gast';
    }
 }

@@ -4,6 +4,7 @@ const formatSql = require('./formatSql');
 const HanldeRegistration = require('./RequestHandlers/HanldeRegistration');
 const HandleLogin = require('./RequestHandlers/HandleLogin');
 const Helper = require('./RequestHandlers/Helper');
+const { isGast } = require('./RequestHandlers/Helper');
 const constants = require('./constants');
 var express = require('express');
 var session = require('express-session');
@@ -17,6 +18,8 @@ const { con } = require('./SQL/Globalconnection');
 // ???.html = html seite 
 // ??? 		= post an server (gesendet von ???.html)
 var allowedUrls = ['/auth', '/login.html', '/register', '/register.html', '/changePassword.html', '/changePassword', '/salt', '/passwordVergessen.html', '/passwordVergessen', '/verify', '/verify.html', '/style.css', '/script.js', '/raumliste.txt', '/mitarbeiter.txt'];
+var NotAllowedForGast = ['/einstellungen.html', '/changePassword.html', '/changePassword'];
+
 
 var app = express();
 
@@ -30,7 +33,11 @@ app.use(session({
 app.use(function (req, res, next) {
 	// prüfung ob angemeldet / anmedlung nicht erforderlich ist
 	if (req.session.loggedin || isInAllowedUrls(req.originalUrl)) {
-		next()
+		if (req.session.loggedin && isGast(req.session.username) && !isAllowedForGast(req.originalUrl)) {
+			res.redirect('/home');
+		}else{
+			next();
+		}
 	}else{
 		// falls nicht wird auf login seite weitergeleitet
 		res.redirect('/login.html');
@@ -54,6 +61,15 @@ function isInAllowedUrls(value){
 		}
 	}
 	return false;
+}
+
+function isAllowedForGast(value){
+	for (let index = 0; index < NotAllowedForGast.length; index++) {
+		if (value.startsWith(NotAllowedForGast[index])) {
+			return false;
+		}
+	}
+	return true;
 }
 
 app.post('/register', function(request, response){
@@ -90,6 +106,9 @@ app.post('/sql', function(request, response){
 });
 
 app.post('/einstellungen', function(request, response){
+	if (isGast(request.session.username)) {
+		response.redirect('/');
+	}
 	einstellungen.einstellungenSpeichern(request, response);
 });
 
@@ -125,6 +144,8 @@ app.get('/home', function(request, response) {
 		mysqlConnection.hasPermissionForAdminPage(request.session.username, function(hasPerm){
 			if (hasPerm) {
 				response.sendFile(path.join(__dirname + '/public/home_admin.html'));
+			}else if (isGast(request.session.username)){
+				response.sendFile(path.join(__dirname + '/public/home_gast.html'));
 			}else{
 				response.sendFile(path.join(__dirname + '/public/home.html'));
 			}
@@ -167,12 +188,18 @@ app.get('/permissions', function(request, response){
 
 app.get('/einstellungen.html', function(request, response){
 	var username = request.session.username;
+	if (isGast(request.session.username)) {
+		response.redirect('/');
+	}
 	mysqlConnection.getEinstellungenForUser(username, function(result){
 		response.send(einstellungen.buildEinstellungenSeite(result))
 	});
 });
 
 app.get('/einstellungen.css', function(request, response){
+	if (isGast()) {
+		
+	}
 	response.sendFile(path.join(__dirname + '/public/einstellungen.css'))
 })
 
