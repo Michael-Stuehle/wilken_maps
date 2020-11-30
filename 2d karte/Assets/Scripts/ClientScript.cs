@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class ClientScript : MonoBehaviour
@@ -34,7 +35,10 @@ public class ClientScript : MonoBehaviour
     private static extern void LoadMitarbeiter();
 
     [DllImport("__Internal")]
-    private static extern void LoadRaumliste(string jsonUrl);
+    private static extern void LoadRaumliste();
+
+    [DllImport("__Internal")]
+    private static extern void getRaumById(string obj, int RaumId);
 #else
     private void LoadMitarbeiter()
     {
@@ -48,9 +52,9 @@ public class ClientScript : MonoBehaviour
         }
     }
 
-    private void LoadRaumliste(string jsonUrl)
+    private void LoadRaumliste()
     {
-        using (WWW www = new WWW(jsonUrl))
+        using (WWW www = new WWW(Constants.RAUMLISTE_URL))
         {
             while (!www.isDone)
             {
@@ -60,18 +64,33 @@ public class ClientScript : MonoBehaviour
             OnRaumlisteLoad(www.text);
         }
     }
+
+    private void getRaumById(string obj, int RaumId)
+    {
+        //
+    }
 #endif
 
-    public void LoadRaumlisteStart()
+    public void LoadRaumlisteAndWait()
     {
-        RaumlisteLoadEvent += (s) => raumlisteIsLoaded = true;
-        LoadRaumliste(Constants.RAUMLISTE_URL);
+        RaumlisteLoadEvent += (s) =>
+        {
+            Raumliste.setObjectsFromJSON(s);
+            raumlisteIsLoaded = true;
+        };
+
+        LoadRaumliste();
 
         // blockieren bis fertig geladen ist
         while (!raumlisteIsLoaded)
         {
-            new WaitForSeconds(0.1f);
+            new WaitForSeconds(1f);
         }
+    }
+
+    public void loadRaumById(string objName, int raumId)
+    {
+        getRaumById(objName, raumId);
     }
 
     public void LoadMitarbeiterStart()

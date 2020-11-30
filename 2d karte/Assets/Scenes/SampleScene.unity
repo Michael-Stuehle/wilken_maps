@@ -435,6 +435,11 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.6481827
       objectReference: {fileID: 0}
+    - target: {fileID: 2460206052440275653, guid: f1e465db919b7fd49a1b66882fcbae55,
+        type: 3}
+      propertyPath: Raum_id
+      value: 298
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f1e465db919b7fd49a1b66882fcbae55, type: 3}
 --- !u!224 &76357710 stripped
@@ -1311,6 +1316,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.6481827
+      objectReference: {fileID: 0}
+    - target: {fileID: 2460206052440275653, guid: f1e465db919b7fd49a1b66882fcbae55,
+        type: 3}
+      propertyPath: Raum_id
+      value: 183
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f1e465db919b7fd49a1b66882fcbae55, type: 3}
@@ -3716,6 +3726,11 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.6481827
       objectReference: {fileID: 0}
+    - target: {fileID: 2460206052440275653, guid: f1e465db919b7fd49a1b66882fcbae55,
+        type: 3}
+      propertyPath: Raum_id
+      value: 187
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f1e465db919b7fd49a1b66882fcbae55, type: 3}
 --- !u!224 &709786553 stripped
@@ -3919,27 +3934,32 @@ PrefabInstance:
     - target: {fileID: 1946134191004318698, guid: f1e465db919b7fd49a1b66882fcbae55,
         type: 3}
       propertyPath: m_textInfo.characterCount
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1946134191004318698, guid: f1e465db919b7fd49a1b66882fcbae55,
         type: 3}
       propertyPath: m_textInfo.wordCount
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1946134191004318698, guid: f1e465db919b7fd49a1b66882fcbae55,
         type: 3}
       propertyPath: m_textInfo.lineCount
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1946134191004318698, guid: f1e465db919b7fd49a1b66882fcbae55,
         type: 3}
       propertyPath: m_textInfo.pageCount
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1946134191004318698, guid: f1e465db919b7fd49a1b66882fcbae55,
         type: 3}
       propertyPath: m_text
-      value: 045
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1946134191004318698, guid: f1e465db919b7fd49a1b66882fcbae55,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2460206052440275648, guid: f1e465db919b7fd49a1b66882fcbae55,
         type: 3}
@@ -4065,6 +4085,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.6481827
+      objectReference: {fileID: 0}
+    - target: {fileID: 2460206052440275653, guid: f1e465db919b7fd49a1b66882fcbae55,
+        type: 3}
+      propertyPath: Raum_id
+      value: 304
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f1e465db919b7fd49a1b66882fcbae55, type: 3}
@@ -4369,6 +4394,11 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.6481827
       objectReference: {fileID: 0}
+    - target: {fileID: 2460206052440275653, guid: f1e465db919b7fd49a1b66882fcbae55,
+        type: 3}
+      propertyPath: Raum_id
+      value: 188
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f1e465db919b7fd49a1b66882fcbae55, type: 3}
 --- !u!224 &800904414 stripped
@@ -4455,7 +4485,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 801792203}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 75.1, z: 0}
+  m_LocalPosition: {x: 0, y: 75, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -4478,7 +4508,7 @@ MonoBehaviour:
   btnDown: {fileID: 172205151}
   btnZentrieren: {fileID: 1321895452}
   zoomSpeed: 100
-  camMoveSpeed: 30
+  camMoveSpeed: 60
   camResetSpeed: 100
 --- !u!1001 &812157817
 PrefabInstance:
@@ -5351,6 +5381,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.6481827
+      objectReference: {fileID: 0}
+    - target: {fileID: 2460206052440275653, guid: f1e465db919b7fd49a1b66882fcbae55,
+        type: 3}
+      propertyPath: Raum_id
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f1e465db919b7fd49a1b66882fcbae55, type: 3}
@@ -7097,6 +7132,11 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.6481827
       objectReference: {fileID: 0}
+    - target: {fileID: 2460206052440275653, guid: f1e465db919b7fd49a1b66882fcbae55,
+        type: 3}
+      propertyPath: Raum_id
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f1e465db919b7fd49a1b66882fcbae55, type: 3}
 --- !u!224 &1468723074 stripped
@@ -7266,6 +7306,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.6481827
+      objectReference: {fileID: 0}
+    - target: {fileID: 2460206052440275653, guid: f1e465db919b7fd49a1b66882fcbae55,
+        type: 3}
+      propertyPath: Raum_id
+      value: 186
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f1e465db919b7fd49a1b66882fcbae55, type: 3}
@@ -7600,6 +7645,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.6481827
+      objectReference: {fileID: 0}
+    - target: {fileID: 2460206052440275653, guid: f1e465db919b7fd49a1b66882fcbae55,
+        type: 3}
+      propertyPath: Raum_id
+      value: 185
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f1e465db919b7fd49a1b66882fcbae55, type: 3}
@@ -8174,6 +8224,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.6481827
+      objectReference: {fileID: 0}
+    - target: {fileID: 2460206052440275653, guid: f1e465db919b7fd49a1b66882fcbae55,
+        type: 3}
+      propertyPath: Raum_id
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f1e465db919b7fd49a1b66882fcbae55, type: 3}
@@ -9376,6 +9431,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.6481827
+      objectReference: {fileID: 0}
+    - target: {fileID: 2460206052440275653, guid: f1e465db919b7fd49a1b66882fcbae55,
+        type: 3}
+      propertyPath: Raum_id
+      value: 310
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f1e465db919b7fd49a1b66882fcbae55, type: 3}

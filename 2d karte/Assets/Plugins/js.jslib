@@ -19,8 +19,9 @@ mergeInto(LibraryManager.library, {
 		
 	},
 	
-	LoadRaumliste: function(url){
-		fetch(url, {
+	LoadRaumliste: function(){
+		var done = false;
+		fetch("http://ul-ws-mistueh/raumliste.txt", {
 			method: "GET",
 			headers: { "Content-type": "application/json" },
 		})
@@ -28,9 +29,19 @@ mergeInto(LibraryManager.library, {
           return response.text();
         })
         .then(function (text) {
+			done = true;
             unityInstance.SendMessage("ClientObject", "OnRaumlisteLoad", text);
         })
+		while (!done){}
+	},
 	
+	getRaumById: function(obj, raum_id){
+		var str_obj = Pointer_stringify(obj);
+		window.getRaumById(raum_id).then(function(raum){
+			console.log(raum);
+			console.log("raum: " + JSON.stringify(raum) + " obj " + str_obj);
+			unityInstance.SendMessage(str_obj, "OnRaumLoad", JSON.stringify(raum));
+		});		
 	}
  
 });

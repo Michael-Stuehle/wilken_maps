@@ -190,8 +190,16 @@ namespace Assets
         {
             for (int i = 0; i < positions.Length-1; i++)
             {
+                
                 Vector3 pointA = positions[i];
                 Vector3 pointB = positions[i + 1];
+
+                // falls linie zu klein ist, um pfeil ordentlich zu plazieren, einfach überspringen
+                Vector3 objectSize = Vector3.Scale(Pfeil_prefab.transform.Find("Main").localScale, Pfeil_prefab.transform.Find("Main").GetComponent<MeshRenderer>().bounds.size);
+                if (Vector3.Distance(pointA, pointB) < objectSize.z + 2)
+                {
+                    continue; 
+                }
                 Vector3 mittlepunkt = new Vector3((pointA.x + pointB.x) / 2, (pointA.y + pointB.y) / 2, (pointA.z + pointB.z) / 2);
 
                 Vector3 _direction = (pointB - pointA).normalized;

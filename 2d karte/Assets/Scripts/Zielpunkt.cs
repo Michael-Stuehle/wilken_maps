@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Helper;
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -10,18 +11,38 @@ namespace Assets
     class Zielpunkt : MonoBehaviour
     {
         public int Raum_id;
-        private string name;
+        private string _name;
         public string Name
         {
             get
             {
-                return name;
+                return _name;
             }
         }
 
         private Main main;
         private Camera cam;
         private Mitarbeiter[] mitarbeiterVonRaum;
+
+        public void OnRaumLoad(string text)
+        {
+            Raum r = JsonConvert.DeserializeObject<Raum>(text);
+            Raumliste.Items.Add(r);
+            //------NUR FÜR DEMO ZWECKE-------------------------
+            if (r.id == -1) // nicht gefunden
+            {
+                r.name = GetComponentInChildren<TextMeshPro>().text; // default text
+            }
+            //--------------------------------------------------
+
+            _name = r.name;
+            mitarbeiterVonRaum = new Mitarbeiter[r.mitarbeiter.Count];
+            r.mitarbeiter.CopyTo(mitarbeiterVonRaum, 0);
+
+
+            GetComponentInChildren<TextMeshPro>().text = Name;
+            MitarbeiterRaumListe.RaumListe.Add(Name, transform.position);
+        }
 
         private void Start()
         {
@@ -32,14 +53,7 @@ namespace Assets
         // Awake ist vor mitarbeiterlisteLoad
         void Awake()
         {
-            Raum r = Raumliste.getRaumbyId(Raum_id);
-            name = r.name;
-            mitarbeiterVonRaum = new Mitarbeiter[r.mitarbeiter.Count];
-            r.mitarbeiter.CopyTo(mitarbeiterVonRaum, 0);
-
-
-            GetComponentInChildren<TextMeshPro>().text = name;
-            MitarbeiterRaumListe.RaumListe.Add(name, transform.position);
+            GameObject.Find("ClientObject").GetComponent<ClientScript>().loadRaumById(gameObject.name, Raum_id);
         }
 
         string mitarbeiterVonRaumAsString()
@@ -57,10 +71,10 @@ namespace Assets
         }
 
         private void OnMouseEnter()
-        {
+        {            
             transform.localScale *= Constants.MOUSEOVER_SCALE_MULTIPLIER;
             transform.position += new Vector3(0, 5, 0);
-            GetComponentInChildren<TextMeshPro>().text = name + mitarbeiterVonRaumAsString();
+            GetComponentInChildren<TextMeshPro>().text = Name + mitarbeiterVonRaumAsString();
         }
 
 
@@ -68,7 +82,7 @@ namespace Assets
         {
             transform.localScale /= Constants.MOUSEOVER_SCALE_MULTIPLIER;
             transform.position -= new Vector3(0, 5, 0);
-            GetComponentInChildren<TextMeshPro>().text = name;
+            GetComponentInChildren<TextMeshPro>().text = Name;
 
         }
     }

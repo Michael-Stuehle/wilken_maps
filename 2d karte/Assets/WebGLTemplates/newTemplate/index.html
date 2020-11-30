@@ -4,16 +4,19 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>%UNITY_WEB_NAME%</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/styles.css">
     <script src="%UNITY_WEBGL_LOADER_URL%"></script>
-    <script>
+    <script defer>
 		document.onkeydown = function (e) {
 			if (e.keyCode === 116 || e.keyCode === 114) {
 				return false;
 			}
 		};
-		var unityInstance = UnityLoader.instantiate("unityContainer", "%UNITY_WEBGL_BUILD_URL%");
+		var unityInstance = UnityLoader.instantiate("unityContainer", "%UNITY_WEBGL_BUILD_URL%", {
+		  Module: {
+			TOTAL_MEMORY: 536870912
+		  }
+		});
 	</script>
   </head>
   <body onbeforeunload="return beforeUnload()">
@@ -21,13 +24,41 @@
 		function beforeUnload() {
 			return 'Soll die Seite wirklich verlassen werden?';
 		}
+		
+		function load(){
+			return new Promise(resolve => {
+				fetch("http://ul-ws-mistueh/raumliste.txt", {
+					method: "GET",
+					headers: { "Content-type": "application/json" },
+				})
+				.then(function (response) {
+				  return response.text();
+				})
+				.then(function (text) {
+					window.raumliste = JSON.parse(text);
+					resolve(true);				
+				})			
+			})		
+		}
+			
+		window.getRaumById = async function(RaumId){
+			if (window.raumliste == null){
+				await load();
+			}
+			for (let index = 0; index < raumliste.length; index++) {
+				const raum = raumliste[index];
+				if (raum.id == RaumId) {
+					return raum;
+				}
+			}
+		}
 	</script>
 	<iframe id="frmFile" src="/mitarbeiter.txt"; style="display: none;"></iframe>
-    <iframe id="frmFileUserInfo" src="/userinfo.txt"; style="display: none;"></iframe>
 	<div class="webgl-content">
       <div id="unityContainer" style="width: %UNITY_WIDTH%px; height: %UNITY_HEIGHT%px"></div>
       <div class="footer">
         <div class="webgl-logo"></div>
+		<a style="float: left;" href="/home">zurück</a>
         <div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
         <div class="title">wilken maps</div>
       </div>

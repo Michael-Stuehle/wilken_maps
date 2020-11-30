@@ -38,6 +38,7 @@ public class Listbox : MonoBehaviour
         else
         {
             dropDown.ClearOptions();
+            tmp.Sort((x, y) => string.Compare(x, y));
             dropDown.AddOptions(tmp);
         }
         //Debug.Log($"items: {tmp.Count} filter: '{filter}'");

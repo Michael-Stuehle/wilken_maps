@@ -29,7 +29,6 @@ namespace Assets.Scripts.Helper
         public string name { get; set; } = "Kein RaumName gefunden";
         public int id { get; set; } = -1;
         public IList<Mitarbeiter> mitarbeiter { get; set; } = new List<Mitarbeiter>();
- 
 
         public override string ToString()
         {
@@ -43,17 +42,17 @@ namespace Assets.Scripts.Helper
         }
     }
 
-    [Serializable]
     public static class Raumliste
     {
-        private static Raum[] items;
-        public static Raum[] Items
+        private static List<Raum> items;
+        public static List<Raum> Items
         {
             get
             {
                 if (items == null)
                 {
-                    Init(Constants.RAUMLISTE_URL);
+                    items = new List<Raum>();
+                    //Init(Constants.RAUMLISTE_URL);
                 }
                 return items;
             }
@@ -66,7 +65,7 @@ namespace Assets.Scripts.Helper
 
         public static Raum getRaumByName(string name)
         {
-            for (int i = 0; i < Items.Length; i++)
+            for (int i = 0; i < Items.Count; i++)
             {
                 if (Items[i].name == name)
                 {
@@ -78,7 +77,7 @@ namespace Assets.Scripts.Helper
 
         public static Raum getRaumbyId(int id)
         {
-            for (int i = 0; i < Items.Length; i++)
+            for (int i = 0; i < Items.Count; i++)
             {
                 if (Items[i].id == id)
                 {
@@ -91,7 +90,7 @@ namespace Assets.Scripts.Helper
         public static string[] getAlleItemNamen()
         {
             List<string> result = new List<string>();
-            for (int i = 0; i < Items.Length; i++)
+            for (int i = 0; i < Items.Count; i++)
             {
                 result.Add(Items[i].name);
                 for (int j = 0; j < Items[i].mitarbeiter.Count; j++)
@@ -102,18 +101,24 @@ namespace Assets.Scripts.Helper
             return result.ToArray();
         }
 
-        private static void setObjectsFromJSON(string json)
+        public static void setObjectsFromJSON(string json)
         {
-            Items = JsonConvert.DeserializeObject<Raum[]>(json);
+            if (json != null && json.Length > 0)
+            {
+              //  Items = JsonConvert.DeserializeObject<Raum[]>(json);
+            }
+            else
+            {
+                //Items = new Raum[0];
+            }
         }
-
+/*
         private static void Init(string jsonUrl)
         {
             ClientScript client = GameObject.Find("ClientObject").GetComponent<ClientScript>();
-            client.RaumlisteLoadEvent += setObjectsFromJSON;
-            client.LoadRaumlisteStart();
+            client.LoadRaumlisteAndWait();
         }
-
+        */
 
     }
 }
