@@ -128,6 +128,7 @@ window.Speichern = function(){
         .then(function (text) {
             window.saved = true;
             window.alert(text);
+            DatenNeuLaden();
         })
 }
 

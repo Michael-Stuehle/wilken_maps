@@ -20,7 +20,7 @@ module.exports = {
          let nachname = splitByPunkt[1].split('@')[0];
          return nachname.toLowerCase() + ' ' + vorname.toLowerCase();
       }else{
-         return vorname;
+         return email;
       }      
    },
    

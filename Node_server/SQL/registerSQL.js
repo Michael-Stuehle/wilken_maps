@@ -19,7 +19,7 @@ module.exports = {
                 connection.beginTransaction(function(err){
                     if (err) logger.logError(err);
     
-                    checkMitarbeiter(connection, email, function(mitarbeiterExists){
+                    makeMitarbeiterIfNotExistsOrInUse(connection, email, function(mitarbeiterExists){
                         if (!mitarbeiterExists) {
                             return callback(false);
                         }
@@ -98,11 +98,11 @@ module.exports = {
     },
 }
 
-var checkMitarbeiter = function(connection, email, next){
+var makeMitarbeiterIfNotExistsOrInUse = function(connection, email, next){
     // prüft ob der mitarbeiter vorhanden und nicht von anderem user verwendet
     helperSQL.checkMitarbeiterExists(email, function(exists){
         if (!exists && getNameFromEmail(email) != email) { // email besteht aus echtem namen
-            connection.query("Insert INTO mitarbeiter (id, raum_id, name) values (NULL, (select id from raum LIMIT 1), ?)", 
+            connection.query("Insert INTO mitarbeiter (id, raum_id, name) values (NULL, (select id from raum LIMIT 1 order by id asc), ?)", 
                 [Helper.getNameFromEmail(email)], function (err) {
                 if (err) {
                     connection.rollback(function (err){

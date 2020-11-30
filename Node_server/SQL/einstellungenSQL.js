@@ -169,7 +169,7 @@ var getNameEinstellung = function(user){
             if (result.length > 0) {
                 resultValue = {
                     typ: 'name',
-                    name: 'name',
+                    name: 'Name',
                     value: result[0]['name'],
                     id: result[0]['id']
                 }

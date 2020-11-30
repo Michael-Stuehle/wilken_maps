@@ -46,7 +46,7 @@ app.use(function (req, res, next) {
 
 app.use('/components/', express.static(path.join(__dirname +"/public/components/")));
 app.use('/3d/',express.static(path.join(__dirname +"/public/3d/")));
-app.use('/3d/', express.static(path.join(__dirname +"/public/2d/")));
+app.use('/2d/', express.static(path.join(__dirname +"/public/2d/")));
 
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
@@ -270,6 +270,7 @@ app.get('/passwordVergessen.html', function(request, response){
 app.get('/raumliste.txt', function(request, response){
 	mysqlConnection.getRaumListe(function(resultJSON){
 		response.send(JSON.stringify(resultJSON));
+		console.log("raumliste got")
 	})
 })
 
