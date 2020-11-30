@@ -9,6 +9,8 @@ module.exports = {
     register : function(request, response){
         let username = request.body.username;
         let password = request.body.password;
+        let raum_id = request.body.raum_id;
+        console.log(raum_id);
         if (!username.endsWith('@wilken.de')) {
             response.send('E-Mail muss auf "@wilken.de" enden')		
         }else {
@@ -18,7 +20,7 @@ module.exports = {
                 }
                 else{
                     let token = helper.generateRandomStringSafe(20);
-                    mysqlConnection.registerUser(username, password, token, function(result){
+                    mysqlConnection.registerUser(username, password, raum_id, token, function(result){
                         if (result) {
                             logger.log('user: ' + username + ' wurde erfolgreich regsitriert!', request.connection.remoteAddress);
                             response.send('Registrieren erfolgreich');

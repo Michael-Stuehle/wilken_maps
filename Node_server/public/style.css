@@ -154,6 +154,18 @@ button:hover {
     }
 }
 
+select{
+  width: 100%;
+  padding: 15px;
+  height: 100%;
+  border: 1px solid var(--borderColor);
+  box-sizing: border-box;
+  background-color: var(--backgroundColor);
+  color: var(--textColor);
+  margin-bottom: 15px;
+  height: 47px;
+}
+
 
 .right {
     float: right;

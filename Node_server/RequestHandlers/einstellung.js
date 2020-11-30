@@ -86,13 +86,14 @@ var buildSubmitBtn = function(){
 
 var buildRaumEinstellung = function(element){
     var retVal = '<div class="item select">'+
+    '<label class="selectLabel">Raum: </label>'+
     '<select id="raum-select" name="raum">'
     for (let index = 0; index < element.options.length; index++) {
         const opt = element.options[index];
         if (element.value == opt.id) {
-            retVal += '<option value=' + opt.id + ' selected>Raum: '+opt.value+'</option>'
+            retVal += '<option value=' + opt.id + ' selected>'+opt.value+'</option>'
         }else{
-            retVal += '<option value=' + opt.id + '>Raum: '+opt.value+'</option>'
+            retVal += '<option value=' + opt.id + '>'+opt.value+'</option>'
         }
     }
     retVal += '</select>' + '</div>';;

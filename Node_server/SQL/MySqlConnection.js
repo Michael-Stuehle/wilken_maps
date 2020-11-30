@@ -33,8 +33,8 @@ module.exports = {
         helperSQL.checkUserExists(user, callback);
     },
 
-    registerUser: function(user, password, token, callback){
-        registerSQL.registerUser(user, password, token, callback);
+    registerUser: function(user, password, raum_id, token, callback){
+        registerSQL.registerUser(user, password, raum_id, token, callback);
     },
 
     getEinstellungenForUser: function(user, callback){
