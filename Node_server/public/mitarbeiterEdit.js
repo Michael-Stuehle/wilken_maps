@@ -2,6 +2,7 @@ import { popupForm } from "./components/popupForm.js";
 
 window.popupEditMitarbeiter = new popupForm(
     document.getElementById('editMitarbeiterPopup'), 
+    document.getElementById('edtName'),
     document.getElementById('btnMitarbeiterPopupClose'), 
     document.getElementById('btnMitarbeiterPopupOK'), 
     document.getElementById('editMitarbeiterPopupTitle'),

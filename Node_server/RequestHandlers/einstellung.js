@@ -62,7 +62,14 @@ var buildClientJS = function(){
         'function DoSubmit(){'+linebreak+
             'document.getElementById("form").submit();'+linebreak+
         '}'+linebreak+
-        
+        linebreak+
+        'document.addEventListener("keydown", function(event){'+linebreak+
+            'if (event.ctrlKey && event.key.toLocaleLowerCase() == "s") {'+linebreak+
+                'event.preventDefault();'+linebreak+
+                'DoSubmit();'+linebreak+
+            '}'+linebreak+
+        '}); '+linebreak+
+        linebreak+
         'function saveResult(){'+linebreak+
             'setTimeout(function () {'+linebreak+
                 'var iframe = document.getElementById("resultFrame");'+linebreak+
@@ -85,7 +92,7 @@ var buildSubmitBtn = function(){
 }
 
 var buildRaumEinstellung = function(element){
-    var retVal = '<div class="item select">'+
+    var retVal = '<div class="item select" autofocus>'+
     '<label class="selectLabel">Raum: </label>'+
     '<select id="raum-select" name="raum">'
     for (let index = 0; index < element.options.length; index++) {

@@ -270,7 +270,6 @@ app.get('/passwordVergessen.html', function(request, response){
 app.get('/raumliste.txt', function(request, response){
 	mysqlConnection.getRaumListe(function(resultJSON){
 		response.send(JSON.stringify(resultJSON));
-		console.log("raumliste got")
 	})
 })
 

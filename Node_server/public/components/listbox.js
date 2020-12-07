@@ -284,7 +284,7 @@ export class listbox{
         }
 
         this.HookupEvents = function(){
-            document.addEventListener("keydown", self.containerKeyDown, true);
+            container.addEventListener("keydown", self.containerKeyDown, true);
         }
         
         this.clear = function(){
