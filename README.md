@@ -1,5 +1,11 @@
 # wilken_maps
 
+Um als "Collaborator" eingetragen zu werden (damit ihr auch was bearbeiten könnt):
+- Github account erstellen
+- email mit eurem github account usernamen/email an mich schreiben: michael.stuehle@wilken.de
+falls ich zur zeit urlaub/Berufschule/etc. hab kann sein dass es etwas dauert bis ich euch hinzufügen kann
+
+
 wir benutzen die Unity version 2019.4.2f1
 
 Alle Versionen zum Download sind hier:
