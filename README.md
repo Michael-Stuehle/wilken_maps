@@ -13,7 +13,7 @@ Falls schon eine Version installiert ist, den visual Studio installer öffnen un
 
 sonstige Hilfen: 
 
-- SVN-Tutorial.docx
-- wilken maps.pptx
+- https://github.com/Michael-Stuehle/wilken_maps/blob/WebGl/SVN%20Tutorial.docx
+- https://github.com/Michael-Stuehle/wilken_maps/blob/WebGl/wilken%20maps.pptx
 
 
