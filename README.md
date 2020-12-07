@@ -9,7 +9,7 @@ bitte beim Installieren außerdem sicherstellen, dass WebGL Build Support immer 
 
 Beim visual Studio editor sicherstellen, dass "Spieleentwicklung mit Unity" angehakt ist.
 
-Falls schon eine Version installiert ist, den visual Studio installiert öffnen und auf „Ändern“
+Falls schon eine Version installiert ist, den visual Studio installer öffnen und auf „Ändern“
 
 sonstige Hilfen: 
 
