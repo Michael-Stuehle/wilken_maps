@@ -13,6 +13,11 @@ var path = require('path');
 var favicon = require('serve-favicon');
 const HandleAdminpage = require('./RequestHandlers/HandleAdminpage');
 const { con } = require('./SQL/Globalconnection');
+const { exec } = require("child_process");
+const { resolve } = require('path');
+const logger = require('./logger');
+
+const DO_SVN_UPDATE_AFTER_MINUTES = 60;
 
 // zugriff auf diese urls auch ohne angemeldet zu sein
 // ???.html = html seite 
@@ -22,6 +27,19 @@ var NotAllowedForGast = ['/einstellungen.html', '/changePassword.html', '/change
 
 
 var app = express();
+
+// wird alle "60" minuten ausgeführt.
+function doUpdateAndRestart(){
+	setInterval(function() {
+		let pr = path.join(process.cwd() + "/restart.bat");
+		exec("start " + pr , function(error, stdout, stderr){
+			if (error) logger.logError('fehler beim svn-update/neu starten des servers', error)
+			if (stdout) console.log(stdout);
+			if (stderr)	console.log(stderr);
+		});
+	  }, DO_SVN_UPDATE_AFTER_MINUTES * 60 * 1000);
+}
+doUpdateAndRestart();
 
 app.use(session({
 	secret: Helper.generateRandomString(128),
