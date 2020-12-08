@@ -21,7 +21,6 @@ module.exports = {
                         response.send('fehler beim speichern');
                     }
                 }, request.connection.remoteAddress)
-                
             }
         })  
     }

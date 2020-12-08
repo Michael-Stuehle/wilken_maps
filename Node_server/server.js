@@ -28,15 +28,19 @@ var NotAllowedForGast = ['/einstellungen.html', '/changePassword.html', '/change
 
 var app = express();
 
+function callRestartBat(){
+	let pr = path.join(process.cwd() + "/restart.bat");
+	exec("start " + pr , function(error, stdout, stderr){
+		if (error) logger.logError('fehler beim svn-update/neu starten des servers', error)
+		if (stdout) console.log(stdout);
+		if (stderr)	console.log(stderr);
+	});
+}
+
 // wird alle "60" minuten ausgeführt.
 function doUpdateAndRestart(){
 	setInterval(function() {
-		let pr = path.join(process.cwd() + "/restart.bat");
-		exec("start " + pr , function(error, stdout, stderr){
-			if (error) logger.logError('fehler beim svn-update/neu starten des servers', error)
-			if (stdout) console.log(stdout);
-			if (stderr)	console.log(stderr);
-		});
+		callRestartBat();
 	  }, DO_SVN_UPDATE_AFTER_MINUTES * 60 * 1000);
 }
 doUpdateAndRestart();
