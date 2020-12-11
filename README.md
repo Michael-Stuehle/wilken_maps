@@ -1,6 +1,6 @@
 # wilken_maps
 
-Um als "Collaborator" eingetragen zu werden (damit ihr auch was bearbeiten könnt):
+damit ihr was an dem projekt bearbeiten könnt, müsst ihr vorher:
 - Github account erstellen
 - email mit eurem github usernamen/email an mich schreiben: michael.stuehle@wilken.de
 falls ich zur zeit urlaub/Berufschule/etc. hab kann sein dass es etwas dauert bis ich euch hinzufügen kann
