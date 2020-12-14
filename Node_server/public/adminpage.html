@@ -78,7 +78,7 @@
                 </div>
                 <label for="Raum">Raum:</label>
                 <select id="raumSelectA" autofocus name="Raum" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'raumSelectB', 'raumSelectB')"></select>
-                <div id="A" raum_id="" class="container"></div>
+                <div id="A" raum_id="" class="container" tabindex="0"></div>
             </div>
             <div style="display: flex; flex-direction: column; justify-content: space-between; flex-wrap: nowrap; margin: auto;">
                 <button id="btn-rechts" title="Mitarbeiter nach rechts" onclick="window.moveItemsRechts()">
@@ -108,7 +108,7 @@
                 </div>
                 <label for="Raum">Raum:</label>
                 <select id="raumSelectB" name="Raum" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'raumSelectA', 'raumSelectA')"></select>
-                <div id="B" raum_id="" class="container"></div>
+                <div id="B" raum_id="" class="container" tabindex="0"></div>
             </div>
             
         </div>

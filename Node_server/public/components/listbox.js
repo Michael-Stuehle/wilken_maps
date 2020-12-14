@@ -240,6 +240,7 @@ export class listbox{
                 '<p class="item-text">' +text + '</p>'+
                 '<p class="item-text">' +user_email + '</p>';
             item.setAttribute('mitarbeiter_id', mitarbeiter_id);
+            item.onkeydown = (event) => self.containerKeyDown(event);
             item.setAttribute('mitarbeiter', text);
             item.setAttribute('raum_id', raum_id);
             item.setAttribute('draggable', true);
@@ -248,6 +249,7 @@ export class listbox{
         }
 
         this.containerKeyDown = function(event){
+            
             switch(event.keyCode){
                 case 37: case 39: // Arrow keys
                     event.preventDefault(); 
@@ -291,7 +293,7 @@ export class listbox{
         }
 
         this.HookupEvents = function(){
-            container.addEventListener("keydown", self.containerKeyDown, true);
+            self.container.addEventListener("keydown", self.containerKeyDown, true);
         }
         
         this.clear = function(){
