@@ -46,6 +46,17 @@ window.deleteRaum = function(selectId){
     let select = document.getElementById(selectId);
     for (let index = 0; index < window.raumliste.length; index++) {
         const raum = window.raumliste[index];
+        if (select.value == "") { // neuer raum
+            if (raum.name == select.options[select.selectedIndex].innerHTML) { // wenn neuer raum muss nach name vergleicht werden, weil id == ""
+                if (getMitarbeiterCountForRaum(raum) > 0) {
+                    alert('ein raum kann nur gelöscht werden, wenn er keine mitarbeiter mehr beinhaltet')
+                    return false;
+                }else{
+                    raum.deleted = true;
+                    window.Aktualisieren();
+                }
+            }
+        }
         if (raum.id == select.value) {
             if (getMitarbeiterCountForRaum(raum) > 0) {
                 alert('ein raum kann nur gelöscht werden, wenn er keine mitarbeiter mehr beinhaltet')
