@@ -54,10 +54,16 @@ window.deleteMitarbeiter = function(){
 }
 
 window.showMitarbeiterAddPopup = function(){   
+    let current_raum_id = -1;
+    if (window.contextMenuListboxA.isVisible()) {
+        current_raum_id = document.getElementById("raumSelectA").getAttribute("_selected");
+    }else{
+        current_raum_id = document.getElementById("raumSelectB").getAttribute("_selected");
+    }
     let itemValues = {
         mitarbeiter: "",
         mitarbeiter_id: -1,
-        raum_id: -1,        
+        raum_id: current_raum_id,        
         user: "",
         raumliste: raumliste
     }

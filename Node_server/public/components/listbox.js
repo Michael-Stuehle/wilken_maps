@@ -112,7 +112,12 @@ export class listbox{
                         const raum = raumliste[index];
                         for (let index_raum = 0; index_raum < raum.mitarbeiter.length; index_raum++) {
                             const element = raum.mitarbeiter[index_raum];
-                            if (element.id == itemValues.mitarbeiter_id) {
+                            if (element.id == "") {
+                                if (element.name == itemValues.mitarbeiter) {
+                                    element.deleted = true;
+                                    window.saved = false;
+                                }
+                            }else if (element.id == itemValues.mitarbeiter_id) {
                                 element.deleted = true;
                                 window.saved = false;
                             }
@@ -165,6 +170,8 @@ export class listbox{
             if (mitarbeiterExists != null) {
                 if (mitarbeiterExists.deleted) {
                     mitarbeiterExists.deleted = false;
+                    window.saved = false;
+                    window.Aktualisieren();
                     return true;
                 }else{
                     alert('dieser mitarbeiter existiert bereits!');

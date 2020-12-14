@@ -17,6 +17,8 @@ export class contextmenu{
 
             if (command == "show") {
                 lastShownMenu = self;
+            }else if (lastShownMenu == self){ // falls self gerade noch sichtbar ist und geschlossen wird
+                lastShownMenu = null;
             }
 
             if (listbox.getSelectedItems().length > 0) {
