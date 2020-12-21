@@ -75,6 +75,11 @@
                             <i class="fa fa-trash" aria-hidden="true" style="font-size: 20px;"></i>
                         </span>
                     </div>
+                    <div class="customButton" title="Mitarbeiter Suchen" onclick="window.mitarbeitersuche.showModal(window.listboxA, 'Mitarbeiter Suche')" >
+                        <span>
+                            <i class="fa fa-search" aria-hidden="true" style="font-size: 20px;"></i>
+                        </span>
+                    </div>
                 </div>
                 <label for="Raum">Raum:</label>
                 <select id="raumSelectA" autofocus name="Raum" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'raumSelectB', 'raumSelectB')"></select>
@@ -105,6 +110,11 @@
                             <i class="fa fa-trash" aria-hidden="true" style="font-size: 20px;"></i>
                         </span>
                     </div>
+                    <div class="customButton" title="Mitarbeiter Suchen" onclick="window.mitarbeitersuche.showModal(window.listboxB, 'Mitarbeiter Suche')" >
+                        <span>
+                            <i class="fa fa-search" aria-hidden="true" style="font-size: 20px;"></i>
+                        </span>
+                    </div>
                 </div>
                 <label for="Raum">Raum:</label>
                 <select id="raumSelectB" name="Raum" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'raumSelectA', 'raumSelectA')"></select>
@@ -130,6 +140,12 @@
                     <span>
                         <i class="fa fa-floppy-o" aria-hidden="true" style="font-size:20px;margin-right: 5px;"></i>
                         Speichern
+                    </span> 
+                </li>
+                <li class="menu-option" onclick="window.showMitarbeiterSucheFromContextMenu()"  id="li-speichern">
+                    <span>
+                        <i class="fa fa-search" aria-hidden="true" style="font-size:20px;margin-right: 5px;"></i>
+                        Suchen
                     </span> 
                 </li>
                 <li class="menu-option" onclick="window.showMitarbeiterEditPopup()" id="li-edit"> 
@@ -201,8 +217,28 @@
                         <i class="fa fa-check okIcon" aria-hidden="true" style="font-size: 20px;"></i>
                         Übernehmen
                     </span>
+                </div>                            
+            </div>
+        </div>
+
+        <div class="modal" id="mitarbeiterSuche">
+            <div class="modal-content">
+                <h1 id="mitarbeiterSucheTitle"></h1>
+                <input id="searchInput" onpaste="this.onchange();" oninput="this.onchange();"
+                    style="width: 100%;" placeholder="Nach Namen Filtern" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'search', 'btnMitarbeiterSucheClose')"/>
+                <div id="search" class="container" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'btnMitarbeiterSucheOK', 'searchInput')"></div>
+                <div class="customButton" id="btnMitarbeiterSucheClose" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'searchInput', 'btnMitarbeiterSucheOK')">
+                    <span>
+                        <i class="fa fa-times closeIcon" aria-hidden="true" style="font-size: 20px;"></i>
+                        Abbrechen
+                    </span>
                 </div>
-                                            
+                <div class="customButton" id="btnMitarbeiterSucheOK" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'btnMitarbeiterSucheClose', 'search')">
+                    <span>
+                        <i class="fa fa-check okIcon" aria-hidden="true" style="font-size: 20px;"></i>
+                        Übernehmen
+                    </span>
+                </div>           
             </div>
         </div>
     </body>

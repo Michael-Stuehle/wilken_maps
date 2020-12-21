@@ -270,6 +270,17 @@ export class listbox{
             }    
         }
 
+        this.selectItemByMitarbeiterId = function(mitarbeiter_id){
+            let items = self.container.children;
+            for (let index = 0; index < items.length; index++) {
+                const element = items[index];
+                if (element.getAttribute('mitarbeiter_id') == mitarbeiter_id) {
+                    self.setItemSelected(element, {})
+                    break;
+                } 
+            }
+        }
+
         this.selectNext = function(event){
             let items = self.container.children;
             for (let index = 0; index < items.length-1; index++) {

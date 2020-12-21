@@ -31,6 +31,7 @@
 
 import { listbox } from "./components/listbox.js";
 import { contextmenu } from "./components/contextmenu.js";
+import { mitarbeitersuche } from "./components/mitarbeitersuche.js";
 
 window.saved = true;
 
@@ -53,6 +54,7 @@ window.listboxB = new listbox(document.getElementById('B'), document.getElementB
 
 window.contextMenuListboxA = new contextmenu(document.getElementById('menu'), window.listboxA);
 window.contextMenuListboxB = new contextmenu(document.getElementById('menu'), window.listboxB);
+
 
 window.addEventListener("load", function(){
     DatenNeuLaden();
@@ -78,8 +80,27 @@ function DatenNeuLaden(){
         .then(function (text) {
             raumliste = JSON.parse(text);
             saved = true;  
+            
+            window.mitarbeitersuche = new mitarbeitersuche(document.getElementById('mitarbeiterSuche'), document.getElementById('searchInput'),
+                document.getElementById('btnMitarbeiterSucheClose'), document.getElementById('btnMitarbeiterSucheOK'), document.getElementById('searchInput'), 
+                document.getElementById('search'), document.getElementById('mitarbeiterSucheTitle'), 
+                function(result, resultListbox){
+                    resultListbox.select.value = result.raum_id;
+                    resultListbox.select.onchange();
+                    resultListbox.selectItemByMitarbeiterId(result.id)
+                });
+
             Aktualisieren();
         })
+}
+
+window.showMitarbeiterSucheFromContextMenu = function(){
+    if (window.contextMenuListboxA.isVisible()) {
+        currentlySelected = window.listboxA;
+    }else {
+        currentlySelected = window.listboxB;
+    }
+    window.mitarbeitersuche.showModal(currentlySelected, 'Mitarbeiter Suchen');
 }
 
 window.Aktualisieren = function(){
