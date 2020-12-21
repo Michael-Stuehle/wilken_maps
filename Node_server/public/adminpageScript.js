@@ -95,6 +95,7 @@ function DatenNeuLaden(){
 }
 
 window.showMitarbeiterSucheFromContextMenu = function(){
+    let currentlySelected = {};
     if (window.contextMenuListboxA.isVisible()) {
         currentlySelected = window.listboxA;
     }else {

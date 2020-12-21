@@ -39,6 +39,9 @@
             if (event.ctrlKey && event.key.toLocaleLowerCase() == 's') {
                 event.preventDefault();
                 window.Speichern();
+            }else if (event.ctrlKey && event.key.toLocaleLowerCase() == 'f'){
+                event.preventDefault();
+                window.mitarbeitersuche.showModal(window.listboxA, 'Mitarbeiter Suchen');
             }
         });    
     </script>
