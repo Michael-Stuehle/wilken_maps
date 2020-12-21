@@ -28,13 +28,20 @@
 					<input style="float: right;" class="startButton" id="btn_submit" type="submit" value="ausführen" onclick="DoSubmit()">
 				</div>
 			</div>
-			<div style="position: absolute;  float: left; right: 4%;" id="buttonsFrame">
+			<div style="position: absolute; width: 16%;  float: left; right: 10px;" id="buttonsFrame">
+				<button onclick="restartServer()">Server neu starten</button>
 				<!-- hier werden procedure buttons erstellet -->
 			</div>             
             <script>
 				var lastExecuted = [];
 				var currentIndex = 0;
 
+				function restartServer(){
+					fetch('/restartServer', {
+						method: 'POST', // *GET, POST, PUT, DELETE, etc.
+							body: ''
+						})
+				}
 
 				document.getElementById("sql").addEventListener('keydown', function(event) {
 					const key = event.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"

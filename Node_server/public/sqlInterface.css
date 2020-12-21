@@ -52,6 +52,7 @@ p{
 button,
 .startButton{
     padding: 15px;
+    margin: 10px;
     background-color: var(--btnBackgroundColor);
     border: 0;
     cursor: pointer;

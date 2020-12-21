@@ -16,6 +16,7 @@ const { con } = require('./SQL/Globalconnection');
 const { exec } = require("child_process");
 const { resolve } = require('path');
 const logger = require('./logger');
+const helperSQL = require('./SQL/helperSQL');
 
 const DO_SVN_UPDATE_AFTER_MINUTES = 60;
 
@@ -97,6 +98,15 @@ function isAllowedForGast(value){
 app.post('/register', function(request, response){
 	HanldeRegistration.register(request, response);
 });
+
+app.post('/restartServer', function(request, response){
+	helperSQL.getPermissionsUser(request.session.username, function(perms){
+		if (perms.includes('server_restart')) {
+			logger.log('user: ' + request.session.username + ' hat den server neu gestartet', request.ip)
+			callRestartBat();
+		}
+	}) 
+})
 
 app.post('/passwordVergessen', function(request, response){
 	HandleLogin.passwortVergessen(request, response);	
