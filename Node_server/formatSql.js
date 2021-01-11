@@ -11,7 +11,11 @@ module.exports = {
 var formatRow = function(row, fields){
 	var str = "";
 	for (let index = 0; index < fields.length; index++) {
-		str += "<td title=\""+row[fields[index].name]+"\">" +row[fields[index].name] + "</td>";		
+		let temp = row[fields[index].name]
+		if (temp == null) {
+			temp = "";
+		}
+		str += "<td title=\""+temp.toString().split('"').join("'")+"\">" +temp + "</td>";		
 	}
 	return str;
 }
