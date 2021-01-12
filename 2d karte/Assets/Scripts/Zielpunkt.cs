@@ -24,10 +24,10 @@ namespace Assets
         private Camera cam;
         private Mitarbeiter[] mitarbeiterVonRaum;
 
-        public void OnRaumLoad(string text)
+       public void OnRaumLoad(string text)
         {
             Raum r = JsonConvert.DeserializeObject<Raum>(text);
-            Raumliste.Items.Add(r);
+            
             //------NUR FÜR DEMO ZWECKE-------------------------
             if (r.id == -1) // nicht gefunden
             {

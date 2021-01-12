@@ -75,7 +75,10 @@ namespace Assets
                     {
                         mainCamera.transform.position = Vector3.MoveTowards(
                             mainCamera.transform.position,
-                             main.Etage[main.AktuelleEtageIndex].transform.position + new Vector3(0, Constants.ETAGE_Y_DIFF-5, 0),
+                             new Vector3(
+                                    mainCamera.transform.position.x,
+                                    main.AktuelleEtage.transform.position.y + Constants.ETAGE_Y_DIFF-5,
+                                    mainCamera.transform.position.z),
                             zoomSpeed * Time.deltaTime);
                     }
                 }

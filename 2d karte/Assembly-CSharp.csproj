@@ -68,7 +68,7 @@
     <Compile Include="Assets\Scripts\Helper\HelperMethods.cs" />
     <Compile Include="Assets\Scripts\Helper\Map.cs" />
     <Compile Include="Assets\Scripts\Helper\MapEnum.cs" />
-    <Compile Include="Assets\Scripts\Helper\Raumliste.cs" />
+    <Compile Include="Assets\Scripts\Helper\Raum.cs" />
     <Compile Include="Assets\Scripts\Listbox.cs" />
     <Compile Include="Assets\Scripts\Main.cs" />
     <Compile Include="Assets\Scripts\MitarbeiterRaumListe.cs" />
