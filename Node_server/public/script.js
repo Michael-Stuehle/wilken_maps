@@ -55,10 +55,11 @@ fetch("/dark_mode", {
         setCookie('darkmode', "true", 999)
     }else if (result == 'light'){
         setCookie('darkmode', "false", 999)
-    }else{
-        // kein ergebnis, cookie wird nicht geändert
-    }
-    
+    }else {// if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+         // kein ergebnis  == kein coockie
+    }    
+    document.cookie = ''
+
     let cdark = getCookie('darkmode');
     if (cdark == 'true') {
         setDarkMode(true);

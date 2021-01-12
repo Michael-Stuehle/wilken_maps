@@ -2,6 +2,10 @@ const mySqlConnection = require('../SQL/MySqlConnection');
 
 const linebreak = '\n';
 
+function QuotedStr(str, quoteType){
+    return quoteType + str + quoteType;
+}
+
 module.exports = {
     buildEinstellungenSeite: function(einstellungen){
         let inputs = ''
@@ -40,12 +44,12 @@ module.exports = {
     getDarkMode: function(request, response){
         if (request.session.username != undefined && request.session.loggedin) {
             mySqlConnection.getEinstellungValueForUser(request.session.username, 'dark_mode', function(result){
-                if (result != null) {
-                    if (result.value == '1') {
+                if (result.value == null) {
+                    response.send('none')
+                }else if (result.value == '1') {
                         response.send('dark');
-                    }else{
-                        response.send('light');
-                    }
+                }else{
+                    response.send('light');
                 }			
                 response.end();
             })
@@ -70,6 +74,7 @@ var buildClientJS = function(){
             '}'+linebreak+
         '}); '+linebreak+
         linebreak+
+        
         'function saveResult(){'+linebreak+
             'setTimeout(function () {'+linebreak+
                 'var iframe = document.getElementById("resultFrame");'+linebreak+
@@ -87,23 +92,23 @@ var buildClientJS = function(){
 }
 
 var buildSubmitBtn = function(){
-    let retVal = '<input type="submit" id="btn-submit" value="Speichern" onclick="DoSubmit()"/>';
+    let retVal = '<input type="submit" id="btn-submit" value="Speichern" onclick="DoSubmit()"/>'+linebreak;
     return retVal;
 }
 
 var buildRaumEinstellung = function(element){
-    var retVal = '<div class="item select" autofocus>'+
-    '<label class="selectLabel">Raum: </label>'+
-    '<select id="raum-select" name="raum">'
+    var retVal = '<div class="item select" autofocus>'+linebreak+
+    '<label class="selectLabel">Raum: </label>'+linebreak+
+    '<select id="raum-select" name="raum">'+linebreak;
     for (let index = 0; index < element.options.length; index++) {
         const opt = element.options[index];
         if (element.value == opt.id) {
-            retVal += '<option value=' + opt.id + ' selected>'+opt.value+'</option>'
+            retVal += '<option value=' + opt.id + ' selected>'+opt.value+'</option>'+linebreak;
         }else{
-            retVal += '<option value=' + opt.id + '>'+opt.value+'</option>'
+            retVal += '<option value=' + opt.id + '>'+opt.value+'</option>'+linebreak;
         }
     }
-    retVal += '</select>' + '</div>';;
+    retVal += '</select>' + '</div>'+linebreak;;
     return retVal;
 }
 
@@ -114,41 +119,45 @@ var buildBoolInput = function(element){
     }else{
         valStr = '';
     }
-    var result = '<div class="item">'+
-    '<label for="edt'+element.name+'">'+element.name+'</label>' +
-    '<input type="checkbox" name="'+element.name+'" id="edt'+element.name+'" '+valStr+'>'+
+    var result = '<div class="item">'+linebreak+
+    '<label for="edt'+element.name+'">'+element.name+'</label>' +linebreak+
+    '<label class="switch">' +linebreak+
+        '<input type="checkbox" name="'+element.name+'" id="edt'+element.name+'" '+valStr+linebreak+
+            ' onclick="DoSubmit()">' +linebreak+
+        '<span class="slider round"></span>' +linebreak+
+    '</label>' +linebreak+
     '</div>';
 
     return result;
 }
 
 var buildIntInput = function(element){
-    let result = '<div class="item">'+
-    '<label for="edt'+element.name+'">'+element.name+'</label>' +
-    '<input type="number" name="'+element.name+'" id="edt'+element.name+'" value="'+element.value+'">' +
+    let result = '<div class="item">'+linebreak+
+    '<label for="edt'+element.name+'">'+element.name+'</label>' +linebreak+
+    '<input type="number" name="'+element.name+'" id="edt'+element.name+'" value="'+element.value+'">' +linebreak+
     '</div>';
     return result;
 }
 
 var buildStrInput = function(element){
-    let result = '<div class="item">'+
-    '<label for="edt'+element.name+'">'+element.name+'</label>' +
-    '<input name="'+element.name+'" id="edt'+element.name+'" value="'+element.value+'">'+
+    let result = '<div class="item">'+linebreak+
+    '<label for="edt'+element.name+'">'+element.name+'</label>' +linebreak+
+    '<input name="'+element.name+'" id="edt'+element.name+'" value="'+element.value+'">'+linebreak+
     '</div>';
 
     return result;
 }
 
 var bulidHeader = function(){
-    let result = '<html>'+
-                    '<head>'+
-                        '<meta name="viewport" charset="utf-8" content="width=device-width, initial-scale=1.0" />'+
-                        '<link rel="stylesheet" href="einstellungen.css">'+
-                        buildClientJS() +
-                    '</head>'+
-                    '<body>'+
-                        '<h1>Einstellungen</h1> <br><br>'+
-                        '<iframe id="resultFrame" name="formDestination"  style="visibility: hidden; width: 0px; height: 0px" onload="saveResult()"></iframe>'+
+    let result = '<html>'+linebreak+
+                    '<head>'+linebreak+
+                        '<meta name="viewport" charset="utf-8" content="width=device-width, initial-scale=1.0" />'+linebreak+
+                        '<link rel="stylesheet" href="einstellungen.css">'+linebreak+
+                        buildClientJS() +linebreak+
+                    '</head>'+linebreak+
+                    '<body>'+linebreak+
+                        '<h1>Einstellungen</h1> <br><br>'+linebreak+
+                        '<iframe id="resultFrame" name="formDestination"  style="visibility: hidden; width: 0px; height: 0px" onload="saveResult()"></iframe>'+linebreak+
                         '<div style="display: block;overflow: auto;"><form id="form" class="form" action="einstellungen" method="POST" target="formDestination">';
     return result;
 }
@@ -156,10 +165,10 @@ var bulidHeader = function(){
 
 var buildFooter = function(){
     let result = 
-                '</form></div>'+
-                '<br>'+
-                '<a style="float: left;margin: 0 auto" href="/home">zurück</a>'+
-            '</body>'+
+                '</form></div>'+linebreak+
+                '<br>'+linebreak+
+                '<a style="float: left;margin: 0 auto" href="/home">zurück</a>'+linebreak+
+            '</body>'+linebreak+
         '</html>';
     return result;
 }
