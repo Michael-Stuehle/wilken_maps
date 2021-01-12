@@ -14,12 +14,20 @@ public class Listbox : MonoBehaviour
 
     public ClientScript client;
     public EventSystem eventSystem;
+    public string DefaultText;
 
     private Dropdown dropDown;
     private string filter = "";
 
     private float filterTimeout = 0.0f;
     private float defaultFilterTimeout = 1.0f;
+
+    private bool hasSelectedItem = false;
+
+    public bool HasSelectedItem
+    {
+        get => hasSelectedItem;
+    }
 
     void setDropDownValues()
     {
@@ -39,6 +47,10 @@ public class Listbox : MonoBehaviour
         {
             dropDown.ClearOptions();
             tmp.Sort((x, y) => string.Compare(x, y));
+            if (!hasSelectedItem)
+            {
+                tmp.Insert(0, DefaultText);
+            }
             dropDown.AddOptions(tmp);
         }
         //Debug.Log($"items: {tmp.Count} filter: '{filter}'");
@@ -47,7 +59,7 @@ public class Listbox : MonoBehaviour
         {
             dropDown.Hide();
             StartCoroutine(ShowDropdown());
-        }           
+        }          
     }
 
     public bool isSelected
@@ -103,24 +115,51 @@ public class Listbox : MonoBehaviour
 
     void Awake()
     {
-        values = new int[28];
+        values = new int[48];
         values[0] = 32; // space
         values[1] = 8; // backspace
         // a-z
-        for (int i = 2; i < values.Length; i++)
+        for (int i = 2; i < values.Length-20; i++)
         {
             values[i] = i + 95;  
         }
+
+        for (int i = values.Length-20; i < values.Length-10; i++) // 0 - 9
+        {
+            values[i] = (i - (values.Length-20)) + 48; // integers
+        }
+
+        for (int i = values.Length - 10; i < values.Length; i++) // 0 - 9 keypad
+        {
+            values[i] = (i - (values.Length - 10)) + 256; // integers
+        }
+
         keyCodeLookup = new string[values.Length];
         keyCodeLookup[0] = " ";
         keyCodeLookup[1] = "~";
-        for (int i = 2; i < keyCodeLookup.Length; i++)
+        for (int i = 2; i < keyCodeLookup.Length-10; i++)
         {
             keyCodeLookup[i] = "" + (char)values[i];
+           // Debug.Log(keyCodeLookup[i]);
+        }
+
+        for (int i = keyCodeLookup.Length -10; i < keyCodeLookup.Length; i++)
+        {
+            keyCodeLookup[i] = "" + (char)((values[i]-256)+48);
+            //Debug.Log($"keycode: {values[i]}   value: {keyCodeLookup[i]}");
         }
 
         KeyDownEvent += setFilter;
         dropDown = GetComponent<Dropdown>();
+
+        dropDown.onValueChanged.AddListener((index) =>
+        {
+            if (!hasSelectedItem && index > 0)
+            {
+                hasSelectedItem = true;
+                dropDown.options.RemoveAt(0);
+            }
+        });
         MitarbeiterRaumListe.MitarbeiterListeReadyEvent += setDropDownValues;
     }
 

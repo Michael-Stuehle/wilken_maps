@@ -61,14 +61,14 @@ namespace Assets
                 if (canZoom(zoom))
                 {
                     // Allows zooming in and out via the mouse wheel
-                    if (zoom > 0)
+                    if (zoom > 0 && (mainCamera.transform.position.y > main.AktuelleEtage.transform.position.y + Constants.MIN_ETAGE_Y_DIST +2))
                     {
                         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
                         RaycastHit hit;
                         Physics.Raycast(ray, out hit);
                         mainCamera.transform.position = Vector3.MoveTowards(
                             mainCamera.transform.position,
-                            hit.point + new Vector3(0, 5, 0),
+                            hit.point + new Vector3(0, Constants.MIN_ETAGE_Y_DIST, 0),
                             zoomSpeed * Time.deltaTime);
                     }
                     if (zoom < 0)

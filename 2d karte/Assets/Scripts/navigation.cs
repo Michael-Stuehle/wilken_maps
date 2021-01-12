@@ -61,18 +61,37 @@ namespace Assets
             {
                 DrawLine();
             };
-            btnSuchen.onClick.AddListener(() =>
+
+            GameObject listboxStart = GameObject.Find("cmbStart");
+            GameObject listboxZiel = GameObject.Find("cmbZiel");
+
+            listboxStart.GetComponent<Dropdown>().onValueChanged.AddListener((index) =>
             {
-                wegPunkte.Clear();
-                addWegPunkt(HelperMethods.getPositionForName(GameObject.Find("cmbStart").GetComponentInChildren<Text>().text));
-                addWegPunkt(HelperMethods.getPositionForName(GameObject.Find("cmbZiel").GetComponentInChildren<Text>().text));
-                StartCalcPath();
+                if (listboxStart.GetComponent<Listbox>().HasSelectedItem && listboxZiel.GetComponent<Listbox>().HasSelectedItem)
+                {
+                    wegPunkte.Clear();
+                    addWegPunkt(HelperMethods.getPositionForName(listboxStart.GetComponentInChildren<Text>().text));
+                    addWegPunkt(HelperMethods.getPositionForName(listboxZiel.GetComponentInChildren<Text>().text));
+                    StartCalcPath();
+                }
             });
-            
+
+            listboxZiel.GetComponent<Dropdown>().onValueChanged.AddListener((index) =>
+            {
+                if (listboxStart.GetComponent<Listbox>().HasSelectedItem && listboxZiel.GetComponent<Listbox>().HasSelectedItem)
+                {
+                    wegPunkte.Clear();
+                    addWegPunkt(HelperMethods.getPositionForName(listboxStart.GetComponentInChildren<Text>().text));
+                    addWegPunkt(HelperMethods.getPositionForName(listboxZiel.GetComponentInChildren<Text>().text));
+                    StartCalcPath();
+                }
+            });
+
             //addWegPunkt(GameObject.Find("start").transform.position);
             //addWegPunkt(GameObject.Find("ziel").transform.position);
-            
+
         }
+
 
         public void StartCalcPath()
         {
