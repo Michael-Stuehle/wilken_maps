@@ -115,13 +115,19 @@ public class Listbox : MonoBehaviour
 
     void Awake()
     {
-        values = new int[48];
+        values = new int[52];
         values[0] = 32; // space
         values[1] = 8; // backspace
+                     
+        values[2] = 39;  // ä = quote
+        values[3] = 96;  // ö = backquote
+        values[4] = 59;  // ü = semicolon
+        values[5] = 91;  // ß = leftbracket
+
         // a-z
-        for (int i = 2; i < values.Length-20; i++)
+        for (int i = 6; i < values.Length-20; i++)
         {
-            values[i] = i + 95;  
+            values[i] = i + 91;  
         }
 
         for (int i = values.Length-20; i < values.Length-10; i++) // 0 - 9
@@ -137,7 +143,11 @@ public class Listbox : MonoBehaviour
         keyCodeLookup = new string[values.Length];
         keyCodeLookup[0] = " ";
         keyCodeLookup[1] = "~";
-        for (int i = 2; i < keyCodeLookup.Length-10; i++)
+        keyCodeLookup[2] = "ä";
+        keyCodeLookup[3] = "ö";
+        keyCodeLookup[4] = "ü";
+        keyCodeLookup[5] = "ß";
+        for (int i = 6; i < keyCodeLookup.Length-10; i++)
         {
             keyCodeLookup[i] = "" + (char)values[i];
            // Debug.Log(keyCodeLookup[i]);
