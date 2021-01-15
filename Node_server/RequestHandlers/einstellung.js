@@ -158,7 +158,8 @@ var bulidHeader = function(){
                     '<body>'+linebreak+
                         '<h1>Einstellungen</h1> <br><br>'+linebreak+
                         '<iframe id="resultFrame" name="formDestination"  style="visibility: hidden; width: 0px; height: 0px" onload="saveResult()"></iframe>'+linebreak+
-                        '<div style="display: block;overflow: auto;"><form id="form" class="form" action="einstellungen" method="POST" target="formDestination">';
+                        '<div style="display: block;overflow: auto;">'+linebreak+
+                            '<form id="form" class="form" action="einstellungen" method="POST" target="formDestination">';
     return result;
 }
 
