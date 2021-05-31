@@ -9,14 +9,13 @@ version 2019.4.21
 Alle Versionen zum Download sind hier:
 https://unity3d.com/get-unity/download/archive
 
-bitte beim Installieren außerdem sicherstellen, dass WebGL Build Support immer angehakt ist. 
+bitte beim Installieren außerdem sicherstellen, dass "WebGL Build Support" immer angehakt ist. 
 
-Beim visual Studio editor sicherstellen, dass "Spieleentwicklung mit Unity" angehakt ist.
 
 Visuel Studio:
 version ist nicht wichtig (ich benutze 2017)
 Falls schon eine Version installiert ist, den visual Studio installer öffnen und auf „Ändern“
-und dann auch wieder "Spieleentwicklung mit Unity".
+und dann schauen, dass "Spieleentwicklung mit Unity" angehakt ist.
 
 
 Tortoise SVN:
