@@ -1,12 +1,9 @@
 # wilken_maps
 
-damit ihr was an dem projekt bearbeiten könnt, müsst ihr vorher:
-- Github account erstellen
-- email mit eurem github usernamen/email an mich schreiben: michael.stuehle@wilken.de
-falls ich zur zeit urlaub/Berufschule/etc. hab kann sein dass es etwas dauert bis ich euch hinzufügen kann
+damit ihr was an dem projekt bearbeiten könnt, müsst ihr vorher einen Github account erstellen
 
 
-wir benutzen die Unity version 2019.4.2
+wir benutzen die Unity version 2019.4.21
 
 Alle Versionen zum Download sind hier:
 https://unity3d.com/get-unity/download/archive
