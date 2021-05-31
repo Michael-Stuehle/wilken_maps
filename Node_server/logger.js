@@ -23,6 +23,9 @@ module.exports = {
 }
 
 var getAktionstypFromMessage = function(message){
+    if (message == null) {
+        return AktionsTyp.unbekannt;
+    }
     if (message.includes("angemeldet")) {
         return AktionsTyp.login;
     }else if (message.includes("abgemeldet")) {

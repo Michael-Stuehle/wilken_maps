@@ -79,11 +79,11 @@ var buildClientJS = function(){
                var iframe = document.getElementById("resultFrame");
                var resultText = iframe.contentWindow.document.body.innerHTML;
                 if (resultText === "") {
-                 // do nothing
-               } else {
+                   // do nothing
+                } else {
                    location.reload(); 
                    setTimeout(function(){ window.alert(resultText); }, 100);
-               }
+                }
            }, 10);
         }
     </script>`;

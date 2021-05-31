@@ -26,6 +26,10 @@ mergeInto(LibraryManager.library, {
 			console.log("raum: " + JSON.stringify(raum) + " obj " + str_obj);
 			unityInstance.SendMessage(str_obj, "OnRaumLoad", JSON.stringify(raum));
 		});		
+	},
+	
+	getDarkMode: function(){
+		unityInstance.SendMessage("ClientObject", "OnDarkModeLoad", window.getDarkMode());
 	}
  
 });
