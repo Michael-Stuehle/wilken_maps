@@ -18,6 +18,9 @@ Falls schon eine Version installiert ist, den visual Studio installer öffnen un
 und dann schauen, dass "Spieleentwicklung mit Unity" angehakt ist.
 
 
+xampp (datenbank):
+https://www.apachefriends.org/download.html
+
 Tortoise SVN:
 hilfe zum Commiten (ihr könnt das auch direkt mit github oder git machen wenn euch das lieber ist)
 ansonsten: https://tortoisesvn.net/downloads.html
