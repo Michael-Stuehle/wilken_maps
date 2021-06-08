@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6683586975565607691}
   m_Layer: 0
-  m_Name: Seite 3 Erdgeschoss 31
+  m_Name: Erdgeschoss 31
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
