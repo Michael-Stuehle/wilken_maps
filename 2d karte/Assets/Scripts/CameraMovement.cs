@@ -50,7 +50,7 @@ namespace Assets
                 }
                 else// move down
                 {
-                    mainCamera.transform.position = main.Etage[aInt+1].transform.position - new Vector3(0, 1, 0); // aktuelle etage pos -10
+                    mainCamera.transform.position = main.Etage[aInt+1].transform.position - new Vector3(0, 10, 0); // aktuelle etage pos -10
                 }
                 moveCamToStartPos = true;
                 main.nav.ReDraw();
