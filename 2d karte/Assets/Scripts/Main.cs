@@ -30,7 +30,7 @@ namespace Assets
             }
             set
             {
-                currStockIndex = Etage.IndexOf(value);
+                AktuelleEtageIndex = Etage.IndexOf(value);
             }
         }
 
@@ -45,6 +45,11 @@ namespace Assets
                 if (value >= 0 && value < Etage.Length && value != currStockIndex)
                 {
                     currStockIndex = value;
+                    for (int i = 0; i < Etage.Length; i++)
+                    {
+                        HelperMethods.recursiveSetRendererEnabled(Etage[i].transform, false);
+                    }
+                    HelperMethods.recursiveSetRendererEnabled(Etage[value].transform, true);
                     OnEtageChanged(value);
                 }                
             }

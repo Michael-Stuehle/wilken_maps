@@ -43,5 +43,21 @@ namespace Assets
             Rect r = new Rect(screenPos.x, Screen.height - screenPos.y, size.x, size.y);
             GUI.Label(r, text, style);
         }
+
+        public static void recursiveSetRendererEnabled(Transform t, bool enabled)
+        {
+            if (t.childCount > 0)
+            {
+                foreach (Transform child in t)
+                {
+                    recursiveSetRendererEnabled(child, enabled);
+                }
+            }
+            Renderer r = t.gameObject.GetComponent<Renderer>();
+            if (r != null)
+            {
+                r.enabled = enabled;
+            }
+        }
     }
 }

@@ -52,6 +52,14 @@ public class Listbox : MonoBehaviour
                 tmp.Insert(0, DefaultText);
             }
             dropDown.AddOptions(tmp);
+
+            // nach filtern nur noch 1 item verfügbar
+            // -> Item wird als filter gewählt
+            if (tmp.Count == 1)
+            {
+                dropDown.onValueChanged.Invoke(0);
+            }
+
         }
         //Debug.Log($"items: {tmp.Count} filter: '{filter}'");
 
@@ -150,13 +158,11 @@ public class Listbox : MonoBehaviour
         for (int i = 6; i < keyCodeLookup.Length-10; i++)
         {
             keyCodeLookup[i] = "" + (char)values[i];
-           // Debug.Log(keyCodeLookup[i]);
         }
 
         for (int i = keyCodeLookup.Length -10; i < keyCodeLookup.Length; i++)
         {
             keyCodeLookup[i] = "" + (char)((values[i]-256)+48);
-            //Debug.Log($"keycode: {values[i]}   value: {keyCodeLookup[i]}");
         }
 
         KeyDownEvent += setFilter;

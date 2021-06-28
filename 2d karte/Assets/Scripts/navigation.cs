@@ -70,6 +70,7 @@ namespace Assets
                 if (listboxStart.GetComponent<Listbox>().HasSelectedItem && listboxZiel.GetComponent<Listbox>().HasSelectedItem)
                 {
                     wegPunkte.Clear();
+                    Debug.Log("neu berechnen");
                     addWegPunkt(HelperMethods.getPositionForName(listboxStart.GetComponentInChildren<Text>().text));
                     addWegPunkt(HelperMethods.getPositionForName(listboxZiel.GetComponentInChildren<Text>().text));
                     StartCalcPath();
@@ -152,23 +153,20 @@ namespace Assets
                 int i = 0;
                 while (i < positions.Count)
                 {
-                    if (i < positions.Count-1 && positions[i+1].y - positions[i].y < -0.5f) // nächste unter aktuelle
+                    // gehe nach unten
+                    if (i < positions.Count-1 && positions[i+1].y - positions[i].y < -0.5f) 
                     {
-                        if (lastYChange != -1)
-                        {
-                            lastYChange = -1;
-                            setEtagePfeil(positions[i], lastYChange); // etage unten pfeil nach oben
-                            setEtagePfeil(positions[i+1], -lastYChange); // etage oben pfeil nach unten
-                        }
+                        lastYChange = -1;
+                        setEtagePfeil(positions[i], lastYChange); // etage  aktuell (oben) pfeil nach unten
+                        setEtagePfeil(positions[i+1], -lastYChange); // etage unten pfeil nach oben                       
                     }
+
+                    // gehe noch oben
                     else if (i < positions.Count - 1 && positions[i+1].y - positions[i].y > 0.5f)// nächste über aktuelle
                     {
-                        if (lastYChange != +1)
-                        {
-                            lastYChange = +1;
-                            setEtagePfeil(positions[i], lastYChange); // etage unten pfeil nach oben
-                            setEtagePfeil(positions[i + 1], -lastYChange); // etage oben pfeil nach unten
-                        }
+                        lastYChange = +1;
+                        setEtagePfeil(positions[i], lastYChange); // etage aktuell (unten) pfeil nach oben
+                        setEtagePfeil(positions[i + 1], -lastYChange); // etage oben pfeil nach unten                     
                     }
 
                     if (positions[i].y - main.AktuelleEtageIndex * Constants.ETAGE_Y_DIFF < -0.5f) // unter aktueller etage
