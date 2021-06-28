@@ -44,11 +44,14 @@
 				}
 
 				document.getElementById("sql").addEventListener('keydown', function(event) {
-					const key = event.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
-					if (key == "ArrowUp" && currentIndex > 0) {
-						this.value = lastExecuted[--currentIndex];
-					}else if (key == "ArrowDown" && currentIndex < lastExecuted.length-1) {
-						this.value = lastExecuted[++currentIndex];
+					if (this.value == "" || event.ctrlKey){ 
+						const key = event.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
+						
+						if (key == "ArrowUp" && currentIndex > 0) {
+							this.value = lastExecuted[--currentIndex];
+						}else if (key == "ArrowDown" && currentIndex < lastExecuted.length-1) {
+							this.value = lastExecuted[++currentIndex];
+						}
 					}
 				});
 		

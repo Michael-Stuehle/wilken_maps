@@ -24,9 +24,6 @@
       <button onclick="start2dKarte()" class="centerButton">
         2d Karte Starten
       </button>
-      <button onclick="startWilkenMaps()" class="startButton" >
-        Wilken Maps Starten
-      </button>
       <button onclick="gotoAdminpage()">
         Adminseite
       </button>
@@ -41,11 +38,6 @@
       function openSettings(elem){
         elem.classList.add('down');
         window.location.href = getUrl() + "/einstellungen.html";
-      }
-
-
-      function startWilkenMaps() {
-        window.location.href = getUrl() + "/3d/index.html";
       }
 
       function start2dKarte(){

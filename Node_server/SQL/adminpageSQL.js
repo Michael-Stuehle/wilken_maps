@@ -83,6 +83,7 @@ async function doRaumAdded_And_Edited(connection, raumliste, ip){
             raum = await raumAdded(connection, raum, ip);
             ok = raum != null;
         }else if(raum.edited){
+            console.log(raum)
             ok = await raumChanged(connection, raum, ip);
         }      
     } 
@@ -197,7 +198,7 @@ function raumChanged(connection, raum, ip){
         // TODO:
         // set raum.name
 
-        execSQL(connection, 'update raum set name = ? where id = ?', [raum.id, raum.name]).then(function(resolved){
+        execSQL(connection, 'update raum set name = ? where id = ?', [raum.name, raum.id]).then(function(resolved){
             if (resolved.err) {
                 logger.logError(resolved.err);
                 connection.rollback(function(err){

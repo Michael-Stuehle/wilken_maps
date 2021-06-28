@@ -44,7 +44,7 @@ function doUpdateAndRestart(){
 		callRestartBat();
 	  }, DO_SVN_UPDATE_AFTER_MINUTES * 60 * 1000);
 }
-doUpdateAndRestart();
+//doUpdateAndRestart();
 
 app.use(session({
 	secret: Helper.generateRandomString(128),
@@ -68,7 +68,6 @@ app.use(function (req, res, next) {
 })
 
 app.use('/components/', express.static(path.join(__dirname +"/public/components/")));
-app.use('/3d/',express.static(path.join(__dirname +"/public/3d/")));
 app.use('/2d/', express.static(path.join(__dirname +"/public/2d/")));
 
 app.use(bodyParser.urlencoded({extended : true}));

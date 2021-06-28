@@ -13,7 +13,7 @@
 				return false;
 			}
 		};
-		var unityInstance = UnityLoader.instantiate("unityContainer", "Build/build 22.json", {
+		var unityInstance = UnityLoader.instantiate("unityContainer", "Build/build 26.json", {
 		  Module: {
 			TOTAL_MEMORY: 536870912
 		  }
@@ -52,6 +52,10 @@
 					return raum;
 				}
 			}
+		}
+
+		window.getDarkMode = function(){
+			return getCookie('dark_mode') == 'true';
 		}
 	</script>
 	<iframe id="frmFile" src="/mitarbeiter.txt"; style="display: none;"></iframe>

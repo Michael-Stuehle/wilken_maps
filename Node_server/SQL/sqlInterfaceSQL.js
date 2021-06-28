@@ -16,6 +16,7 @@ module.exports = {
 
     hasPermissionForSQL: function(request, callback){
         var username = request.session.username;
+        
         helperSQL.getPermissionsUser(username, function(result){
             if (result != null && result.split(';').indexOf('sql') > -1) { // hat berechtigung für sql
                 return callback(true);
