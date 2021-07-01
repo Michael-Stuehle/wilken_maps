@@ -33,8 +33,22 @@ button{
 }
 
 a{
-    color: var(--linkColor);
-}
+    color: var(--btnColor);
+    /* background: var(--linkColor); */
+    background: var(--btnBackgroundColor);
+    text-decoration: none;
+    padding: 10px;
+    border: none;
+    border-radius: 4%;
+    margin: 0.5rem;
+    font-weight: bold;
+  
+  }
+  
+  a:hover {
+    background: var(--btnHoverColor);
+  }
+  
 
 textarea,
 iframe{

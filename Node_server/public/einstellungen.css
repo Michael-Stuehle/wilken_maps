@@ -49,9 +49,20 @@ input{
     background-color: var(--backgroundColor);
     color: var(--textColor);
 }
-
 a{
-    color: var(--linkColor);
+  color: white;
+  /* color: var(--linkColor); */
+  background: var(--btnBackgroundColor);
+  text-decoration: none;
+  padding: 10px;
+  border: none;
+  border-radius: 8%;
+  margin: 0.5rem;
+
+}
+
+a:hover {
+  background: var(--btnHoverColor);
 }
 
 .item{

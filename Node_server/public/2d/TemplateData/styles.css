@@ -16,3 +16,22 @@ body {
     color: var(--textColor);          
     background: var(--backgroundColor);
 }
+
+
+.back{
+  color: var(--btnColor);
+  /* background: var(--linkColor); */
+  font-family: Helvetica, Verdana, Arial, sans-serif;
+  background: var(--btnBackgroundColor);
+  text-decoration: none;
+  padding: 10px;
+  border: none;
+  border-radius: 4%;
+  margin: 0.5rem;
+  font-weight: bold;
+
+}
+
+.back:hover {
+  background: var(--btnHoverColor);
+}

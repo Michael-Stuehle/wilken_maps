@@ -1,49 +1,51 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>2d karte</title>
-    <link rel="stylesheet" href="TemplateData/styles.css">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>2d karte</title>
+	<link rel="stylesheet" href="TemplateData/styles.css">
 	<script src="Build/UnityLoader.js"></script>
-	<script src="/script.js"></script>	
-    <script defer>
+	<script src="/script.js"></script>
+	<script defer>
 		document.onkeydown = function (e) {
 			if (e.keyCode === 116 || e.keyCode === 114) {
 				return false;
 			}
 		};
 		var unityInstance = UnityLoader.instantiate("unityContainer", "Build/build 26.json", {
-		  Module: {
-			TOTAL_MEMORY: 536870912
-		  }
+			Module: {
+				TOTAL_MEMORY: 536870912
+			}
 		});
 	</script>
-  </head>
-  <body onbeforeunload="return beforeUnload()">
+</head>
+
+<body onbeforeunload="return beforeUnload()">
 	<script>
 		function beforeUnload() {
 			return 'Soll die Seite wirklich verlassen werden?';
 		}
-		
-		function load(){
+
+		function load() {
 			return new Promise(resolve => {
 				fetch("http://ul-ws-mistueh/raumliste.txt", {
 					method: "GET",
 					headers: { "Content-type": "application/json" },
 				})
-				.then(function (response) {
-				  return response.text();
-				})
-				.then(function (text) {
-					window.raumliste = JSON.parse(text);
-					resolve(true);				
-				})			
-			})		
+					.then(function (response) {
+						return response.text();
+					})
+					.then(function (text) {
+						window.raumliste = JSON.parse(text);
+						resolve(true);
+					})
+			})
 		}
-			
-		window.getRaumById = async function(RaumId){
-			if (window.raumliste == null){
+
+		window.getRaumById = async function (RaumId) {
+			if (window.raumliste == null) {
 				await load();
 			}
 			for (let index = 0; index < raumliste.length; index++) {
@@ -54,19 +56,20 @@
 			}
 		}
 
-		window.getDarkMode = function(){
+		window.getDarkMode = function () {
 			return getCookie('dark_mode') == 'true';
 		}
 	</script>
-	<iframe id="frmFile" src="/mitarbeiter.txt"; style="display: none;"></iframe>
+	<a class="back" href="/home">zurück</a>
+	<iframe id="frmFile" src="/mitarbeiter.txt" ; style="display: none;"></iframe>
 	<div class="webgl-content">
-      <div id="unityContainer" style="width: 960px; height: 600px"></div>
-      <div class="footer">
-        <div class="webgl-logo"></div>
-		<a style="float: left; color: var(--linkColor);" href="/home">zurück</a>
-        <div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
-        <div class="title">wilken maps</div>
-      </div>
-    </div>
-  </body>
+		<div id="unityContainer" style="width: 960px; height: 600px"></div>
+		<div class="footer">
+			<div class="webgl-logo"></div>
+			<div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
+			<div class="title">wilken maps</div>
+		</div>
+	</div>
+</body>
+
 </html>

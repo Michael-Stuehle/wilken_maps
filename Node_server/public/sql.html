@@ -1,86 +1,90 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Wilken Maps Sql Control Panel</title>
-		<link rel="stylesheet" href="/sqlInterface.css">	
-		<script src="/script.js"></script>	
-	</head>
-	<body style="text-align:center;" onload="getButtons()">
-		<div class="form">
-            <h1>Wilken Maps</h1>
-            
-           	<div style="width: 78%; height: 80%; margin-left: 4%; float: left;">
-				<form id="form" action="sql" method="POST" target="formDestination" style="visibility: hidden; height: 0px;">
-					<input name="sql" id="submit-sql">
-				</form>
-				<div>
-					<textarea rows="5" style="width: 100%;font-size: medium;" type="text" id="sql" name="_sql" placeholder="" required></textarea>
-				</div>
-				<div>
-					<iframe style="width: 100%;box-sizing: border-box;height: 40%;" id="resultFrame" name="formDestination">  </iframe>
-				</div>
-				
 
-				<div style="position: absolute; left: 0;right: 0; margin: 3%">
-					<a style="float: left;" href="/home">zurück</a>
-					<input style="float: right;" class="startButton" id="btn_submit" type="submit" value="ausführen" onclick="DoSubmit()">
-				</div>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Wilken Maps Sql Control Panel</title>
+	<link rel="stylesheet" href="/sqlInterface.css">
+	<script src="/script.js"></script>
+</head>
+
+<body style="text-align:center;" onload="getButtons()">
+	<div class="form">
+		<h1>Wilken Maps</h1>
+
+		<div style="width: 78%; height: 80%; margin-left: 4%; float: left;">
+			<form id="form" action="sql" method="POST" target="formDestination"
+				style="visibility: hidden; height: 0px;">
+				<input name="sql" id="submit-sql">
+			</form>
+			<div>
+				<textarea rows="5" style="width: 100%;font-size: medium;" type="text" id="sql" name="_sql"
+					placeholder="" required></textarea>
 			</div>
-			<div style="position: absolute; width: 16%;  float: left; right: 10px;" id="buttonsFrame">
-				<button onclick="restartServer()">Server neu starten</button>
-				<!-- hier werden procedure buttons erstellet -->
-			</div>             
-            <script>
-				var lastExecuted = [];
-				var currentIndex = 0;
+			<div>
+				<iframe style="width: 100%;box-sizing: border-box;height: 40%;" id="resultFrame" name="formDestination">
+				</iframe>
+			</div>
+			<div style="position: absolute; left: 0;right: 0; margin: 3%">
+				<a style="float: left;" href="/home">Zurück</a>
+				<input style="float: right;" class="startButton" id="btn_submit" type="submit" value="Ausführen"
+					onclick="DoSubmit()">
+			</div>
+		</div>
+		<div style="position: absolute; width: 16%;  float: left; right: 10px;" id="buttonsFrame">
+			<button onclick="restartServer()">Server neu starten</button>
+			<!-- hier werden procedure buttons erstellet -->
+		</div>
+		<script>
+			var lastExecuted = [];
+			var currentIndex = 0;
 
-				function restartServer(){
-					fetch('/restartServer', {
-						method: 'POST', // *GET, POST, PUT, DELETE, etc.
-							body: ''
-						})
-				}
+			function restartServer() {
+				fetch('/restartServer', {
+					method: 'POST', // *GET, POST, PUT, DELETE, etc.
+					body: ''
+				})
+			}
 
-				document.getElementById("sql").addEventListener('keydown', function(event) {
-					if (this.value == "" || event.ctrlKey){ 
-						const key = event.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
-						
-						if (key == "ArrowUp" && currentIndex > 0) {
-							this.value = lastExecuted[--currentIndex];
-						}else if (key == "ArrowDown" && currentIndex < lastExecuted.length-1) {
-							this.value = lastExecuted[++currentIndex];
-						}
+			document.getElementById("sql").addEventListener('keydown', function (event) {
+				if (this.value == "" || event.ctrlKey) {
+					const key = event.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
+
+					if (key == "ArrowUp" && currentIndex > 0) {
+						this.value = lastExecuted[--currentIndex];
+					} else if (key == "ArrowDown" && currentIndex < lastExecuted.length - 1) {
+						this.value = lastExecuted[++currentIndex];
 					}
-				});
-		
-                function DoSubmit(){
-					var text =  document.getElementById("sql").value.replace(/\s/gm," ");
-					lastExecuted.push(text);
-					currentIndex = lastExecuted.indexOf(text);
-                    document.getElementById("submit-sql").value = text;
-                    document.getElementById("form").submit();
 				}
+			});
 
-				window.onload = function () {
-					var iframe = document.getElementById("resultFrame");
-					var newHeigth = window.innerHeight - iframe.getBoundingClientRect().top -(window.innerHeight*0.2) + 'px';
-					iframe.style.height = newHeigth;
-					getButtons();
-				}
+			function DoSubmit() {
+				var text = document.getElementById("sql").value.replace(/\s/gm, " ");
+				lastExecuted.push(text);
+				currentIndex = lastExecuted.indexOf(text);
+				document.getElementById("submit-sql").value = text;
+				document.getElementById("form").submit();
+			}
 
-				window.onresize = function () {
-					var iframe = document.getElementById("resultFrame");
-					var newHeigth = window.innerHeight - iframe.getBoundingClientRect().top -(window.innerHeight*0.2) + 'px';
-					iframe.style.height = newHeigth;
-				}
+			window.onload = function () {
+				var iframe = document.getElementById("resultFrame");
+				var newHeigth = window.innerHeight - iframe.getBoundingClientRect().top - (window.innerHeight * 0.2) + 'px';
+				iframe.style.height = newHeigth;
+				getButtons();
+			}
 
-				function getButtons(){
-					fetch('/getProceduresAndFunctions')
-                    .then(function(response) {
-                        return response.text();
-                    }).then(function(text){
+			window.onresize = function () {
+				var iframe = document.getElementById("resultFrame");
+				var newHeigth = window.innerHeight - iframe.getBoundingClientRect().top - (window.innerHeight * 0.2) + 'px';
+				iframe.style.height = newHeigth;
+			}
+
+			function getButtons() {
+				fetch('/getProceduresAndFunctions')
+					.then(function (response) {
+						return response.text();
+					}).then(function (text) {
 						var buttons = text.split(';');
 						console.log(buttons);
 						for (let index = 0; index < buttons.length && buttons[index] != ""; index++) {
@@ -89,40 +93,41 @@
 							var elem = document.createElement('button');
 							elem.style = 'float: right';
 							elem.textContent = button;
-							elem.onclick = function() {
-								document.getElementById('sql').value="call "+elem.textContent+"();"; 
-								DoSubmit(); 
+							elem.onclick = function () {
+								document.getElementById('sql').value = "call " + elem.textContent + "();";
+								DoSubmit();
 							};
 							document.getElementById('buttonsFrame').appendChild(elem);
 						}
 					});
-				}
-			
-                function getUrl(){
-                    var arr = window.location.href.split('/');
-                    return arr[0] + '//' + arr[2];
-                }
+			}
 
-                document.addEventListener("keydown", function(event) {
-                    // Number 13 is the "Enter" key on the keyboard
-                    if (event.keyCode === 13 && !event.shiftKey) {
-                        // Cancel the default action, if needed
-                        event.preventDefault();
-                        // Trigger the button element with a click
-                        document.getElementById("btn_submit").click();
-                    }
-                });
-            </script>
-        </div>
-		<div>
-			<a href="/logout" style="position: absolute; right: 4%; top:1%;">Abmelden</a>
-		</div>		
-        <script>
-			
-			function getUrl(){
-                    var arr = window.location.href.split('/');
-                    return arr[0] + '//' + arr[2];
-                }
-        </script>
-    </body>
+			function getUrl() {
+				var arr = window.location.href.split('/');
+				return arr[0] + '//' + arr[2];
+			}
+
+			document.addEventListener("keydown", function (event) {
+				// Number 13 is the "Enter" key on the keyboard
+				if (event.keyCode === 13 && !event.shiftKey) {
+					// Cancel the default action, if needed
+					event.preventDefault();
+					// Trigger the button element with a click
+					document.getElementById("btn_submit").click();
+				}
+			});
+		</script>
+	</div>
+	<div>
+		<a href="/logout" style="position: absolute; right: 4%; top:1%;">Abmelden</a>
+	</div>
+	<script>
+
+		function getUrl() {
+			var arr = window.location.href.split('/');
+			return arr[0] + '//' + arr[2];
+		}
+	</script>
+</body>
+
 </html>

@@ -38,6 +38,7 @@ body {
   top: 20px; 
   left: 30px;
   color: var(--settingIconColor);
+  cursor: pointer;
 }
 
 button{
@@ -100,6 +101,36 @@ button:hover {
     padding: 10px 0 10px 0;
 }
 
+a{
+  color: var(--btnColor);
+  /* background: var(--linkColor); */
+  background: var(--btnBackgroundColor);
+  text-decoration: none;
+  padding: 10px;
+  border: none;
+  border-radius: 4%;
+  margin: 0.5rem;
+  font-weight: bold;
+
+}
+
+a:hover {
+  background: var(--btnHoverColor);
+}
+
+
+#btn-submit {
+  margin: 1rem 0;
+}
+
+.link-back {
+  bottom: 0;
+  float: left;
+  margin-left: -31.5rem;
+  /* margin: -30rem; */
+
+}
+
 .form input[type="password"],
 .form input[type="text"] {
   width: 100%;
@@ -109,17 +140,19 @@ button:hover {
   box-sizing: border-box;
   background-color: var(--backgroundColor);
   color: var(--textColor);
+
 }
 .form input[type="submit"] {
   width: 100%;
   padding: 15px;
   margin-bottom: 10px;
-  background-color: var(--btnBackgroundColor);
+  background: var(--btnBackgroundColor);
   border: 0;
   box-sizing: border-box;
   cursor: pointer;
   font-weight: bold;
   color: var(--btnColor);
+  font-size: 1rem;
 }
 .form input[type="submit"]:hover {
   background-color: var(--btnHoverColor);
@@ -169,6 +202,21 @@ select{
 
 .right {
     float: right;
+  }
+
+  .nav-content {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .navlink {
+    text-align: center;
+    margin: 1rem 0 0 0;
+    width: 70%;
+    padding: 0.5rem;
   }
 
   @media only screen and (max-width: 500px) {

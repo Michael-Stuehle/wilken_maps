@@ -54,7 +54,19 @@ input{
 }
 
 a{
-    color: var(--linkColor);
+    color: white;
+    /* background: var(--linkColor); */
+    background: var(--btnBackgroundColor);
+    text-decoration: none;
+    padding: 10px;
+    border: none;
+    border-radius: 8%;
+    margin: 0.5rem;
+
+}
+
+a:hover {
+    background: var(--btnHoverColor);
 }
 
 .item{
@@ -77,6 +89,18 @@ a{
 .item:hover,
 .item:focus{
     background-color: #81818149;
+}
+
+/* 
+#btn-rechts {
+    cursor: pointer;
+    background: var(--btnHoverColor);
+} */
+.btn-arrows {
+    cursor: pointer;
+}
+.btn-arrows:hover{
+    background-color: var(--btnHoverColor);
 }
 
 .item.selected{

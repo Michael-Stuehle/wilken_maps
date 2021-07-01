@@ -1,248 +1,273 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="adminpage.css">	
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <script src="/script.js"></script>	
-        <script defer src="/adminpageScript.js" type="module"></script>      
-        <script defer src="/components/listbox.js" type="module"></script>  
-        <script defer src="/components/contextmenu.js" type="module"></script>
-        <script defer src="/components/popupForm.js" type="module"></script>
-        <script src="/mitarbeiterEdit.js" type="module"></script>
-        <script src="/raumEdit.js" type="module"></script>
-        <title>Wilken Maps Admin Seite</title>
-    </head>
-    <script async=false>
-        window.onbeforeunload = function(e) {
-            if (window.checkAnythingChanged()){
-                e.returnValue = 'onbeforeunload';
-                return 'onbeforeunload';
-            }
-        };
 
-        function selectNextElementByIdOnTabKeyDown(event, nextId, prevId){
-            if (event.keyCode == 9) {
-                event.preventDefault();
-                if (event.shiftKey) {
-                    document.getElementById(prevId).focus();
-                }else{
-                    document.getElementById(nextId).focus();
-                }
-            }else if (event.keyCode == 13) { // enter
-                event.currentTarget.click();
-            }
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="adminpage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="/script.js"></script>
+    <script defer src="/adminpageScript.js" type="module"></script>
+    <script defer src="/components/listbox.js" type="module"></script>
+    <script defer src="/components/contextmenu.js" type="module"></script>
+    <script defer src="/components/popupForm.js" type="module"></script>
+    <script src="/mitarbeiterEdit.js" type="module"></script>
+    <script src="/raumEdit.js" type="module"></script>
+    <title>Wilken Maps Admin Seite</title>
+</head>
+<script async=false>
+    window.onbeforeunload = function (e) {
+        if (window.checkAnythingChanged()) {
+            e.returnValue = 'onbeforeunload';
+            return 'onbeforeunload';
         }
+    };
 
-        document.addEventListener('keydown', function(event){
-            if (event.ctrlKey && event.key.toLocaleLowerCase() == 's') {
-                event.preventDefault();
-                window.Speichern();
-            }else if (event.ctrlKey && event.key.toLocaleLowerCase() == 'f'){
-                event.preventDefault();
-                window.mitarbeitersuche.showModal(window.listboxA, 'Mitarbeiter Suchen');
+    function selectNextElementByIdOnTabKeyDown(event, nextId, prevId) {
+        if (event.keyCode == 9) {
+            event.preventDefault();
+            if (event.shiftKey) {
+                document.getElementById(prevId).focus();
+            } else {
+                document.getElementById(nextId).focus();
             }
-        });    
-    </script>
-    <body>
-        <h1>Administrations- Seite</h1>
-        <br><br><br>
-        <div class="buttonsLeiste">
-            <div class="customButton reloadBtn" title="Aktualisieren" onclick="window.ReloadAll()" >
-                <span>
-                    <i class="fa fa-refresh refreshIcon" aria-hidden="true" style="font-size: 28px;"></i>
-                </span>
-            </div>
-            <div class="customButton saveBtn" title="Speichern" onclick="window.Speichern()" >
-                <span>
-                    <i class="fa fa-floppy-o saveIcon" aria-hidden="true" style="font-size: 28px;"></i>
-                </span>
-            </div>
-        </div>
-        <div style="display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap;">  
-            <div style="margin: auto; width: 43%;">
-                <div style="display: flex; flex-direction: row; justify-content: left; flex-wrap: wrap;">  
-                    <div class="customButton" title="Raum Bearbeiten" onclick="window.showRaumEditPopup('raumSelectA')" >
-                        <span>
-                            <i class="fa fa-pencil" aria-hidden="true" style="font-size: 20px;"></i>
-                        </span>
-                    </div>
-                    <div class="customButton" title="Raum Hinzufügen" onclick="window.showRaumAddPopup('raumSelectA')" >
-                        <span>
-                            <i class="fa fa-plus" aria-hidden="true" style="font-size: 20px;"></i>
-                        </span>
-                    </div>
-                    <div class="customButton" title="Raum Löschen" onclick="window.deleteRaum('raumSelectA')" >
-                        <span>
-                            <i class="fa fa-trash" aria-hidden="true" style="font-size: 20px;"></i>
-                        </span>
-                    </div>
-                    <div class="customButton" title="Mitarbeiter Suchen" onclick="window.mitarbeitersuche.showModal(window.listboxA, 'Mitarbeiter Suche')" >
-                        <span>
-                            <i class="fa fa-search" aria-hidden="true" style="font-size: 20px;"></i>
-                        </span>
-                    </div>
-                </div>
-                <label for="Raum">Raum:</label>
-                <select id="raumSelectA" autofocus name="Raum" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'raumSelectB', 'raumSelectB')"></select>
-                <div id="A" raum_id="" class="container" tabindex="0"></div>
-            </div>
-            <div style="display: flex; flex-direction: column; justify-content: space-between; flex-wrap: nowrap; margin: auto;">
-                <button id="btn-rechts" title="Mitarbeiter nach rechts" onclick="window.moveItemsRechts()">
-                    <i class="fa fa-arrow-right" aria-hidden="true" style="font-size:20px;"></i>
-                </button>
-                <button id="btn-links" title="Mitarbeiter nach links" onclick="window.moveItemsLeft()">
-                    <i class="fa fa-arrow-left" aria-hidden="true" style="font-size:20px;"></i>
-                </button>
-            </div>
-            <div style="margin: auto; width: 43%;">
-                <div style="display: flex; flex-direction: row; justify-content: left; flex-wrap: wrap;">  
-                    <div class="customButton" title="Raum Bearbeiten" onclick="window.showRaumEditPopup('raumSelectB')" >
-                        <span>
-                            <i class="fa fa-pencil" aria-hidden="true" style="font-size: 20px;"></i>
-                        </span>
-                    </div>
-                    <div class="customButton" title="Raum Hinzufügen" onclick="window.showRaumAddPopup('raumSelectB')" >
-                        <span>
-                            <i class="fa fa-plus" aria-hidden="true" style="font-size: 20px;"></i>
-                        </span>
-                    </div>
-                    <div class="customButton" title="Raum Löschen" onclick="window.deleteRaum('raumSelectB')" >
-                        <span>
-                            <i class="fa fa-trash" aria-hidden="true" style="font-size: 20px;"></i>
-                        </span>
-                    </div>
-                    <div class="customButton" title="Mitarbeiter Suchen" onclick="window.mitarbeitersuche.showModal(window.listboxB, 'Mitarbeiter Suche')" >
-                        <span>
-                            <i class="fa fa-search" aria-hidden="true" style="font-size: 20px;"></i>
-                        </span>
-                    </div>
-                </div>
-                <label for="Raum">Raum:</label>
-                <select id="raumSelectB" name="Raum" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'raumSelectA', 'raumSelectA')"></select>
-                <div id="B" raum_id="" class="container" tabindex="0"></div>
-            </div>            
-        </div>
-        <a style="float: left;" href="/home">zurück</a>
-        <div id="menu" class="menu">
-            <ul class="menu-options fa-ul">
-                <li class="menu-option" onclick="window.moveItemsLeft()" title="Nach Links Verschieben" id="li-links"> 
-                    <span>
-                        <i class="fa fa-arrow-left" aria-hidden="true" style="font-size:20px;margin-right: 5px;"></i>
-                        Nach Links
-                    </span> 
-                </li>
-                <li class="menu-option" onclick="window.moveItemsRechts()" title="Nach Rechts Verschieben" id="li-rechts">
-                    <span>
-                        <i class="fa fa-arrow-right" aria-hidden="true" style="font-size:20px;margin-right: 5px;"></i>
-                        Nach Rechts
-                    </span>
-                </li>
-                <li class="menu-option" onclick="window.Speichern()" title="Änderungen Speichern" id="li-speichern">
-                    <span>
-                        <i class="fa fa-floppy-o" aria-hidden="true" style="font-size:20px;margin-right: 5px;"></i>
-                        Speichern
-                    </span> 
-                </li>
-                <li class="menu-option" onclick="window.showMitarbeiterSucheFromContextMenu()" title="Nach Mitarbeiter Suchen"  id="li-speichern">
-                    <span>
-                        <i class="fa fa-search" aria-hidden="true" style="font-size:20px;margin-right: 5px;"></i>
-                        Suchen
-                    </span> 
-                </li>
-                <li class="menu-option" onclick="window.showMitarbeiterEditPopup()" title="Mitarbeiter Bearbeiten" id="li-edit"> 
-                    <span>
-                        <i class="fa fa-pencil" aria-hidden="true" style="font-size:20px;margin-right: 5px;"></i>
-                        Bearbeiten
-                    </span> 
-                </li>
-                <li class="menu-option" onclick="window.deleteMitarbeiter()" title="Mitarbeiter Löschen" id="li-delete"> 
-                    <span>
-                        <i class="fa fa-trash" aria-hidden="true" style="font-size:20px;"></i>
-                        Löschen
-                    </span> 
-                </li>
-                <li class="menu-option" onclick="window.showMitarbeiterAddPopup()" title="Mitarbeiter Hinzufügen" id="li-add"> 
-                    <span>
-                        <i class="fa fa-plus" aria-hidden="true" style="font-size:20px;margin-right: 5px;"></i>
-                        Hinzufügen
-                    </span> 
-                </li>
-            </ul>
-        </div>
-            
-        <div class="modal" id="editMitarbeiterPopup">
-            <div class="modal-content">
-                <h1 id="editMitarbeiterPopupTitle"></h1>
-                <div class="modal-content-flexbox">
-                    <div class="modal-content-flexbox modal-content-item">
-                        <label style="width: 100px;" for="Name">Name: </label>
-                        <input name="Name" id="edtName" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'selRaum', 'btnMitarbeiterPopupClose')">
-                    </div>
-                    <div class="modal-content-flexbox modal-content-item">
-                        <label style="width: 100px;" for="raum">Raum: </label>
-                        <select name="raum" id="selRaum" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'btnMitarbeiterPopupOK', 'edtName')"></select>
-                    </div>
-                </div>    
-                <div class="customButton" id="btnMitarbeiterPopupClose" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'edtName', 'btnMitarbeiterPopupOK')">
-                    <span>
-                        <i class="fa fa-times closeIcon" aria-hidden="true" style="font-size: 20px;"></i>
-                        Abbrechen
-                    </span>
-                </div>
-                <div class="customButton" id="btnMitarbeiterPopupOK" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'btnMitarbeiterPopupClose', 'selRaum')">
-                    <span>
-                        <i class="fa fa-check okIcon" aria-hidden="true" style="font-size: 20px;"></i>
-                        Übernehmen
-                    </span>
-                </div>                    
-            </div>
-        </div>
-        
-        <div class="modal" id="editRaumPopup">
-            <div class="modal-content">
-                <h1 id="editRaumPopupTitle"></h1>
-                <div class="modal-content-flexbox">
-                    <div class="modal-content-flexbox modal-content-item">
-                        <label style="width: 100px;" for="Name">Name: </label>
-                        <input name="Name" id="edtNameRaum" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'btnRaumEditOk', 'btnRaumEditClose')">
-                    </div>
-                </div>    
-                <div class="customButton" id="btnRaumEditClose" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'edtNameRaum', 'btnRaumEditOk')">
-                    <span>
-                        <i class="fa fa-times closeIcon" aria-hidden="true" style="font-size: 20px;"></i>
-                        Abbrechen
-                    </span>
-                </div>
-                <div class="customButton" id="btnRaumEditOk" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'btnRaumEditClose', 'edtNameRaum')">
-                    <span>
-                        <i class="fa fa-check okIcon" aria-hidden="true" style="font-size: 20px;"></i>
-                        Übernehmen
-                    </span>
-                </div>                            
-            </div>
-        </div>
+        } else if (event.keyCode == 13) { // enter
+            event.currentTarget.click();
+        }
+    }
 
-        <div class="modal" id="mitarbeiterSuche">
-            <div class="modal-content">
-                <h1 id="mitarbeiterSucheTitle"></h1>
-                <input id="searchInput" onpaste="this.onchange();" oninput="this.onchange();"
-                    style="width: 100%;" placeholder="Nach Namen Filtern" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'search', 'btnMitarbeiterSucheClose')"/>
-                <div id="search" class="container" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'btnMitarbeiterSucheOK', 'searchInput')"></div>
-                <div class="customButton" id="btnMitarbeiterSucheClose" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'searchInput', 'btnMitarbeiterSucheOK')">
+    document.addEventListener('keydown', function (event) {
+        if (event.ctrlKey && event.key.toLocaleLowerCase() == 's') {
+            event.preventDefault();
+            window.Speichern();
+        } else if (event.ctrlKey && event.key.toLocaleLowerCase() == 'f') {
+            event.preventDefault();
+            window.mitarbeitersuche.showModal(window.listboxA, 'Mitarbeiter Suchen');
+        }
+    });
+</script>
+
+<body>
+    <h1>Administrations- Seite</h1>
+    <br><br><br>
+    <div class="buttonsLeiste">
+        <div>
+            <a class="btn-back" style="float: left;" href="/home">zurück</a>
+        </div>
+        <div class="customButton reloadBtn" title="Aktualisieren" onclick="window.ReloadAll()">
+            <span>
+                <i class="fa fa-refresh refreshIcon" aria-hidden="true" style="font-size: 28px;"></i>
+            </span>
+        </div>
+        <div class="customButton saveBtn" title="Speichern" onclick="window.Speichern()">
+            <span>
+                <i class="fa fa-floppy-o saveIcon" aria-hidden="true" style="font-size: 28px;"></i>
+            </span>
+        </div>
+    </div>
+    <div style="display: flex; flex-direction: row; justify-content: space-between; flex-wrap: wrap;">
+        <div style="margin: auto; width: 43%;">
+            <div style="display: flex; flex-direction: row; justify-content: left; flex-wrap: wrap;">
+                <div class="customButton" title="Raum Bearbeiten" onclick="window.showRaumEditPopup('raumSelectA')">
                     <span>
-                        <i class="fa fa-times closeIcon" aria-hidden="true" style="font-size: 20px;"></i>
-                        Abbrechen
+                        <i class="fa fa-pencil" aria-hidden="true" style="font-size: 20px;"></i>
                     </span>
                 </div>
-                <div class="customButton" id="btnMitarbeiterSucheOK" tabindex="-1" onkeydown="selectNextElementByIdOnTabKeyDown(event, 'btnMitarbeiterSucheClose', 'search')">
+                <div class="customButton" title="Raum Hinzufügen" onclick="window.showRaumAddPopup('raumSelectA')">
                     <span>
-                        <i class="fa fa-check okIcon" aria-hidden="true" style="font-size: 20px;"></i>
-                        Übernehmen
+                        <i class="fa fa-plus" aria-hidden="true" style="font-size: 20px;"></i>
                     </span>
-                </div>           
+                </div>
+                <div class="customButton" title="Raum Löschen" onclick="window.deleteRaum('raumSelectA')">
+                    <span>
+                        <i class="fa fa-trash" aria-hidden="true" style="font-size: 20px;"></i>
+                    </span>
+                </div>
+                <div class="customButton" title="Mitarbeiter Suchen"
+                    onclick="window.mitarbeitersuche.showModal(window.listboxA, 'Mitarbeiter Suche')">
+                    <span>
+                        <i class="fa fa-search" aria-hidden="true" style="font-size: 20px;"></i>
+                    </span>
+                </div>
+            </div>
+            <label for="Raum">Raum:</label>
+            <select id="raumSelectA" autofocus name="Raum" tabindex="-1"
+                onkeydown="selectNextElementByIdOnTabKeyDown(event, 'raumSelectB', 'raumSelectB')"></select>
+            <div id="A" raum_id="" class="container" tabindex="0"></div>
+        </div>
+        <div
+            style="display: flex; flex-direction: column; justify-content: space-between; flex-wrap: nowrap; margin: auto;">
+            <button class="btn-arrows" id="btn-rechts" title="Mitarbeiter nach rechts"
+                onclick="window.moveItemsRechts()">
+                <i class="fa fa-arrow-right" aria-hidden="true" style="font-size:20px;"></i>
+            </button>
+            <button class="btn-arrows" id="btn-links" title="Mitarbeiter nach links" onclick="window.moveItemsLeft()">
+                <i class="fa fa-arrow-left" aria-hidden="true" style="font-size:20px;"></i>
+            </button>
+        </div>
+        <div style="margin: auto; width: 43%;">
+            <div style="display: flex; flex-direction: row; justify-content: left; flex-wrap: wrap;">
+                <div class="customButton" title="Raum Bearbeiten" onclick="window.showRaumEditPopup('raumSelectB')">
+                    <span>
+                        <i class="fa fa-pencil" aria-hidden="true" style="font-size: 20px;"></i>
+                    </span>
+                </div>
+                <div class="customButton" title="Raum Hinzufügen" onclick="window.showRaumAddPopup('raumSelectB')">
+                    <span>
+                        <i class="fa fa-plus" aria-hidden="true" style="font-size: 20px;"></i>
+                    </span>
+                </div>
+                <div class="customButton" title="Raum Löschen" onclick="window.deleteRaum('raumSelectB')">
+                    <span>
+                        <i class="fa fa-trash" aria-hidden="true" style="font-size: 20px;"></i>
+                    </span>
+                </div>
+                <div class="customButton" title="Mitarbeiter Suchen"
+                    onclick="window.mitarbeitersuche.showModal(window.listboxB, 'Mitarbeiter Suche')">
+                    <span>
+                        <i class="fa fa-search" aria-hidden="true" style="font-size: 20px;"></i>
+                    </span>
+                </div>
+            </div>
+            <label for="Raum">Raum:</label>
+            <select id="raumSelectB" name="Raum" tabindex="-1"
+                onkeydown="selectNextElementByIdOnTabKeyDown(event, 'raumSelectA', 'raumSelectA')"></select>
+            <div id="B" raum_id="" class="container" tabindex="0"></div>
+        </div>
+    </div>
+    <div id="menu" class="menu">
+        <ul class="menu-options fa-ul">
+            <li class="menu-option" onclick="window.moveItemsLeft()" title="Nach Links Verschieben" id="li-links">
+                <span>
+                    <i class="fa fa-arrow-left" aria-hidden="true" style="font-size:20px;margin-right: 5px;"></i>
+                    Nach Links
+                </span>
+            </li>
+            <li class="menu-option" onclick="window.moveItemsRechts()" title="Nach Rechts Verschieben" id="li-rechts">
+                <span>
+                    <i class="fa fa-arrow-right" aria-hidden="true" style="font-size:20px;margin-right: 5px;"></i>
+                    Nach Rechts
+                </span>
+            </li>
+            <li class="menu-option" onclick="window.Speichern()" title="Änderungen Speichern" id="li-speichern">
+                <span>
+                    <i class="fa fa-floppy-o" aria-hidden="true" style="font-size:20px;margin-right: 5px;"></i>
+                    Speichern
+                </span>
+            </li>
+            <li class="menu-option" onclick="window.showMitarbeiterSucheFromContextMenu()"
+                title="Nach Mitarbeiter Suchen" id="li-speichern">
+                <span>
+                    <i class="fa fa-search" aria-hidden="true" style="font-size:20px;margin-right: 5px;"></i>
+                    Suchen
+                </span>
+            </li>
+            <li class="menu-option" onclick="window.showMitarbeiterEditPopup()" title="Mitarbeiter Bearbeiten"
+                id="li-edit">
+                <span>
+                    <i class="fa fa-pencil" aria-hidden="true" style="font-size:20px;margin-right: 5px;"></i>
+                    Bearbeiten
+                </span>
+            </li>
+            <li class="menu-option" onclick="window.deleteMitarbeiter()" title="Mitarbeiter Löschen" id="li-delete">
+                <span>
+                    <i class="fa fa-trash" aria-hidden="true" style="font-size:20px;"></i>
+                    Löschen
+                </span>
+            </li>
+            <li class="menu-option" onclick="window.showMitarbeiterAddPopup()" title="Mitarbeiter Hinzufügen"
+                id="li-add">
+                <span>
+                    <i class="fa fa-plus" aria-hidden="true" style="font-size:20px;margin-right: 5px;"></i>
+                    Hinzufügen
+                </span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="modal" id="editMitarbeiterPopup">
+        <div class="modal-content">
+            <h1 id="editMitarbeiterPopupTitle"></h1>
+            <div class="modal-content-flexbox">
+                <div class="modal-content-flexbox modal-content-item">
+                    <label style="width: 100px;" for="Name">Name: </label>
+                    <input name="Name" id="edtName" tabindex="-1"
+                        onkeydown="selectNextElementByIdOnTabKeyDown(event, 'selRaum', 'btnMitarbeiterPopupClose')">
+                </div>
+                <div class="modal-content-flexbox modal-content-item">
+                    <label style="width: 100px;" for="raum">Raum: </label>
+                    <select name="raum" id="selRaum" tabindex="-1"
+                        onkeydown="selectNextElementByIdOnTabKeyDown(event, 'btnMitarbeiterPopupOK', 'edtName')"></select>
+                </div>
+            </div>
+            <div class="customButton" id="btnMitarbeiterPopupClose" tabindex="-1"
+                onkeydown="selectNextElementByIdOnTabKeyDown(event, 'edtName', 'btnMitarbeiterPopupOK')">
+                <span>
+                    <i class="fa fa-times closeIcon" aria-hidden="true" style="font-size: 20px;"></i>
+                    Abbrechen
+                </span>
+            </div>
+            <div class="customButton" id="btnMitarbeiterPopupOK" tabindex="-1"
+                onkeydown="selectNextElementByIdOnTabKeyDown(event, 'btnMitarbeiterPopupClose', 'selRaum')">
+                <span>
+                    <i class="fa fa-check okIcon" aria-hidden="true" style="font-size: 20px;"></i>
+                    Übernehmen
+                </span>
             </div>
         </div>
-    </body>
+    </div>
+
+    <div class="modal" id="editRaumPopup">
+        <div class="modal-content">
+            <h1 id="editRaumPopupTitle"></h1>
+            <div class="modal-content-flexbox">
+                <div class="modal-content-flexbox modal-content-item">
+                    <label style="width: 100px;" for="Name">Name: </label>
+                    <input name="Name" id="edtNameRaum" tabindex="-1"
+                        onkeydown="selectNextElementByIdOnTabKeyDown(event, 'btnRaumEditOk', 'btnRaumEditClose')">
+                </div>
+            </div>
+            <div class="customButton" id="btnRaumEditClose" tabindex="-1"
+                onkeydown="selectNextElementByIdOnTabKeyDown(event, 'edtNameRaum', 'btnRaumEditOk')">
+                <span>
+                    <i class="fa fa-times closeIcon" aria-hidden="true" style="font-size: 20px;"></i>
+                    Abbrechen
+                </span>
+            </div>
+            <div class="customButton" id="btnRaumEditOk" tabindex="-1"
+                onkeydown="selectNextElementByIdOnTabKeyDown(event, 'btnRaumEditClose', 'edtNameRaum')">
+                <span>
+                    <i class="fa fa-check okIcon" aria-hidden="true" style="font-size: 20px;"></i>
+                    Übernehmen
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="mitarbeiterSuche">
+        <div class="modal-content">
+            <h1 id="mitarbeiterSucheTitle"></h1>
+            <input id="searchInput" onpaste="this.onchange();" oninput="this.onchange();" style="width: 100%;"
+                placeholder="Nach Namen Filtern" tabindex="-1"
+                onkeydown="selectNextElementByIdOnTabKeyDown(event, 'search', 'btnMitarbeiterSucheClose')" />
+            <div id="search" class="container" tabindex="-1"
+                onkeydown="selectNextElementByIdOnTabKeyDown(event, 'btnMitarbeiterSucheOK', 'searchInput')"></div>
+            <div class="customButton" id="btnMitarbeiterSucheClose" tabindex="-1"
+                onkeydown="selectNextElementByIdOnTabKeyDown(event, 'searchInput', 'btnMitarbeiterSucheOK')">
+                <span>
+                    <i class="fa fa-times closeIcon" aria-hidden="true" style="font-size: 20px;"></i>
+                    Abbrechen
+                </span>
+            </div>
+            <div class="customButton" id="btnMitarbeiterSucheOK" tabindex="-1"
+                onkeydown="selectNextElementByIdOnTabKeyDown(event, 'btnMitarbeiterSucheClose', 'search')">
+                <span>
+                    <i class="fa fa-check okIcon" aria-hidden="true" style="font-size: 20px;"></i>
+                    Übernehmen
+                </span>
+            </div>
+        </div>
+    </div>
+</body>
+
 </html>
